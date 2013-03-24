@@ -1,2 +1,5 @@
 # Slayer Configuration
 tagmessages: true
+
+# Data related
+save_freq: 60 #seconds

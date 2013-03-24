@@ -19,28 +19,31 @@
 
 package net.alexben.Slayer.Handlers;
 
-import net.alexben.Slayer.Slayer;
+import net.alexben.Slayer.Utilities.SConfigUtil;
+import net.alexben.Slayer.Utilities.SUtil;
 import org.bukkit.Bukkit;
 
 public class SScheduler
 {
-    // Define variables
-    private static Slayer plugin = null;
-
-    public static void initialize(Slayer instance)
-    {
-        plugin = instance;
-        startThreads();
-    }
-
     @SuppressWarnings("deprecation")
     public static void startThreads()
     {
+        // Define variables
+        int saveFrequency = SConfigUtil.getSettingInt("save_freq") * 20;
 
+        // Save data
+        Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SUtil.getInstance(), new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                SFlatFile.save();
+            }
+        }, saveFrequency, saveFrequency);
     }
 
     public static void stopThreads()
     {
-        Bukkit.getServer().getScheduler().cancelTasks(plugin);
+        Bukkit.getServer().getScheduler().cancelTasks(SUtil.getInstance());
     }
 }

@@ -26,7 +26,7 @@
  * either expressed or implied, of anybody else.
  */
 
-package net.alexben.Slayer.Utilities;
+package net.alexben.Slayer.Libraries;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;

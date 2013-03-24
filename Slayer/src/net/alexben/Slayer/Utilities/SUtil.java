@@ -34,7 +34,7 @@ public class SUtil
     private static Slayer plugin = null;
     private static String pluginName = null;
     private static String pluginNameNoColor = null;
-    private static String pluginPrefix = null;
+    public static String pluginPrefix = null;
     private static final Logger log = Logger.getLogger("Minecraft");
     private static final HashMap<String, HashMap<String, Object>> save = new HashMap<String, HashMap<String, Object>>();
 
@@ -54,6 +54,16 @@ public class SUtil
     public static Logger getLog()
     {
         return log;
+    }
+
+    /**
+     * Returns the instance of the plugin.
+     *
+     * @return Slayer
+     */
+    public static Slayer getInstance()
+    {
+        return plugin;
     }
 
     /**
@@ -144,6 +154,16 @@ public class SUtil
 
         // Prepend the data with the plugin prefix to avoid plugin collisions and save the data
         save.get(pluginPrefix + player.getName()).put(name.toLowerCase(), data);
+    }
+
+    /**
+     * Returns all saved data.
+     *
+     * @return HashMap<String, HashMap<String, Object>>
+     */
+    public static HashMap<String, HashMap<String, Object>> getAllData()
+    {
+        return save;
     }
 
     /**

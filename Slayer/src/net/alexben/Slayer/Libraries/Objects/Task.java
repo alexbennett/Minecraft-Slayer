@@ -17,22 +17,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Listeners;
+package net.alexben.Slayer.Libraries.Objects;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
-public class SPlayerListener implements Listener
+import java.io.Serializable;
+
+public class Task implements Serializable
 {
-    @EventHandler(priority = EventPriority.MONITOR)
-    private void onPlayerJoin(PlayerJoinEvent event)
-    {
-        Player player = event.getPlayer();
+    private String player = null;
+    private int taskID;
+    private boolean complete;
 
-        // TODO Send the player a task reminder upon joining
+    public Task(OfflinePlayer assignee)
+    {
+        player = assignee.getName();
+        complete = false;
     }
 
+    /**
+     * Returns the player associated with this task.
+     * @return Player
+     */
+    public Player getPlayer()
+    {
+        return Bukkit.getPlayer(player);
+    }
 }

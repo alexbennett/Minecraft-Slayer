@@ -19,6 +19,7 @@
 
 package net.alexben.Slayer.Handlers;
 
+import net.alexben.Slayer.Utilities.SUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,6 +31,14 @@ public class SCommands implements CommandExecutor
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
         Player player = (Player) sender;
+
+        if(command.getName().equalsIgnoreCase("slayer"))
+        {
+            // Save random data just for testing
+            SUtil.saveData(player, "testing", true);
+
+            return true;
+        }
 
         return false;
     }

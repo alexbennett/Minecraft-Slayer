@@ -20,9 +20,10 @@
 package net.alexben.Slayer;
 
 import net.alexben.Slayer.Handlers.SCommands;
+import net.alexben.Slayer.Handlers.SFlatFile;
 import net.alexben.Slayer.Handlers.SScheduler;
+import net.alexben.Slayer.Libraries.Metrics;
 import net.alexben.Slayer.Listeners.SPlayerListener;
-import net.alexben.Slayer.Utilities.Metrics;
 import net.alexben.Slayer.Utilities.SConfigUtil;
 import net.alexben.Slayer.Utilities.SUtil;
 import org.bukkit.command.CommandExecutor;
@@ -38,11 +39,13 @@ public class Slayer extends JavaPlugin
         // Initialize the config, scheduler, and utilities
         SConfigUtil.initialize(this);
         SUtil.initialize(this);
-        SScheduler.initialize(this);
 
         // Load listeners and commands
         loadListeners();
         loadCommands();
+
+        // Start the scheduler
+        SScheduler.startThreads();
 
         // Start metrics
         try
@@ -56,6 +59,8 @@ public class Slayer extends JavaPlugin
             SUtil.log("warning", "Plugins metrics failed to load.");
         }
 
+        // Load data
+        SFlatFile.load();
 
         // Log that JustAFK successfully loaded
         SUtil.log("info", "Slayer has been successfully enabled!");
@@ -64,6 +69,7 @@ public class Slayer extends JavaPlugin
     @Override
     public void onDisable()
     {
+        SFlatFile.save();
         SScheduler.stopThreads();
 
         SUtil.log("info", "Disabled!");

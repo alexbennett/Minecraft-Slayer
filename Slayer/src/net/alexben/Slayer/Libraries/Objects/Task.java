@@ -19,30 +19,82 @@
 
 package net.alexben.Slayer.Libraries.Objects;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityType;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Task implements Serializable
 {
-    private String player = null;
-    private int taskID;
-    private boolean complete;
+    private String name = null, desc = null;
+    private int value, amountNeeded;
+    private EntityType mob;
+    private ArrayList<SerialItemStack> reward = new ArrayList<SerialItemStack>();
 
-    public Task(OfflinePlayer assignee)
+    public Task(String taskName, String taskDesc, int taskValue, ArrayList<SerialItemStack> rewardItems, int amount, EntityType mobType)
     {
-        player = assignee.getName();
-        complete = false;
+        name = taskName;
+        desc = taskDesc;
+        amountNeeded = amount;
+        mob = mobType;
+        value = taskValue;
+
+        if(!rewardItems.isEmpty())
+        {
+            for(SerialItemStack item : rewardItems)
+            {
+                reward.add(item);
+            }
+        }
     }
 
     /**
-     * Returns the player associated with this task.
-     * @return Player
+     * Returns the name of the task.
+     *
+     * @return String
      */
-    public Player getPlayer()
+    public String getName()
     {
-        return Bukkit.getPlayer(player);
+        return name;
+    }
+
+    /**
+     * Returns the task description.
+     *
+     * @return String
+     */
+    public String getDesc()
+    {
+        return desc;
+    }
+
+    /**
+     * Returns all plugin rewards.
+     *
+     * @return ArrayList
+     */
+    public ArrayList<SerialItemStack> getReward()
+    {
+        return reward;
+    }
+
+    /**
+     * Returns the entity type associated with this task.
+     *
+     * @return EntityType
+     */
+    public EntityType getMob()
+    {
+        return mob;
+    }
+
+    /**
+     * Returns the amount needed for task completion.
+     *
+     * @return int
+     */
+    public int getGoal()
+    {
+        return amountNeeded;
     }
 }

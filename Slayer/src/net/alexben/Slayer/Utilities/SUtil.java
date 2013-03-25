@@ -25,7 +25,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class SUtil
@@ -33,17 +32,16 @@ public class SUtil
     // Define variables
     private static Slayer plugin = null;
     private static String pluginName = null;
-    private static String pluginNameNoColor = null;
+    private static ChatColor pluginColor = null;
     public static String pluginPrefix = null;
     private static final Logger log = Logger.getLogger("Minecraft");
-    private static final HashMap<String, HashMap<String, Object>> save = new HashMap<String, HashMap<String, Object>>();
 
     public static void initialize(Slayer instance)
     {
         plugin = instance;
-        pluginName = ChatColor.GREEN + plugin.getDescription().getName() + ChatColor.RESET;
-        pluginNameNoColor = plugin.getDescription().getName();
-        pluginPrefix = pluginNameNoColor.toLowerCase() + "_";
+        pluginName = plugin.getDescription().getName();
+        pluginColor = ChatColor.RED;
+        pluginPrefix = pluginName.toLowerCase() + "_";
     }
 
     /**
@@ -74,9 +72,9 @@ public class SUtil
      */
     public static void log(String type, String msg)
     {
-        if(type.equalsIgnoreCase("info")) log.info("[" + pluginNameNoColor + "] " + msg);
-        else if(type.equalsIgnoreCase("warning")) log.warning("[" + pluginNameNoColor + "] " + msg);
-        else if(type.equalsIgnoreCase("severe")) log.severe("[" + pluginNameNoColor + "] " + msg);
+        if(type.equalsIgnoreCase("info")) log.info("[" + pluginName + "] " + msg);
+        else if(type.equalsIgnoreCase("warning")) log.warning("[" + pluginName + "] " + msg);
+        else if(type.equalsIgnoreCase("severe")) log.severe("[" + pluginName + "] " + msg);
     }
 
     /**
@@ -86,9 +84,9 @@ public class SUtil
      */
     public static void serverMsg(String msg)
     {
-        if(SConfigUtil.getSettingBoolean("tagmessages"))
+        if(SConfigUtil.getSettingBoolean("tag_messages"))
         {
-            Bukkit.getServer().broadcastMessage("[" + pluginName + "] " + msg);
+            Bukkit.getServer().broadcastMessage(pluginColor + "[" + pluginName + "] " + ChatColor.RESET + msg);
         }
         else Bukkit.getServer().broadcastMessage(msg);
 
@@ -102,9 +100,9 @@ public class SUtil
      */
     public static void sendMessage(Player player, String msg)
     {
-        if(SConfigUtil.getSettingBoolean("tagmessages"))
+        if(SConfigUtil.getSettingBoolean("tag_messages"))
         {
-            player.sendMessage("[" + pluginName + "] " + msg);
+            player.sendMessage(pluginColor + "[" + pluginName + "] " + ChatColor.RESET + msg);
         }
         else
         {
@@ -135,70 +133,5 @@ public class SUtil
     public static boolean hasPermissionOrOP(OfflinePlayer player, String permission)
     {
         return player == null || player.isOp() || player.getPlayer().hasPermission(permission);
-    }
-
-    /**
-     * Saves <code>data</code> under the key <code>name</code> to <code>player</code>.
-     *
-     * @param player the player to save data to.
-     * @param name the name of the data.
-     * @param data the data to save.
-     */
-    public static void saveData(OfflinePlayer player, String name, Object data)
-    {
-        // Create new save for the player if one doesn't already exist
-        if(!save.containsKey(pluginPrefix + player.getName()))
-        {
-            save.put(pluginPrefix + player.getName(), new HashMap<String, Object>());
-        }
-
-        // Prepend the data with the plugin prefix to avoid plugin collisions and save the data
-        save.get(pluginPrefix + player.getName()).put(name.toLowerCase(), data);
-    }
-
-    /**
-     * Returns all saved data.
-     *
-     * @return HashMap<String, HashMap<String, Object>>
-     */
-    public static HashMap<String, HashMap<String, Object>> getAllData()
-    {
-        return save;
-    }
-
-    /**
-     * Returns the data with the key <code>name</code> from <code>player</code>'s HashMap.
-     *
-     * @param player the player to check.
-     * @param name the key to grab.
-     */
-    public static Object getData(OfflinePlayer player, String name)
-    {
-        if(save.containsKey(pluginPrefix + player.getName()) && save.get(pluginPrefix + player.getName()).containsKey(name))
-        {
-            return save.get(pluginPrefix + player.getName()).get(name);
-        }
-        return null;
-    }
-
-    /**
-     * Removes the data with the key <code>name</code> from <code>player</code>.
-     *
-     * @param player the player to remove data from.
-     * @param name the key of the data to remove.
-     */
-    public static void removeData(OfflinePlayer player, String name)
-    {
-        if(save.containsKey(pluginPrefix + player.getName())) save.get(pluginPrefix + player.getName()).remove(name.toLowerCase());
-    }
-
-    /**
-     * Removes all data for the <code>player</code>.
-     *
-     * @param player the player whose data to remove.
-     */
-    public static void removeAllData(OfflinePlayer player)
-    {
-        save.remove(pluginPrefix + player.getName());
     }
 }

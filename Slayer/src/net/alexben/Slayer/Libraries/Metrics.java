@@ -155,7 +155,7 @@ public class Metrics {
                     try {
                         // This has to be synchronized or it can collide with the disable method.
                         synchronized (optOutLock) {
-                            // Disable Task, if it is running and the server owner decided to opt-out
+                            // Disable Assignment, if it is running and the server owner decided to opt-out
                             if (isOptOut() && task != null) {
                                 task.cancel();
                                 task = null;
@@ -221,7 +221,7 @@ public class Metrics {
                 configuration.save(configurationFile);
             }
 
-            // Enable Task, if it is not running
+            // Enable Assignment, if it is not running
             if (task == null) {
                 start();
             }
@@ -242,7 +242,7 @@ public class Metrics {
                 configuration.save(configurationFile);
             }
 
-            // Disable Task, if it is running
+            // Disable Assignment, if it is running
             if (task != null) {
                 task.cancel();
                 task = null;

@@ -19,32 +19,31 @@
 
 package net.alexben.Slayer.Listeners;
 
-import net.alexben.Slayer.Utilities.SConfigUtil;
-import net.alexben.Slayer.Utilities.STaskUtil;
-import net.alexben.Slayer.Utilities.SUtil;
+import net.alexben.Slayer.Events.TaskAssignEvent;
+import net.alexben.Slayer.Events.TaskCompleteEvent;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
-public class SPlayerListener implements Listener
+public class STaskListener implements Listener
 {
     @EventHandler(priority = EventPriority.MONITOR)
-    private void onPlayerJoin(PlayerJoinEvent event)
+    private void onTaskAssign(TaskAssignEvent event)
     {
-        Player player = event.getPlayer();
+        OfflinePlayer player = event.getPlayer();
 
-        if(SConfigUtil.getSettingBoolean("join_message"))
+        if(player.isOnline())
         {
-            player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + SUtil.getInstance().getDescription().getVersion() + ChatColor.GRAY + ".");
-        }
-
-        if(SConfigUtil.getSettingBoolean("join_reminders") && STaskUtil.getAssignments(player) != null)
-        {
-            SUtil.sendMessage(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getAssignments(player).size() + ChatColor.GRAY + " active task(s).");
+            player.getPlayer().sendMessage(ChatColor.GREEN + "You have been given a new Slayer assignment!");
+            player.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "For details, please type " + ChatColor.ITALIC + "/sl view tasks");
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    private void onTaskComplete(TaskCompleteEvent event)
+    {
+        // TODO
+    }
 }

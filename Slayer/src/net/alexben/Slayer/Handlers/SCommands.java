@@ -19,7 +19,10 @@
 
 package net.alexben.Slayer.Handlers;
 
+import net.alexben.Slayer.Libraries.Objects.Assignment;
+import net.alexben.Slayer.Utilities.STaskUtil;
 import net.alexben.Slayer.Utilities.SUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,13 +35,98 @@ public class SCommands implements CommandExecutor
     {
         Player player = (Player) sender;
 
-        if(command.getName().equalsIgnoreCase("slayer"))
+        if(command.getName().equalsIgnoreCase("sladmin")) return sl_admin(player, args);
+        if(command.getName().equalsIgnoreCase("sl")) return slayer(player, args);
+
+        return false;
+    }
+
+    /**
+     * Handles all admin-specific commands.
+     */
+    public boolean sl_admin(Player player, String[] args)
+    {
+        if(args.length == 0)
         {
-            // Save random data just for testing
-            SUtil.saveData(player, "testing", true);
+            player.sendMessage(ChatColor.RED + "[Slayer]" + ChatColor.WHITE + " Admin Directory");
+            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin assign <player>");
 
             return true;
         }
+
+        return false;
+    }
+
+    /**
+     * Handles all basic commands.
+     */
+    public boolean slayer(Player player, String[] args)
+    {
+        if(args.length == 0)
+        {
+            player.sendMessage(ChatColor.RED + "[Slayer]" + ChatColor.WHITE + " Command Directory");
+            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl leaderboard");
+            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl new task");
+            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl view tasks");
+            player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "/sladmin");
+
+            return true;
+        }
+        else
+        {
+            String action, category = null, option1 = null, option2 = null;
+
+            action = args[0];
+            if(args.length > 1) category = args[1];
+            if(args.length > 2) category = args[2];
+            if(args.length > 3) category = args[3];
+
+
+            if(action.equalsIgnoreCase("new"))
+            {
+                if(category.equalsIgnoreCase("task"))
+                {
+                    STaskUtil.assignRandomTask(player);
+
+                    return true;
+                }
+            }
+            else if(action.equalsIgnoreCase("view"))
+            {
+                if(category.contains("task"))
+                {
+                    if(STaskUtil.getAssignments(player) == null)
+                    {
+                        SUtil.sendMessage(player, ChatColor.GRAY + "You currently have no Slayer Tasks.");
+                        return true;
+                    }
+
+                    player.sendMessage(" ");
+                    SUtil.sendMessage(player, ChatColor.GRAY + "Your current task(s) are:");
+                    player.sendMessage(" ");
+
+                    // List the tasks
+                    for(Assignment assignment : STaskUtil.getAssignments(player))
+                    {
+                        ChatColor color;
+                        if(assignment.isActive()) color = ChatColor.GREEN;
+                        else color = ChatColor.RED;
+
+                        player.sendMessage(ChatColor.GRAY + " > " + color + assignment.getTask().getName() + ChatColor.GRAY + " (Mob: " + assignment.getTask().getMob().getName() + ", Kills: " + assignment.getAmountObtained() + "/" + assignment.getAmountNeeded() + ")");
+                    }
+
+                    player.sendMessage(" ");
+                    player.sendMessage(ChatColor.GREEN + "Green" + ChatColor.GRAY + " means active, " + ChatColor.RED + "red" + ChatColor.GRAY + " means inactive.");
+
+                    return true;
+                }
+            }
+            else if(action.equalsIgnoreCase("leaderboard"))
+            {
+                SUtil.sendMessage(player, ChatColor.GRAY + "This functionality is coming soon.");
+                return true;
+            }
+            }
 
         return false;
     }

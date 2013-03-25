@@ -1,0 +1,24 @@
+# Custom Task Configuration
+test: true
+
+tasks:
+    - name: 'Kill 10 Zombies'
+      desc: 'Kill 10 zombies to receive a reward.'
+      mob: zombie
+      amount: 10
+      value: 15
+      reward:
+          - itemid: 276
+            amount: 1
+            enchantments:
+                - knockback: 1
+    - name: 'Kill 20 Creepers'
+      desc: 'Kill 10 zombies to receive a reward.'
+      mob: creeper
+      amount: 20
+      value: 50
+      reward:
+          - itemid: 268
+            amount: 1
+            enchantments:
+                - durability: 1

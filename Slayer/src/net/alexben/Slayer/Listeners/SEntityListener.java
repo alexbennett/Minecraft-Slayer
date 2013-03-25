@@ -19,31 +19,20 @@
 
 package net.alexben.Slayer.Listeners;
 
-import net.alexben.Slayer.Utilities.SConfigUtil;
-import net.alexben.Slayer.Utilities.STaskUtil;
-import net.alexben.Slayer.Utilities.SUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class SPlayerListener implements Listener
+public class SEntityListener implements Listener
 {
     @EventHandler(priority = EventPriority.MONITOR)
-    private void onPlayerJoin(PlayerJoinEvent event)
+    private void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
     {
-        Player player = event.getPlayer();
-
-        if(SConfigUtil.getSettingBoolean("join_message"))
+        if(event.getDamager() instanceof Player)
         {
-            player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + SUtil.getInstance().getDescription().getVersion() + ChatColor.GRAY + ".");
-        }
 
-        if(SConfigUtil.getSettingBoolean("join_reminders") && STaskUtil.getAssignments(player) != null)
-        {
-            SUtil.sendMessage(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getAssignments(player).size() + ChatColor.GRAY + " active task(s).");
         }
     }
 

@@ -19,6 +19,7 @@
 
 package net.alexben.Slayer.Handlers;
 
+import net.alexben.Slayer.Utilities.SDataUtil;
 import net.alexben.Slayer.Utilities.SUtil;
 
 import java.io.*;
@@ -82,12 +83,12 @@ public class SFlatFile
 
         try
         {
-            for(String key : SUtil.getAllData().keySet())
+            for(String key : SDataUtil.getAllData().keySet())
             {
                 count++;
 
-                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PlayerDir.getPath() + File.separator + key.replace(SUtil.pluginPrefix, "") + ".slay"));
-                oos.writeObject(SUtil.getAllData().get(key));
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PlayerDir.getPath() + File.separator + key + ".slay"));
+                oos.writeObject(SDataUtil.getAllData().get(key));
                 oos.flush();
                 oos.close();
             }
@@ -153,7 +154,7 @@ public class SFlatFile
                     {
                         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(element));
                         Object data = ois.readObject();
-                        SUtil.getAllData().put(SUtil.pluginPrefix + name, (HashMap<String, Object>) data);
+                        SDataUtil.getAllData().put(name, (HashMap<String, Object>) data);
                         ois.close();
                     }
                     catch(Exception e)

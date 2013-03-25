@@ -1,5 +1,7 @@
 # Slayer Configuration
-tagmessages: true
+tag_messages: true
+join_message: true
+join_reminders: true
 
 # Data related
 save_freq: 60 #seconds

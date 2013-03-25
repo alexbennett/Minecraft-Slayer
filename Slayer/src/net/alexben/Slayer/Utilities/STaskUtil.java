@@ -19,49 +19,104 @@
 
 package net.alexben.Slayer.Utilities;
 
+import net.alexben.Slayer.Events.TaskAssignEvent;
+import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.Task;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Handles all Slayer task-related methods.
  */
 public class STaskUtil
 {
+    // Define variables
+    private static final ArrayList<Task> tasks = new ArrayList<Task>();
+
+    /**
+     * Loads the task into the task ArrayList for future reference.
+     */
+    public static void loadTask(Task task)
+    {
+        tasks.add(task);
+    }
+
+    /**
+     * Returns a random slayer task created from the task configuration.
+     *
+     * @return Task
+     */
+    public static Task getRandomTask()
+    {
+        Random rand = new Random();
+        return tasks.get(rand.nextInt(tasks.size()));
+    }
+
+    /**
+     * Assigns a random Task to the <code>player</code>.
+     *
+     * @param player the player to assign to.
+     */
+    public static void assignRandomTask(Player player)
+    {
+        Task task = getRandomTask();
+
+        TaskAssignEvent taskAssignEvent = new TaskAssignEvent(player, task);
+        SUtil.getInstance().getServer().getPluginManager().callEvent(taskAssignEvent);
+        if(taskAssignEvent.isCancelled())
+        {
+            player.sendMessage(ChatColor.RED + "A task could not be assigned to you.");
+            return;
+        }
+
+        assignTask(player, task);
+
+        return;
+    }
+
     /**
      * Returns an ArrayList of active tasks for <code>player</code>.
      *
      * @param player the player to check.
      * @return an ArrayList of Tasks.
      */
-    public static ArrayList<Task> getTasks(OfflinePlayer player)
+    public static ArrayList<Assignment> getAssignments(OfflinePlayer player)
     {
-        if(SUtil.getData(player, "tasks") != null)
+        if(SDataUtil.getData(player, "assignments") != null)
         {
-            return (ArrayList<Task>) SUtil.getData(player, "tasks");
+            return (ArrayList<Assignment>) SDataUtil.getData(player, "assignments");
         }
         return null;
     }
 
     /**
-     * Assigns the <code>task</code> to the <code>player</code>.
+     * Assigns the <code>task</code> to the <code>player</code> and returns the new
+     * Assignment.
      *
      * @param player the player to assign to.
      * @param task the task to assign.
+     * @return Assignment
      */
-    public static void assignTask(OfflinePlayer player, Task task)
+    public static Assignment assignTask(OfflinePlayer player, Task task)
     {
-        if(SUtil.getData(player, "tasks") != null)
+        Assignment assignment = new Assignment(player, task);
+
+        if(SDataUtil.getData(player, "assignments") != null)
         {
-            ((ArrayList<Task>) SUtil.getData(player, "tasks")).add(task);
+            ((ArrayList<Assignment>) SDataUtil.getData(player, "assignments")).add(assignment);
         }
         else
         {
-            ArrayList<Task> tasks = new ArrayList<Task>();
-            tasks.add(task);
+            ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+            assignments.add(assignment);
 
-            SUtil.saveData(player, "tasks", tasks);
+            SDataUtil.saveData(player, "assignments", assignments);
         }
+
+        return assignment;
     }
 }

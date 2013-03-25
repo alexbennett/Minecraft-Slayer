@@ -3,10 +3,16 @@ main: net.alexben.Slayer.Slayer
 version: 1.0
 author: _Alex
 commands:
-    slayer:
-        usage: /slayer
+    sl:
+        usage: /sl
+        permission: slayer.basic
+    sladmin:
+        usage: /sladmin
         permission: slayer.basic
 permissions:
     slayer.basic:
         description: The default permission for players.
         default: true
+    slayer.admin:
+        description: The administration permission node.
+        default: false

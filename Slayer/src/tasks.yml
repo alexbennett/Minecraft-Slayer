@@ -13,7 +13,7 @@ tasks:
             enchantments:
                 - knockback: 1
     - name: 'Kill 20 Creepers'
-      desc: 'Kill 10 zombies to receive a reward.'
+      desc: 'Kill 20 creepers to receive a reward.'
       mob: creeper
       amount: 20
       value: 50

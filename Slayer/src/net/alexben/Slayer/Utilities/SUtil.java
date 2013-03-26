@@ -93,7 +93,8 @@ public class SUtil
     }
 
     /**
-     * Sends a message to a player prepended with the plugin name.
+     * Sends a message to a player prepended with the plugin name if enabled in
+     * the configuration.
      *
      * @param player the player to message.
      * @param msg the message to send.
@@ -108,6 +109,17 @@ public class SUtil
         {
             player.sendMessage(msg);
         }
+    }
+
+    /**
+     * Sends a message to a player always prepended with the plugin name.
+     *
+     * @param player the player to message.
+     * @param msg the message to send.
+     */
+    public static void taggedMessage(Player player, String msg)
+    {
+        player.sendMessage(ChatColor.RED + "[Slayer]" + ChatColor.WHITE + msg);
     }
 
     /**

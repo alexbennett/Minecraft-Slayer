@@ -48,7 +48,7 @@ public class SCommands implements CommandExecutor
     {
         if(args.length == 0)
         {
-            player.sendMessage(ChatColor.RED + "[Slayer]" + ChatColor.WHITE + " Admin Directory");
+            SUtil.taggedMessage(player, "Admin Directory");
             player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin assign <player>");
 
             return true;
@@ -64,7 +64,7 @@ public class SCommands implements CommandExecutor
     {
         if(args.length == 0)
         {
-            player.sendMessage(ChatColor.RED + "[Slayer]" + ChatColor.WHITE + " Command Directory");
+            SUtil.taggedMessage(player, "Command Directory");
             player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl leaderboard");
             player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl new task");
             player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl view tasks");
@@ -123,10 +123,10 @@ public class SCommands implements CommandExecutor
             }
             else if(action.equalsIgnoreCase("leaderboard"))
             {
-                SUtil.sendMessage(player, ChatColor.GRAY + "This functionality is coming soon.");
+                SUtil.taggedMessage(player, "This functionality is coming soon.");
                 return true;
             }
-            }
+        }
 
         return false;
     }

@@ -19,21 +19,40 @@
 
 package net.alexben.Slayer.Listeners;
 
+import net.alexben.Slayer.Libraries.Objects.Assignment;
+import net.alexben.Slayer.Utilities.STaskUtil;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 public class SEntityListener implements Listener
 {
     @EventHandler(priority = EventPriority.MONITOR)
-    private void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
+    private void onEntityDeathEvent(EntityDeathEvent event)
     {
-        if(event.getDamager() instanceof Player)
-        {
+        // Define entity
+        Entity entity = event.getEntity();
 
+        // Make sure the damage was caused by a player. If not, return.
+        if(!(entity.getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
+        if(!(((EntityDamageByEntityEvent) entity.getLastDamageCause()).getDamager() instanceof Player)) return;
+
+        // It's a player, let's go ahead and check their active assignments
+        EntityDamageByEntityEvent damageEvent = (EntityDamageByEntityEvent) entity.getLastDamageCause();
+        Player player = (Player) damageEvent.getDamager();
+
+        // It's a player, now look for active tasks
+        for(Assignment assignment : STaskUtil.getAssignments(player))
+        {
+            if(assignment.getTask().getMob().equals(entity.getType()))
+            {
+                // TODO Expand this, currently just a place-holder for kill tracking
+                player.sendMessage("You killed a " + entity.getType().getName() + ", which is part of the \"" + assignment.getTask().getName() + "\" task.");
+            }
         }
     }
-
 }

@@ -19,131 +19,133 @@
 
 package net.alexben.Slayer.Utilities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import net.alexben.Slayer.Slayer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
-import java.util.logging.Logger;
-
+/**
+ * Utility that handles miscellaneous methods.
+ */
 public class SUtil
 {
-    // Define variables
-    private static Slayer plugin = null;
-    private static String pluginName = null;
-    private static ChatColor pluginColor = null;
-    public static String pluginPrefix = null;
-    private static final Logger log = Logger.getLogger("Minecraft");
+	// Define variables
+	private static Slayer plugin = null;
+	private static String pluginName = null;
+	private static ChatColor pluginColor = null;
+	private static final Logger log = Logger.getLogger("Minecraft");
 
-    public static void initialize(Slayer instance)
-    {
-        plugin = instance;
-        pluginName = plugin.getDescription().getName();
-        pluginColor = ChatColor.RED;
-        pluginPrefix = pluginName.toLowerCase() + "_";
-    }
+	public static void initialize(Slayer instance)
+	{
+		plugin = instance;
+		pluginName = plugin.getDescription().getName();
+		pluginColor = ChatColor.RED;
+	}
 
-    /**
-     * Returns the logger for the current plugin instance.
-     *
-     * @return the logger instance.
-     */
-    public static Logger getLog()
-    {
-        return log;
-    }
+	/**
+	 * Returns the logger for the current plugin instance.
+	 * 
+	 * @return the logger instance.
+	 */
+	public static Logger getLog()
+	{
+		return log;
+	}
 
-    /**
-     * Returns the instance of the plugin.
-     *
-     * @return Slayer
-     */
-    public static Slayer getInstance()
-    {
-        return plugin;
-    }
+	/**
+	 * Returns the instance of the plugin.
+	 * 
+	 * @return Slayer
+	 */
+	public static Slayer getInstance()
+	{
+		return plugin;
+	}
 
-    /**
-     * Sends <code>msg</code> to the console with type <code>type</code>.
-     *
-     * @param type the type of message.
-     * @param msg the message to send.
-     */
-    public static void log(String type, String msg)
-    {
-        if(type.equalsIgnoreCase("info")) log.info("[" + pluginName + "] " + msg);
-        else if(type.equalsIgnoreCase("warning")) log.warning("[" + pluginName + "] " + msg);
-        else if(type.equalsIgnoreCase("severe")) log.severe("[" + pluginName + "] " + msg);
-    }
+	/**
+	 * Sends <code>msg</code> to the console with type <code>type</code>.
+	 * 
+	 * @param type the type of message.
+	 * @param msg the message to send.
+	 */
+	public static void log(String type, String msg)
+	{
+		if(type.equalsIgnoreCase("info")) log.info("[" + pluginName + "] " + msg);
+		else if(type.equalsIgnoreCase("warning")) log.warning("[" + pluginName + "] " + msg);
+		else if(type.equalsIgnoreCase("severe")) log.severe("[" + pluginName + "] " + msg);
+	}
 
-    /**
-     * Sends a server-wide message.
-     *
-     * @param msg the message to send.
-     */
-    public static void serverMsg(String msg)
-    {
-        if(SConfigUtil.getSettingBoolean("tag_messages"))
-        {
-            Bukkit.getServer().broadcastMessage(pluginColor + "[" + pluginName + "] " + ChatColor.RESET + msg);
-        }
-        else Bukkit.getServer().broadcastMessage(msg);
+	/**
+	 * Sends a server-wide message prepended with the plugin name if <code>tag</code> is true.
+	 * 
+	 * @param tag if true, the message is prepended with "[Slayer]"
+	 * @param msg the message to send.
+	 */
+	public static void serverMsg(boolean tag, String msg)
+	{
+		if(tag)
+		{
+			Bukkit.getServer().broadcastMessage(pluginColor + "[" + pluginName + "] " + ChatColor.RESET + msg);
+		}
+		else Bukkit.getServer().broadcastMessage(msg);
 
-    }
+	}
 
-    /**
-     * Sends a message to a player prepended with the plugin name if enabled in
-     * the configuration.
-     *
-     * @param player the player to message.
-     * @param msg the message to send.
-     */
-    public static void sendMessage(Player player, String msg)
-    {
-        if(SConfigUtil.getSettingBoolean("tag_messages"))
-        {
-            player.sendMessage(pluginColor + "[" + pluginName + "] " + ChatColor.RESET + msg);
-        }
-        else
-        {
-            player.sendMessage(msg);
-        }
-    }
+	/**
+	 * Sends a message to a player prepended with the plugin name.
+	 * 
+	 * @param player the player to message.
+	 * @param msg the message to send.
+	 */
+	public static void sendMsg(OfflinePlayer player, String msg)
+	{
+		player.getPlayer().sendMessage(pluginColor + "[" + pluginName + "] " + ChatColor.RESET + msg);
+	}
 
-    /**
-     * Sends a message to a player always prepended with the plugin name.
-     *
-     * @param player the player to message.
-     * @param msg the message to send.
-     */
-    public static void taggedMessage(Player player, String msg)
-    {
-        player.sendMessage(ChatColor.RED + "[Slayer]" + ChatColor.WHITE + msg);
-    }
+	/**
+	 * Returns true if <code>player</code> has the permission called <code>permission</code>.
+	 * 
+	 * @param player the player to check.
+	 * @param permission the permission to check for.
+	 * @return boolean
+	 */
+	public static boolean hasPermission(OfflinePlayer player, String permission)
+	{
+		return player == null || player.getPlayer().hasPermission(permission);
+	}
 
-    /**
-     * Returns true if <code>player</code> has the permission called <code>permission</code>.
-     *
-     * @param player the player to check.
-     * @param permission the permission to check for.
-     * @return boolean
-     */
-    public static boolean hasPermission(OfflinePlayer player, String permission)
-    {
-        return player == null || player.getPlayer().hasPermission(permission);
-    }
+	/**
+	 * Returns true if <code>player</code> has the permission called <code>permission</code> or is an OP.
+	 * 
+	 * @param player the player to check.
+	 * @param permission the permission to check for.
+	 * @return boolean
+	 */
+	public static boolean hasPermissionOrOP(OfflinePlayer player, String permission)
+	{
+		return player == null || player.isOp() || player.getPlayer().hasPermission(permission);
+	}
 
-    /**
-     * Returns true if <code>player</code> has the permission called <code>permission</code>
-     * or is an OP.
-     *
-     * @param player the player to check.
-     * @param permission the permission to check for.
-     * @return boolean
-     */
-    public static boolean hasPermissionOrOP(OfflinePlayer player, String permission)
-    {
-        return player == null || player.isOp() || player.getPlayer().hasPermission(permission);
-    }
+	/**
+	 * Returns an ArrayList of all Slayer participants.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<OfflinePlayer> getAllParticipants()
+	{
+		ArrayList<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
+
+		for(Map.Entry<String, HashMap<String, Object>> player : SDataUtil.getAllData().entrySet())
+		{
+			players.add(Bukkit.getPlayer(player.getKey()));
+		}
+
+		return players;
+	}
 }

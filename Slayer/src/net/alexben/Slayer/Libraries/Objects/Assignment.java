@@ -19,115 +19,151 @@
 
 package net.alexben.Slayer.Libraries.Objects;
 
+import java.io.Serializable;
+
 import net.alexben.Slayer.Utilities.SObjUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.io.Serializable;
-
 public class Assignment implements Serializable
 {
-    private String player = null, name = null;
-    private int id, progress;
-    private Task task;
-    private boolean active;
+	private static final long serialVersionUID = 1869297753495176134L;
+	private String player = null;
+	private int id, progress;
+	private Task task;
+	private boolean active;
 
-    public Assignment(OfflinePlayer assignee, Task slayerTask)
-    {
-        id = SObjUtil.generateInt(5);
-        player = assignee.getName();
-        progress = 0;
-        active = true;
-        task = slayerTask;
-    }
+	public Assignment(OfflinePlayer player, Task task)
+	{
+		this.id = SObjUtil.generateInt(5);
+		this.player = player.getName();
+		this.progress = 0;
+		this.active = true;
+		this.task = task;
+	}
 
-    /**
-     * Sets the active status of the task.
-     *
-     * @param status the boolean to set the activity to.
-     */
-    public void setActive(boolean status)
-    {
+	/**
+	 * Sets the active status of the task.
+	 * 
+	 * @param status the boolean to set the activity to.
+	 */
+	public void setActive(boolean status)
+	{
+		active = status;
+	}
 
-    }
+	/**
+	 * Returns the ID of the task.
+	 * 
+	 * @return int
+	 */
+	public int getID()
+	{
+		return id;
+	}
 
-    /**
-     * Returns the ID of the task.
-     *
-     * @return int
-     */
-    public int getID()
-    {
-        return id;
-    }
+	/**
+	 * Returns the player associated with this task.
+	 * 
+	 * @return Player
+	 */
+	public Player getPlayer()
+	{
+		return Bukkit.getPlayer(player);
+	}
 
-    /**
-     * Returns the player associated with this task.
-     *
-     * @return Player
-     */
-    public Player getPlayer()
-    {
-        return Bukkit.getPlayer(player);
-    }
+	/**
+	 * Returns the actual Task associated with this attachment.
+	 */
+	public Task getTask()
+	{
+		return task;
+	}
 
-    /**
-     * Returns the actual Task associated with this attachment.
-     */
-    public Task getTask()
-    {
-        return task;
-    }
+	/**
+	 * Returns true/false depending on if the task is active or not.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isActive()
+	{
+		return active;
+	}
 
-    /**
-     * Returns true/false depending on if the task is active or not.
-     *
-     * @return boolean
-     */
-    public boolean isActive()
-    {
-        return active;
-    }
+	/**
+	 * Sets the assignment progress to <code>amount</code>.
+	 */
+	public void setProgress(int amount)
+	{
+		progress = amount;
+	}
 
-    /**
-     * Returns the amount needed for task completion.
-     *
-     * @return int
-     */
-    public int getAmountNeeded()
-    {
-        return task.getGoal();
-    }
+	/**
+	 * Increases the value of the assignment progress.
+	 */
+	public void addProgress()
+	{
+		progress++;
+	}
 
-    /**
-     * Returns the current amount obtained for this task.
-     *
-     * @return int
-     */
-    public int getAmountObtained()
-    {
-        return progress;
-    }
+	public void addProgress(int amount)
+	{
+		progress = progress + amount;
+	}
 
-    /**
-     * Returns the percent completion of the task.
-     *
-     * @return double
-     */
-    public double getCompletion()
-    {
-        return (getAmountObtained() / getAmountNeeded());
-    }
+	/**
+	 * Decreases the value of the assignment progress.
+	 */
+	public void subtractProgress()
+	{
+		progress--;
+	}
 
-    /**
-     * Returns the completion boolean for the task.
-     *
-     * @return boolean
-     */
-    public boolean getCompletionBool()
-    {
-        if(getCompletion() >= 100.0) return true;
-        return false;
-    }
+	public void subtractProgress(int amount)
+	{
+		progress = progress - amount;
+	}
+
+	/**
+	 * Returns the amount needed for task completion.
+	 * 
+	 * @return int
+	 */
+	public int getAmountNeeded()
+	{
+		return task.getGoal();
+	}
+
+	/**
+	 * Returns the current amount obtained for this task.
+	 * 
+	 * @return int
+	 */
+	public int getAmountObtained()
+	{
+		return progress;
+	}
+
+	/**
+	 * Returns the percent completion of the task.
+	 * 
+	 * @return double
+	 */
+	public double getCompletion()
+	{
+		return(getAmountObtained() / getAmountNeeded());
+	}
+
+	/**
+	 * Returns the completion boolean for the task.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isComplete()
+	{
+		if(getCompletion() >= 1) return true;
+		return false;
+	}
 }

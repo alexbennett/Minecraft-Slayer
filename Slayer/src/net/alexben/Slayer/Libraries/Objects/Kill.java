@@ -17,35 +17,57 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Listeners;
+package net.alexben.Slayer.Libraries.Objects;
 
-import net.alexben.Slayer.Utilities.STaskUtil;
+import java.io.Serializable;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 
-public class SEntityListener implements Listener
+public class Kill implements Serializable
 {
-	@EventHandler(priority = EventPriority.MONITOR)
-	private void onEntityDeathEvent(EntityDeathEvent event)
+	private static final long serialVersionUID = 1869297397495176734L;
+	private String player = null;
+	private EntityType entity;
+	private SerialLocation location;
+
+	public Kill(Player player, Entity entity)
 	{
-		// Define entity
-		Entity entity = event.getEntity();
+		this.player = player.getName();
+		this.entity = entity.getType();
+		this.location = new SerialLocation(entity.getLocation());
+	}
 
-		// Make sure the damage was caused by a player. If not, return.
-		if(!(entity.getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
-		if(!(((EntityDamageByEntityEvent) entity.getLastDamageCause()).getDamager() instanceof Player)) return;
+	/**
+	 * Returns the player associated with this kill.
+	 * 
+	 * @return Player
+	 */
+	public Player getPlayer()
+	{
+		return Bukkit.getPlayer(player);
+	}
 
-		// It's a player, let's go ahead and check their active assignments
-		EntityDamageByEntityEvent damageEvent = (EntityDamageByEntityEvent) entity.getLastDamageCause();
-		Player player = (Player) damageEvent.getDamager();
+	/**
+	 * Returns the EntityType associated with this kill.
+	 * 
+	 * @return EntityType
+	 */
+	public EntityType getEntity()
+	{
+		return entity;
+	}
 
-		// Process the kill across all of the player's assignments
-		STaskUtil.processKill(player, entity);
+	/**
+	 * Returns the entity that was killed.
+	 * 
+	 * @return Location
+	 */
+	public Location getLocation()
+	{
+		return location.unserialize();
 	}
 }

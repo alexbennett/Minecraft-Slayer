@@ -17,34 +17,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Handlers;
+package net.alexben.Slayer.Utilities;
 
-import net.alexben.Slayer.Utilities.SConfigUtil;
-import net.alexben.Slayer.Utilities.SUtil;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
-public class SScheduler
+/**
+ * Handles all methods used in stats.
+ */
+public class SStatsUtil
 {
-	@SuppressWarnings("deprecation")
-	public static void startThreads()
+	/**
+	 * Returns a sorted Map of the top point holders by name.
+	 * 
+	 * @return TreeMap
+	 */
+	public static TreeMap<Integer, OfflinePlayer> getTopPoints()
 	{
 		// Define variables
-		int saveFrequency = SConfigUtil.getSettingInt("save_freq") * 20;
+		Map<Integer, OfflinePlayer> leaderboardUnsorted = new HashMap<Integer, OfflinePlayer>();
 
-		// Save data
-		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SUtil.getInstance(), new Runnable()
+		for(Map.Entry<String, HashMap<String, Object>> player : SDataUtil.getAllData().entrySet())
 		{
-			@Override
-			public void run()
-			{
-				SFlatFile.save();
-			}
-		}, saveFrequency, saveFrequency);
-	}
+			leaderboardUnsorted.put(SObjUtil.toInteger(player.getValue().get("points")), Bukkit.getOfflinePlayer(player.getKey()));
+		}
 
-	public static void stopThreads()
-	{
-		Bukkit.getServer().getScheduler().cancelTasks(SUtil.getInstance());
+		return new TreeMap<Integer, OfflinePlayer>(leaderboardUnsorted);
 	}
 }

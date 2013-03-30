@@ -19,153 +19,172 @@
 
 package net.alexben.Slayer.Handlers;
 
-import net.alexben.Slayer.Utilities.SDataUtil;
-import net.alexben.Slayer.Utilities.SUtil;
-
 import java.io.*;
 import java.util.HashMap;
 
+import net.alexben.Slayer.Utilities.SDataUtil;
+import net.alexben.Slayer.Utilities.SUtil;
+
+import org.bukkit.OfflinePlayer;
+
 public class SFlatFile
 {
-    private static final String path = "plugins/Slayer/";
-    private static File PlayerDir;
+	private static final String path = "plugins/Slayer/";
+	private static File PlayerDir;
 
-    public static void start()
-    {
-        PlayerDir = new File(path + "players");
-        if(!PlayerDir.exists())
-        {
-            PlayerDir.mkdirs();
-            SUtil.log("info", "New player data save directory created.");
-        }
-    }
+	public static void start()
+	{
+		PlayerDir = new File(path + "players");
+		if(!PlayerDir.exists())
+		{
+			PlayerDir.mkdirs();
+			SUtil.log("info", "New player data save directory created.");
+		}
+	}
 
-    /**
-     * Saves all data in the plugin and returns a boolean based on success or failure.
-     *
-     * @return boolean
-     */
-    public synchronized static boolean save()
-    {
-        start();
+	/**
+	 * Saves all data in the plugin and returns a boolean based on success or failure.
+	 * 
+	 * @return boolean
+	 */
+	public synchronized static boolean save()
+	{
+		start();
 
-        try
-        {
-            // Clear files first
-            for(File file : PlayerDir.listFiles()) file.delete();
+		try
+		{
+			// Clear files first
+			for(File file : PlayerDir.listFiles())
+				file.delete();
 
-            // Start the timer
-            long startTimer = System.currentTimeMillis();
+			// Start the timer
+			long startTimer = System.currentTimeMillis();
 
-            int playerCount = savePlayers();
+			int playerCount = savePlayers();
 
-            // Stop the timer
-            long stopTimer = System.currentTimeMillis();
-            double totalTime = (double) (stopTimer - startTimer);
+			// Stop the timer
+			long stopTimer = System.currentTimeMillis();
+			double totalTime = (double) (stopTimer - startTimer);
 
-            SUtil.log("info", playerCount + " players saved in " + (totalTime / 1000) + " seconds.");
+			SUtil.log("info", playerCount + " players saved in " + (totalTime / 1000) + " seconds.");
 
-            return true;
-        }
-        catch(Exception e)
-        {
-            SUtil.log("severe", "Something went wrong while saving.");
-            e.printStackTrace();
+			return true;
+		}
+		catch(Exception e)
+		{
+			SUtil.log("severe", "Something went wrong while saving.");
+			e.printStackTrace();
 
-            return false;
-        }
-    }
+			return false;
+		}
+	}
 
-    public synchronized static int savePlayers()
-    {
-        start();
-        int count = 0;
+	public synchronized static int savePlayers()
+	{
+		start();
+		int count = 0;
 
-        try
-        {
-            for(String key : SDataUtil.getAllData().keySet())
-            {
-                count++;
+		try
+		{
+			for(String key : SDataUtil.getAllData().keySet())
+			{
+				count++;
 
-                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PlayerDir.getPath() + File.separator + key + ".slay"));
-                oos.writeObject(SDataUtil.getAllData().get(key));
-                oos.flush();
-                oos.close();
-            }
-        }
-        catch(Exception e)
-        {
-            SUtil.log("severe", "Something went wrong while saving players.");
-            e.printStackTrace();
-        }
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PlayerDir.getPath() + File.separator + key + ".slay"));
+				oos.writeObject(SDataUtil.getAllData().get(key));
+				oos.flush();
+				oos.close();
+			}
+		}
+		catch(Exception e)
+		{
+			SUtil.log("severe", "Something went wrong while saving players.");
+			e.printStackTrace();
+		}
 
-        return count;
-    }
+		return count;
+	}
 
-    /*
-     * load() : Loads all Flat File data to HashMaps.
-     */
-    public synchronized static void load()
-    {
-        start();
+	public synchronized static void savePlayer(OfflinePlayer player)
+	{
+		try
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PlayerDir.getPath() + File.separator + player.getName() + ".slay"));
+			oos.writeObject(SDataUtil.getAllData().get(player.getName()));
+			oos.flush();
+			oos.close();
+		}
+		catch(Exception e)
+		{
+			SUtil.log("severe", "Something went wrong while saving the player: " + player.getName());
+			e.printStackTrace();
+		}
+	}
 
-        try
-        {
-            SUtil.log("info", "Loading all data...");
+	/*
+	 * load() : Loads all Flat File data to HashMaps.
+	 */
+	public synchronized static void load()
+	{
+		start();
 
-            // Start the timer
-            long startTimer = System.currentTimeMillis();
+		try
+		{
+			SUtil.log("info", "Loading all data...");
 
-            // Load the data
-            int playerCount = loadPlayers();
+			// Start the timer
+			long startTimer = System.currentTimeMillis();
 
-            // Stop the timer
-            long stopTimer = System.currentTimeMillis();
-            double totalTime = (double) (stopTimer - startTimer);
+			// Load the data
+			int playerCount = loadPlayers();
 
-            SUtil.log("info", playerCount + " players loaded in " + (totalTime / 1000) + " seconds.");
-        }
-        catch(Exception e)
-        {
-            SUtil.log("severe", "Something went wrong while loading data.");
-            e.printStackTrace();
-        }
-    }
+			// Stop the timer
+			long stopTimer = System.currentTimeMillis();
+			double totalTime = (double) (stopTimer - startTimer);
 
-    @SuppressWarnings("unchecked")
-    public synchronized static int loadPlayers()
-    {
-        start();
-        int count = 0;
+			SUtil.log("info", playerCount + " players loaded in " + (totalTime / 1000) + " seconds.");
+		}
+		catch(Exception e)
+		{
+			SUtil.log("severe", "Something went wrong while loading data.");
+			e.printStackTrace();
+		}
+	}
 
-        File[] fileList = PlayerDir.listFiles();
-        if(fileList != null)
-        {
-            for(File element : fileList)
-            {
-                count++;
+	@SuppressWarnings("unchecked")
+	public synchronized static int loadPlayers()
+	{
+		start();
+		int count = 0;
 
-                String name = element.getName();
-                if(name.endsWith(".slay"))
-                {
-                    name = name.substring(0, name.length() - 5);
+		File[] fileList = PlayerDir.listFiles();
+		if(fileList != null)
+		{
+			for(File element : fileList)
+			{
+				count++;
 
-                    try
-                    {
-                        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(element));
-                        Object data = ois.readObject();
-                        SDataUtil.getAllData().put(name, (HashMap<String, Object>) data);
-                        ois.close();
-                    }
-                    catch(Exception e)
-                    {
-                        SUtil.log("severe", "Could not load player: " + name);
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+				String name = element.getName();
+				if(name.endsWith(".slay"))
+				{
+					name = name.substring(0, name.length() - 5);
 
-        return count;
-    }
+					try
+					{
+						ObjectInputStream ois = new ObjectInputStream(new FileInputStream(element));
+						Object data = ois.readObject();
+						SDataUtil.getAllData().put(name, (HashMap<String, Object>) data);
+						ois.close();
+					}
+					catch(Exception e)
+					{
+						SUtil.log("severe", "Could not load player: " + name);
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		return count;
+	}
 }

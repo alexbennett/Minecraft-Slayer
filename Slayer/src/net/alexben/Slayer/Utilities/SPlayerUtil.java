@@ -19,18 +19,195 @@
 
 package net.alexben.Slayer.Utilities;
 
-import org.bukkit.OfflinePlayer;
+import java.util.ArrayList;
 
+import net.alexben.Slayer.Handlers.SFlatFile;
+import net.alexben.Slayer.Libraries.Objects.Death;
+import net.alexben.Slayer.Libraries.Objects.Kill;
+import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
+
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+/**
+ * Utility for all player-related methods.
+ */
 public class SPlayerUtil
 {
-    /**
-     * Creates a new Slayer save for the <code>player</code>.
-     *
-     * @param player the player for whom to create the save.
-     */
-    public static void createSave(OfflinePlayer player)
-    {
-        // This is really simple for the time being and almost unnecessary, but I'm adding it for future expansion.
-        SDataUtil.saveData(player, "points", 0);
-    }
+	/**
+	 * Creates a new Slayer save for the <code>player</code>.
+	 * 
+	 * @param player the player for whom to create the save.
+	 */
+	public static void createSave(OfflinePlayer player)
+	{
+		// Return if the player already exists
+		if(SDataUtil.playerExists(player)) return;
+
+		// This is really simple for the time being and almost unnecessary, but I'm adding it for future expansion.
+		SDataUtil.saveData(player, "points", 0);
+		SDataUtil.saveData(player, "kills", new ArrayList<Kill>());
+		SDataUtil.saveData(player, "deaths", new ArrayList<Death>());
+		SDataUtil.saveData(player, "reward_queue", new ArrayList<SerialItemStack>());
+
+		// Save the data
+		SFlatFile.savePlayer(player);
+	}
+
+	/**
+	 * Adds the <code>item</code> to the <code>player</code>'s reward queue.
+	 * 
+	 * @param player the player to add the item to.
+	 * @param item the item to add.
+	 */
+	public static void addReward(OfflinePlayer player, SerialItemStack item)
+	{
+		((ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue")).add(item);
+	}
+
+	/**
+	 * Removes the reward matching <code>item</code> from the <code>player</code>'s
+	 * reward queue.
+	 * 
+	 * @param player the player to remove the reward from.
+	 * @param item the reward to remove.
+	 */
+	public static void removeReward(OfflinePlayer player, ItemStack item)
+	{
+		ArrayList<SerialItemStack> rewards = (ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue");
+
+		int i = 0;
+
+		for(SerialItemStack reward : rewards)
+		{
+			if(reward.toItemStack().equals(item))
+			{
+				rewards.remove(i);
+				return;
+			}
+			i++;
+		}
+	}
+
+	/**
+	 * Returns an ArrayList of <code>player</code>'s rewards.
+	 * 
+	 * @param player the player to get rewards for.
+	 * @return ArrayList
+	 */
+	public static ArrayList<ItemStack> getRewards(OfflinePlayer player)
+	{
+		ArrayList<ItemStack> rewards = new ArrayList<ItemStack>();
+
+		for(SerialItemStack reward : (ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue"))
+		{
+			rewards.add(reward.toItemStack());
+		}
+
+		return rewards;
+	}
+
+	/**
+	 * Gives the <code>player</code> the <code>points</code>.
+	 * 
+	 * @param player the player to give points to.
+	 * @param points the number of points to give.
+	 */
+	public static void addPoints(OfflinePlayer player, int points)
+	{
+		if(SDataUtil.hasData(player, "points"))
+		{
+			SDataUtil.saveData(player, "points", getPoints(player) + points);
+		}
+	}
+
+	/**
+	 * Returns the <code>player</code>'s points.
+	 * 
+	 * @param player the player to check.
+	 * @return Integer
+	 */
+	public static int getPoints(OfflinePlayer player)
+	{
+		return SObjUtil.toInteger(SDataUtil.getData(player, "points"));
+	}
+
+	/**
+	 * Adds a kill to the <code>player</code>'s overall kills.
+	 * 
+	 * @param player the player to give a kill to.
+	 */
+	public static void addKill(Player player, Entity entity)
+	{
+		Kill kill = new Kill(player, entity);
+		ArrayList<Kill> kills;
+
+		if(SDataUtil.hasData(player, "kills")) kills = (ArrayList<Kill>) SDataUtil.getData(player, "kills");
+		else kills = new ArrayList<Kill>();
+
+		kills.add(kill);
+	}
+
+	/**
+	 * Adds a death to the <code>player</code>'s overall deaths.
+	 * 
+	 * @param player the player that died.
+	 * @param entity the entity that killed the <code>player</code>.
+	 */
+	public static void addDeath(Player player, Entity entity)
+	{
+		Death death = new Death(player, entity);
+		ArrayList<Death> deaths;
+
+		if(SDataUtil.hasData(player, "deaths")) deaths = (ArrayList<Death>) SDataUtil.getData(player, "deaths");
+		else deaths = new ArrayList<Death>();
+
+		deaths.add(death);
+	}
+
+	/**
+	 * Returns the kill count for <code>player</code>.
+	 * 
+	 * @param player the player to check.
+	 * @return Integer
+	 */
+	public static int getKillCount(OfflinePlayer player)
+	{
+		return ((ArrayList<Kill>) SDataUtil.getData(player, "kills")).size();
+	}
+
+	/**
+	 * Returns the death count for <code>player</code>.
+	 * 
+	 * @param player the player to check.
+	 * @return Integer
+	 */
+	public static int getDeathCount(OfflinePlayer player)
+	{
+		return ((ArrayList<Kill>) SDataUtil.getData(player, "deaths")).size();
+	}
+
+	/**
+	 * Returns an ArrayList of all kills for <code>player</code>.
+	 * 
+	 * @param player the player to check.
+	 * @return ArrayList
+	 */
+	public static ArrayList<Kill> getKills(OfflinePlayer player)
+	{
+		return (ArrayList<Kill>) SDataUtil.getData(player, "kills");
+	}
+
+	/**
+	 * Returns an ArrayList of all deaths for <code>player</code>.
+	 * 
+	 * @param player the player to check.
+	 * @return ArrayList
+	 */
+	public static ArrayList<Death> getDeaths(OfflinePlayer player)
+	{
+		return (ArrayList<Death>) SDataUtil.getData(player, "deaths");
+	}
 }

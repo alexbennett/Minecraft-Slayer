@@ -19,14 +19,14 @@
 
 package net.alexben.Slayer.Libraries;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class ConfigAccessor
 {
@@ -46,7 +46,7 @@ public class ConfigAccessor
 		File dataFolder = plugin.getDataFolder();
 		if(dataFolder == null) throw new IllegalStateException();
 		this.configFile = new File(plugin.getDataFolder(), fileName);
-        saveDefaultConfig();
+		saveDefaultConfig();
 	}
 
 	public void reloadConfig()

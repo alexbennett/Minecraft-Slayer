@@ -19,82 +19,148 @@
 
 package net.alexben.Slayer.Libraries.Objects;
 
-import org.bukkit.entity.EntityType;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+
 public class Task implements Serializable
 {
-    private String name = null, desc = null;
-    private int value, amountNeeded;
-    private EntityType mob;
-    private ArrayList<SerialItemStack> reward = new ArrayList<SerialItemStack>();
+	private static final long serialVersionUID = 1869297353395176134L;
+	private String name = null, desc = null;
+	private int value, amountNeeded;
+	private SerialItemStack item;
+	private TaskType type;
+	private EntityType entity;
+	private ArrayList<SerialItemStack> reward = new ArrayList<SerialItemStack>();
 
-    public Task(String taskName, String taskDesc, int taskValue, ArrayList<SerialItemStack> rewardItems, int amount, EntityType mobType)
-    {
-        name = taskName;
-        desc = taskDesc;
-        amountNeeded = amount;
-        mob = mobType;
-        value = taskValue;
+	public Task(String task, String desc, int value, ArrayList<SerialItemStack> rewards, int amount, EntityType entity)
+	{
+		this.name = task;
+		this.desc = desc;
+		this.amountNeeded = amount;
+		this.value = value;
+		this.entity = entity;
+		this.type = TaskType.MOB;
 
-        if(!rewardItems.isEmpty())
-        {
-            for(SerialItemStack item : rewardItems)
-            {
-                reward.add(item);
-            }
-        }
-    }
+		if(!rewards.isEmpty())
+		{
+			for(SerialItemStack reward : rewards)
+			{
+				this.reward.add(reward);
+			}
+		}
+	}
 
-    /**
-     * Returns the name of the task.
-     *
-     * @return String
-     */
-    public String getName()
-    {
-        return name;
-    }
+	public Task(String task, String desc, int value, ArrayList<SerialItemStack> rewards, int amount, ItemStack item)
+	{
+		this.name = task;
+		this.desc = desc;
+		this.amountNeeded = amount;
+		this.value = value;
+		this.item = new SerialItemStack(item);
+		this.type = TaskType.ITEM;
 
-    /**
-     * Returns the task description.
-     *
-     * @return String
-     */
-    public String getDesc()
-    {
-        return desc;
-    }
+		if(!rewards.isEmpty())
+		{
+			for(SerialItemStack reward : rewards)
+			{
+				this.reward.add(reward);
+			}
+		}
+	}
 
-    /**
-     * Returns all plugin rewards.
-     *
-     * @return ArrayList
-     */
-    public ArrayList<SerialItemStack> getReward()
-    {
-        return reward;
-    }
+	/**
+	 * Returns the name of the task.
+	 * 
+	 * @return String
+	 */
+	public String getName()
+	{
+		return name;
+	}
 
-    /**
-     * Returns the entity type associated with this task.
-     *
-     * @return EntityType
-     */
-    public EntityType getMob()
-    {
-        return mob;
-    }
+	/**
+	 * Returns the task description.
+	 * 
+	 * @return String
+	 */
+	public String getDesc()
+	{
+		return desc;
+	}
 
-    /**
-     * Returns the amount needed for task completion.
-     *
-     * @return int
-     */
-    public int getGoal()
-    {
-        return amountNeeded;
-    }
+	/**
+	 * Returns thus task's TaskType.
+	 * 
+	 * @return TaskType
+	 */
+	public TaskType getType()
+	{
+		return type;
+	}
+
+	/**
+	 * Returns the value of the task.
+	 * 
+	 * @return Integer
+	 */
+	public int getValue()
+	{
+		return value;
+	}
+
+	/**
+	 * Returns all plugin rewards.
+	 * 
+	 * @return ArrayList
+	 */
+	public ArrayList<ItemStack> getReward()
+	{
+		ArrayList<ItemStack> rewards = new ArrayList<ItemStack>();
+
+		for(SerialItemStack item : reward)
+		{
+			rewards.add(item.toItemStack());
+		}
+
+		return rewards;
+	}
+
+	/**
+	 * Returns the entity type associated with this task.
+	 * 
+	 * @return EntityType
+	 */
+	public EntityType getMob()
+	{
+		return entity;
+	}
+
+	/**
+	 * Returns the ItemStack associated with this task.
+	 */
+	public ItemStack getItem()
+	{
+		return item.toItemStack();
+	}
+
+	/**
+	 * Returns the amount needed for task completion.
+	 * 
+	 * @return int
+	 */
+	public int getGoal()
+	{
+		return amountNeeded;
+	}
+
+	/**
+	 * The different types of tasks.
+	 */
+	public enum TaskType
+	{
+		ITEM, MOB
+	}
 }

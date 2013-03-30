@@ -20,31 +20,63 @@
 package net.alexben.Slayer.Listeners;
 
 import net.alexben.Slayer.Utilities.SConfigUtil;
+import net.alexben.Slayer.Utilities.SPlayerUtil;
 import net.alexben.Slayer.Utilities.STaskUtil;
 import net.alexben.Slayer.Utilities.SUtil;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class SPlayerListener implements Listener
 {
-    @EventHandler(priority = EventPriority.MONITOR)
-    private void onPlayerJoin(PlayerJoinEvent event)
-    {
-        Player player = event.getPlayer();
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onPlayerLogin(PlayerLoginEvent event)
+	{
+		Player player = event.getPlayer();
 
-        if(SConfigUtil.getSettingBoolean("join_message"))
-        {
-            player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + SUtil.getInstance().getDescription().getVersion() + ChatColor.GRAY + ".");
-        }
+		// Create a save for the player
+		SPlayerUtil.createSave(player);
+	}
 
-        if(SConfigUtil.getSettingBoolean("join_reminders") && STaskUtil.getAssignments(player) != null)
-        {
-            SUtil.sendMessage(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getAssignments(player).size() + ChatColor.GRAY + " active task(s).");
-        }
-    }
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onPlayerJoin(PlayerJoinEvent event)
+	{
+		Player player = event.getPlayer();
 
+		if(SConfigUtil.getSettingBoolean("join_message"))
+		{
+			player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + SUtil.getInstance().getDescription().getVersion() + ChatColor.GRAY + ".");
+		}
+
+		if(SConfigUtil.getSettingBoolean("join_reminders") && STaskUtil.getActiveAssignments(player) != null)
+		{
+			SUtil.sendMsg(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY + " active task(s).");
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onPlayerPickupItemEvent(PlayerPickupItemEvent event)
+	{
+		Player player = event.getPlayer();
+		ItemStack item = event.getItem().getItemStack();
+
+		STaskUtil.processItem(player, item);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onPlayerDropItemEvent(PlayerDropItemEvent event)
+	{
+		Player player = event.getPlayer();
+		ItemStack item = event.getItemDrop().getItemStack();
+
+		STaskUtil.unprocessItem(player, item);
+	}
 }

@@ -19,7 +19,8 @@
 
 package net.alexben.Slayer.Events;
 
-import net.alexben.Slayer.Libraries.Objects.Task;
+import net.alexben.Slayer.Libraries.Objects.Assignment;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -28,38 +29,38 @@ import org.bukkit.event.HandlerList;
 /**
  * Called when a player completes a Task.
  */
-public class TaskCompleteEvent extends Event implements Cancellable
+public class AssignmentCompleteEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
 	private Player player;
-    private Task task;
+	private Assignment assignment;
 	private boolean cancelled = false;
 
-	public TaskCompleteEvent(Player player, Task task)
+	public AssignmentCompleteEvent(Player player, Assignment assignment)
 	{
-        this.player = player;
-        this.task = task;
+		this.player = player;
+		this.assignment = assignment;
 	}
 
-    /**
-     * Returns the player associated with the event.
-     *
-     * @return Player
-     */
+	/**
+	 * Returns the player associated with the event.
+	 * 
+	 * @return Player
+	 */
 	public Player getPlayer()
 	{
 		return this.player;
 	}
 
-    /**
-     * Returns the task associated with the event.
-     *
-     * @return Assignment
-     */
-    public Task getTask()
-    {
-        return this.task;
-    }
+	/**
+	 * Returns the Assignment associated with the event.
+	 * 
+	 * @return Assignment
+	 */
+	public Assignment getAssignment()
+	{
+		return this.assignment;
+	}
 
 	@Override
 	public HandlerList getHandlers()

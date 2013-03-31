@@ -1,7 +1,9 @@
 # Task Configuration
 tasks:
-    - name: 'Kill 10 Zombies'
+    - name: 'Call of the Zombies'
       desc: 'Kill 10 zombies to receive a reward!'
+      enabled: true
+      timelimit: 10 #minutes
       mob: zombie
       amount: 10
       value: 25
@@ -10,8 +12,10 @@ tasks:
             amount: 1
             enchantments:
                 - knockback: 1
-    - name: 'Obtain 15 Bones'
+    - name: 'Gravedigger'
       desc: 'Obtain 15 bones to earn a reward!'
+      enabled: true
+      timelimit: none
       item: 352
       amount: 15
       value: 50
@@ -20,3 +24,13 @@ tasks:
             amount: 1
             enchantments:
                 - loot_bonus_blocks: max
+    - name: 'Na na na na na na!'
+      desc: 'Batman!'
+      enabled: true
+      timelimit: 30
+      mob: bat
+      amount: 5
+      value: 100
+      reward:
+          - itemid: 397
+            amount: 1

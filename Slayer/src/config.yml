@@ -1,8 +1,9 @@
 # Slayer Configuration
-tag_messages: true
 join_message: true
 join_reminders: true
 enable_task_list: true
+task_limit: 5
 
 # Data related
-save_freq: 60 #seconds
+assignment_refresh_freq: 300 #seconds
+save_freq: 300 #seconds

@@ -109,6 +109,17 @@ public class SUtil
 	}
 
 	/**
+	 * Sends a message to a player prepended with "SL Admin".
+	 * 
+	 * @param player the player to message.
+	 * @param msg the message to send.
+	 */
+	public static void sendAdminMsg(OfflinePlayer player, String msg)
+	{
+		player.getPlayer().sendMessage(pluginColor + "[SL Admin] " + ChatColor.RESET + msg);
+	}
+
+	/**
 	 * Returns true if <code>player</code> has the permission called <code>permission</code>.
 	 * 
 	 * @param player the player to check.

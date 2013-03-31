@@ -25,15 +25,15 @@ import net.alexben.Slayer.Utilities.SObjUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 public class Assignment implements Serializable
 {
 	private static final long serialVersionUID = 1869297753495176134L;
 	private String player = null;
 	private int id, progress;
+	private long expiration;
 	private Task task;
-	private boolean active;
+	private boolean active, failed, expired;
 
 	public Assignment(OfflinePlayer player, Task task)
 	{
@@ -41,7 +41,10 @@ public class Assignment implements Serializable
 		this.player = player.getName();
 		this.progress = 0;
 		this.active = true;
+		this.failed = false;
+		this.expired = false;
 		this.task = task;
+		this.expiration = System.currentTimeMillis() + (task.getTimeLimit() * 60000); // Converts to milliseconds
 	}
 
 	/**
@@ -52,6 +55,26 @@ public class Assignment implements Serializable
 	public void setActive(boolean status)
 	{
 		active = status;
+	}
+
+	/**
+	 * Sets the failure status of the task.
+	 * 
+	 * @param status the boolean to set the task to.
+	 */
+	public void setFailed(boolean status)
+	{
+		failed = status;
+	}
+
+	/**
+	 * Sets the expiration status of the task.
+	 * 
+	 * @param status the boolean to set the task to.
+	 */
+	public void setExpired(boolean status)
+	{
+		expired = status;
 	}
 
 	/**
@@ -67,19 +90,41 @@ public class Assignment implements Serializable
 	/**
 	 * Returns the player associated with this task.
 	 * 
-	 * @return Player
+	 * @return OfflinePlayer
 	 */
-	public Player getPlayer()
+	public OfflinePlayer getPlayer()
 	{
-		return Bukkit.getPlayer(player);
+		return Bukkit.getOfflinePlayer(player);
 	}
 
 	/**
-	 * Returns the actual Task associated with this attachment.
+	 * Returns the actual Task associated with this assignment.
 	 */
 	public Task getTask()
 	{
 		return task;
+	}
+
+	/**
+	 * Returns the amount of time in minutes before expiration.
+	 * 
+	 * @return double
+	 */
+	public long getTimeLeft()
+	{
+		if(!task.isTimed()) return -1;
+		if(expired) return 0L;
+		return((getExpiration() - System.currentTimeMillis()) / 60000);
+	}
+
+	/**
+	 * Returns the expiration time.
+	 * 
+	 * @return long
+	 */
+	public Long getExpiration()
+	{
+		return expiration;
 	}
 
 	/**
@@ -90,6 +135,26 @@ public class Assignment implements Serializable
 	public boolean isActive()
 	{
 		return active;
+	}
+
+	/**
+	 * Returns true/false depending on if the task is failed or not.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isFailed()
+	{
+		return failed;
+	}
+
+	/**
+	 * Returns true/false depending on if the task is active or not.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isExpired()
+	{
+		return expired;
 	}
 
 	/**
@@ -124,6 +189,16 @@ public class Assignment implements Serializable
 	public void subtractProgress(int amount)
 	{
 		progress = progress - amount;
+	}
+
+	/**
+	 * Returns the amount left for task completion.
+	 * 
+	 * @return int
+	 */
+	public int getAmountLeft()
+	{
+		return getAmountNeeded() - getAmountObtained();
 	}
 
 	/**

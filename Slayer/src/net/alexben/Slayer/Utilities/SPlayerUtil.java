@@ -20,12 +20,15 @@
 package net.alexben.Slayer.Utilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.alexben.Slayer.Handlers.SFlatFile;
 import net.alexben.Slayer.Libraries.Objects.Death;
 import net.alexben.Slayer.Libraries.Objects.Kill;
 import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -54,6 +57,23 @@ public class SPlayerUtil
 
 		// Save the data
 		SFlatFile.savePlayer(player);
+	}
+
+	/**
+	 * Returns an ArrayList of all players loaded into memory.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<OfflinePlayer> getPlayers()
+	{
+		ArrayList<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
+
+		for(Map.Entry<String, HashMap<String, Object>> player : SDataUtil.getAllData().entrySet())
+		{
+			players.add(Bukkit.getOfflinePlayer(player.getKey()));
+		}
+
+		return players;
 	}
 
 	/**
@@ -107,6 +127,20 @@ public class SPlayerUtil
 		}
 
 		return rewards;
+	}
+
+	/**
+	 * Sets the <code>player</code>'s points to <code>points</code>.
+	 * 
+	 * @param player the player to edit.
+	 * @param points the points to set to.
+	 */
+	public static void setPoints(OfflinePlayer player, int points)
+	{
+		if(SDataUtil.hasData(player, "points"))
+		{
+			SDataUtil.saveData(player, "points", points);
+		}
 	}
 
 	/**

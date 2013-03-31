@@ -1,14 +1,17 @@
 name: Slayer
 main: net.alexben.Slayer.Slayer
-version: 1.0
+version: 0.1
 author: _Alex
 commands:
     sl:
         usage: /sl
         permission: slayer.basic
+    slayer:
+        usage: /slayer
+        permission: slayer.basic
     sladmin:
         usage: /sladmin
-        permission: slayer.basic
+        permission: slayer.admin
 permissions:
     slayer.basic:
         description: The default permission for players.

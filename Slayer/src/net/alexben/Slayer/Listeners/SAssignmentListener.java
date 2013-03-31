@@ -56,8 +56,8 @@ public class SAssignmentListener implements Listener
 	private void onAssignmentComplete(AssignmentCompleteEvent event)
 	{
 		// Define variables
-		OfflinePlayer player = event.getPlayer();
-		Assignment assignment = event.getAssignment();
+		final OfflinePlayer player = event.getPlayer();
+		final Assignment assignment = event.getAssignment();
 
 		// Reward the player and add the slayer points
 		SPlayerUtil.addPoints(player, assignment.getTask().getValue());
@@ -74,7 +74,7 @@ public class SAssignmentListener implements Listener
 		SUtil.sendMsg(player, ChatColor.GREEN + "You just completed \"" + assignment.getTask().getName() + "\"!");
 		SUtil.sendMsg(player, "You have " + ChatColor.YELLOW + SPlayerUtil.getRewards(player).size() + ChatColor.RESET + " reward(s) awaiting. Use " + ChatColor.AQUA + "/sl my rewards" + ChatColor.RESET + ".");
 
-		// Shoot a firework and stuff, woohoo!
+		// Shoot a firework, woohoo!
 		Firework firework = (Firework) player.getPlayer().getLocation().getWorld().spawnEntity(player.getPlayer().getLocation(), EntityType.FIREWORK);
 		FireworkMeta fireworkmeta = firework.getFireworkMeta();
 		FireworkEffect.Type type = FireworkEffect.Type.BALL_LARGE;

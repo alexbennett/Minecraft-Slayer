@@ -93,6 +93,44 @@ public class STaskUtil
 	}
 
 	/**
+	 * Returns an ArrayList of all server-wide assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(OfflinePlayer player : SPlayerUtil.getPlayers())
+		{
+			for(Assignment assignment : getAssignments(player))
+				assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	/**
+	 * Returns an ArrayList of all active server-wide assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllActiveAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(OfflinePlayer player : SPlayerUtil.getPlayers())
+		{
+			for(Assignment assignment : getAssignments(player))
+			{
+				if(assignment.isActive()) assignments.add(assignment);
+			}
+		}
+
+		return assignments;
+	}
+
+	/**
 	 * Returns an ArrayList of all assignments for <code>player</code>.
 	 * 
 	 * @param player the player to check.
@@ -128,6 +166,27 @@ public class STaskUtil
 	}
 
 	/**
+	 * Removes the assignment with an id matching <code>id</code> from the player.
+	 * Returns true upon successful removal.
+	 * 
+	 * @param player the player to remove the assignment from.
+	 * @param id the assignment to remove.
+	 * @return boolean
+	 */
+	public static boolean removeAssignment(OfflinePlayer player, int id)
+	{
+		for(Assignment assignment : getAssignments(player))
+		{
+			if(assignment.getID() == id)
+			{
+				getAssignments(player).remove(assignment);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Assigns the <code>task</code> to the <code>player</code> and returns the new
 	 * Assignment.
 	 * 
@@ -155,6 +214,45 @@ public class STaskUtil
 	}
 
 	/**
+	 * Cycles through all assignments and cleans up house.
+	 */
+	public static void refreshAssignments()
+	{
+		int count = 0;
+
+		// Clear old assignments and stoof
+		for(Assignment assignment : getAllAssignments())
+		{
+			if(assignment.isExpired() || assignment.isFailed() || assignment.isComplete())
+			{
+				// Remove the assignment, it's no longer needed
+				removeAssignment(assignment.getPlayer(), assignment.getID());
+
+				count++;
+			}
+		}
+
+		SUtil.log("info", count + " inactive assignments have been cleared.");
+	}
+
+	/**
+	 * Cycles through all active assignments and fails those that are expired.
+	 */
+	public static void refreshTimedAssignments()
+	{
+		for(Assignment assignment : getAllActiveAssignments())
+		{
+			if(assignment.getTask().isTimed() && assignment.getTimeLeft() <= 0)
+			{
+				// It's expired. Set it to failed and inactive.
+				assignment.setFailed(true);
+				assignment.setExpired(true);
+				assignment.setActive(false);
+			}
+		}
+	}
+
+	/**
 	 * Process the <code>entity</code> passed in as a kill and distribute it
 	 * across all active assignments.
 	 * 
@@ -163,6 +261,9 @@ public class STaskUtil
 	 */
 	public static void processKill(Player player, Entity entity)
 	{
+		// Return if they have no assignments
+		if(getAssignments(player) == null) return;
+
 		// First get their assignments
 		for(Assignment assignment : getAssignments(player))
 		{
@@ -210,6 +311,9 @@ public class STaskUtil
 	 */
 	public static void processItem(Player player, ItemStack item)
 	{
+		// Return if they have no assignments
+		if(getAssignments(player) == null) return;
+
 		// First get their assignments
 		for(Assignment assignment : getAssignments(player))
 		{
@@ -221,8 +325,13 @@ public class STaskUtil
 
 			if(assignment.getTask().getItem().isSimilar(item))
 			{
+				int amount = item.getAmount();
+
+				// Check the count to make sure it doesn't go over the requirement. If it does, set it to the amount needed.
+				if(amount > assignment.getAmountLeft()) amount = assignment.getAmountLeft();
+
 				// The item matches the requirement, add to the count
-				assignment.addProgress(item.getAmount());
+				assignment.addProgress(amount);
 
 				// For items, always message the player (makes up for the possibility of picking up multiple items and not receiving the message
 				if(!assignment.isComplete())

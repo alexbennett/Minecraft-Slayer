@@ -29,16 +29,17 @@ public class Task implements Serializable
 {
 	private static final long serialVersionUID = 1869297353395176134L;
 	private String name = null, desc = null;
-	private int value, amountNeeded;
+	private int value, amountNeeded, timeLimit;
 	private SerialItemStack item;
 	private TaskType type;
 	private EntityType entity;
 	private ArrayList<SerialItemStack> reward = new ArrayList<SerialItemStack>();
 
-	public Task(String task, String desc, int value, ArrayList<SerialItemStack> rewards, int amount, EntityType entity)
+	public Task(String task, String desc, int timeLimit, int value, ArrayList<SerialItemStack> rewards, int amount, EntityType entity)
 	{
 		this.name = task;
 		this.desc = desc;
+		this.timeLimit = timeLimit;
 		this.amountNeeded = amount;
 		this.value = value;
 		this.entity = entity;
@@ -53,10 +54,11 @@ public class Task implements Serializable
 		}
 	}
 
-	public Task(String task, String desc, int value, ArrayList<SerialItemStack> rewards, int amount, ItemStack item)
+	public Task(String task, String desc, int timeLimit, int value, ArrayList<SerialItemStack> rewards, int amount, ItemStack item)
 	{
 		this.name = task;
 		this.desc = desc;
+		this.timeLimit = timeLimit;
 		this.amountNeeded = amount;
 		this.value = value;
 		this.item = new SerialItemStack(item);
@@ -89,6 +91,16 @@ public class Task implements Serializable
 	public String getDesc()
 	{
 		return desc;
+	}
+
+	/**
+	 * Returns the time limit for the task.
+	 * 
+	 * @return int
+	 */
+	public int getTimeLimit()
+	{
+		return timeLimit;
 	}
 
 	/**
@@ -154,6 +166,16 @@ public class Task implements Serializable
 	public int getGoal()
 	{
 		return amountNeeded;
+	}
+
+	/**
+	 * Returns true if this task is timed.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isTimed()
+	{
+		return timeLimit != 0;
 	}
 
 	/**

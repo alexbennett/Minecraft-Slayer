@@ -19,6 +19,7 @@
 
 package net.alexben.Slayer.Utilities;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -34,9 +35,9 @@ public class SStatsUtil
 	/**
 	 * Returns a sorted Map of the top point holders by name.
 	 * 
-	 * @return TreeMap
+	 * @return Map
 	 */
-	public static TreeMap<Integer, OfflinePlayer> getTopPoints()
+	public static Map<Integer, OfflinePlayer> getTopPoints()
 	{
 		// Define variables
 		Map<Integer, OfflinePlayer> leaderboardUnsorted = new HashMap<Integer, OfflinePlayer>();
@@ -46,6 +47,9 @@ public class SStatsUtil
 			leaderboardUnsorted.put(SObjUtil.toInteger(player.getValue().get("points")), Bukkit.getOfflinePlayer(player.getKey()));
 		}
 
-		return new TreeMap<Integer, OfflinePlayer>(leaderboardUnsorted);
+		TreeMap<Integer, OfflinePlayer> leaderboardSorted = new TreeMap<Integer, OfflinePlayer>(Collections.reverseOrder());
+		leaderboardSorted.putAll(leaderboardUnsorted);
+
+		return leaderboardSorted;
 	}
 }

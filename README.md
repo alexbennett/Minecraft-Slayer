@@ -29,7 +29,7 @@ Yet to be written.
 Configuration
 =============
 
-    tagmessages: true # If enabled, all Slayer-related messages will be tagged with "[Slayer]"
+    example: true # An example
 
 
 Miscellaneous

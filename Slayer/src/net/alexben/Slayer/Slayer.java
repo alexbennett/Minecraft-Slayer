@@ -99,6 +99,7 @@ public class Slayer extends JavaPlugin
 		CommandExecutor executor = new SCommands();
 
 		getCommand("sl").setExecutor(executor);
+		getCommand("slayer").setExecutor(executor);
 		getCommand("sladmin").setExecutor(executor);
 	}
 
@@ -125,61 +126,83 @@ public class Slayer extends JavaPlugin
 
 		for(Map<?, ?> task : config.getMapList("tasks"))
 		{
-			// Increase the count for logging
-			count++;
+			// If the task is disabled then ignore it and continue to the next one
+			if(!SObjUtil.toBoolean(task.get("enabled"))) continue;
 
+			// Define variables
+			int timeLimit = 0;
 			ArrayList<SerialItemStack> rewards = new ArrayList<SerialItemStack>();
 
-			// All of this to simply handle rewards...
-			for(Object object : (ArrayList<?>) task.get("reward"))
+			// Figure out time limit
+			if(!task.get("timelimit").equals("none"))
 			{
-				// Cast the object to a map
-				Map<String, Object> reward = (Map<String, Object>) object;
+				timeLimit = SObjUtil.toInteger(task.get("timelimit"));
+			}
 
-				// Create the item
-				ItemStack item = new ItemStack(SObjUtil.toInteger(reward.get("itemid")), SObjUtil.toInteger(reward.get("amount")));
-
-				// Add the enchantments
-				for(Object enchObj : (ArrayList<?>) reward.get("enchantments"))
+			// All of this to simply handle rewards...
+			if(task.get("reward") != null)
+			{
+				for(Object object : (ArrayList<?>) task.get("reward"))
 				{
-					Map<String, Object> enchantments = (Map<String, Object>) enchObj;
+					// Define variables
+					int itemID, amount = 1;
 
-					for(Map.Entry<String, Object> enchantment : enchantments.entrySet())
+					// Cast the object to a map
+					Map<String, Object> reward = (Map<String, Object>) object;
+
+					// Update variables
+					itemID = SObjUtil.toInteger(reward.get("itemid"));
+					if(reward.get("amount") != null) amount = SObjUtil.toInteger(reward.get("amount"));
+
+					// Create the item
+					ItemStack item = new ItemStack(itemID, amount);
+
+					// Add the enchantments if they are wanted
+					if(reward.get("enchantments") != null)
 					{
-						int level = 0;
-						Enchantment enchant = Enchantment.getByName(enchantment.getKey().toUpperCase());
-
-						// Determine the appropriate level
-						if(enchantment.getValue().equals("max"))
+						for(Object enchObj : (ArrayList<?>) reward.get("enchantments"))
 						{
-							// Use max level
-							level = enchant.getMaxLevel();
-						}
-						else
-						{
-							// Use the level given
-							level = SObjUtil.toInteger(enchantment.getValue());
-						}
+							Map<String, Object> enchantments = (Map<String, Object>) enchObj;
 
-						item.addUnsafeEnchantment(enchant, level);
+							for(Map.Entry<String, Object> enchantment : enchantments.entrySet())
+							{
+								int level = 0;
+								Enchantment enchant = Enchantment.getByName(enchantment.getKey().toUpperCase());
+
+								// Determine the appropriate level
+								if(enchantment.getValue().equals("max"))
+								{
+									// Use max level
+									level = enchant.getMaxLevel();
+								}
+								else
+								{
+									// Use the level given
+									level = SObjUtil.toInteger(enchantment.getValue());
+								}
+
+								item.addUnsafeEnchantment(enchant, level);
+							}
+						}
 					}
-				}
 
-				// Add it to the reward array
-				rewards.add(new SerialItemStack(item));
+					// Add it to the reward array
+					rewards.add(new SerialItemStack(item));
+				}
 			}
 
 			// Create the actual task
 			if(task.get("mob") != null)
 			{
-				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), SObjUtil.toInteger(task.get("value")), rewards, SObjUtil.toInteger(task.get("amount")), EntityType.fromName((String) task.get("mob")));
+				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("value")), rewards, SObjUtil.toInteger(task.get("amount")), EntityType.fromName((String) task.get("mob")));
 			}
 			else if(task.get("item") != null)
 			{
-				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), SObjUtil.toInteger(task.get("value")), rewards, SObjUtil.toInteger(task.get("amount")), new ItemStack(SObjUtil.toInteger(task.get("item"))));
+				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("value")), rewards, SObjUtil.toInteger(task.get("amount")), new ItemStack(SObjUtil.toInteger(task.get("item"))));
 			}
 
-			// Load it into the instance
+			// Increase the count for logging and load the task into the instance
+			count++;
 			STaskUtil.loadTask(newTask);
 		}
 

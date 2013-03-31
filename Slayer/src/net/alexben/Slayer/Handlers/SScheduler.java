@@ -20,6 +20,7 @@
 package net.alexben.Slayer.Handlers;
 
 import net.alexben.Slayer.Utilities.SConfigUtil;
+import net.alexben.Slayer.Utilities.STaskUtil;
 import net.alexben.Slayer.Utilities.SUtil;
 
 import org.bukkit.Bukkit;
@@ -41,6 +42,27 @@ public class SScheduler
 				SFlatFile.save();
 			}
 		}, saveFrequency, saveFrequency);
+
+		// Update time-restricted assignments
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SUtil.getInstance(), new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				STaskUtil.refreshTimedAssignments();
+			}
+		}, 0, 1);
+
+		// Clear completed/failed/inactive assignments
+		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(SUtil.getInstance(), new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				// Remove the assignment
+				STaskUtil.refreshAssignments();
+			}
+		}, SConfigUtil.getSettingInt("assignment_refresh_freq") * 20);
 	}
 
 	public static void stopThreads()

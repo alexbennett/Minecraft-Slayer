@@ -34,9 +34,9 @@ import net.alexben.Slayer.Listeners.SAssignmentListener;
 import net.alexben.Slayer.Listeners.SEntityListener;
 import net.alexben.Slayer.Listeners.SPlayerListener;
 import net.alexben.Slayer.Utilities.SConfigUtil;
+import net.alexben.Slayer.Utilities.SMiscUtil;
 import net.alexben.Slayer.Utilities.SObjUtil;
 import net.alexben.Slayer.Utilities.STaskUtil;
-import net.alexben.Slayer.Utilities.SUtil;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -47,20 +47,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Slayer extends JavaPlugin
 {
-	public static ConfigAccessor taskConfig;
+	public static ConfigAccessor taskConfig, stringConfig;
 
 	@Override
 	public void onEnable()
 	{
 		// Initialize the config, scheduler, and utilities
 		SConfigUtil.initialize(this);
-		SUtil.initialize(this);
+		SMiscUtil.initialize(this);
 
 		// Load things
 		loadConfigs();
 		loadListeners();
 		loadCommands();
-		loadMetrics();
+		// loadMetrics(); TODO: Enable before release
 		loadTasks();
 
 		// Start the scheduler
@@ -70,7 +70,7 @@ public class Slayer extends JavaPlugin
 		SFlatFile.load();
 
 		// Log that JustAFK successfully loaded
-		SUtil.log("info", "Slayer has been successfully enabled!");
+		SMiscUtil.log("info", "Slayer has been successfully enabled!");
 	}
 
 	@Override
@@ -79,12 +79,13 @@ public class Slayer extends JavaPlugin
 		SFlatFile.save();
 		SScheduler.stopThreads();
 
-		SUtil.log("info", "Disabled!");
+		SMiscUtil.log("info", "Disabled!");
 	}
 
 	private void loadConfigs()
 	{
 		taskConfig = new ConfigAccessor(this, "tasks.yml");
+		stringConfig = new ConfigAccessor(this, "strings.yml");
 	}
 
 	private void loadListeners()
@@ -113,11 +114,11 @@ public class Slayer extends JavaPlugin
 		catch(IOException e)
 		{
 			// Metrics failed to load, log it
-			SUtil.log("warning", "Plugins metrics failed to load.");
+			SMiscUtil.log("warning", "Plugins metrics failed to load.");
 		}
 	}
 
-	public static void loadTasks()
+	private static void loadTasks()
 	{
 		// Define variables
 		FileConfiguration config = Slayer.taskConfig.getConfig();
@@ -207,6 +208,6 @@ public class Slayer extends JavaPlugin
 		}
 
 		// Log the tasks loaded
-		SUtil.log("info", count + " task(s) loaded into memory.");
+		SMiscUtil.log("info", count + " task(s) loaded into memory.");
 	}
 }

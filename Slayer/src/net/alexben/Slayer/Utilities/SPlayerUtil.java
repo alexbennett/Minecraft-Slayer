@@ -51,6 +51,10 @@ public class SPlayerUtil
 
 		// This is really simple for the time being and almost unnecessary, but I'm adding it for future expansion.
 		SDataUtil.saveData(player, "points", 0);
+		SDataUtil.saveData(player, "task_assignments_total", 0);
+		SDataUtil.saveData(player, "task_completions", 0);
+		SDataUtil.saveData(player, "task_forfeits", 0);
+		SDataUtil.saveData(player, "task_expirations", 0);
 		SDataUtil.saveData(player, "kills", new ArrayList<Kill>());
 		SDataUtil.saveData(player, "deaths", new ArrayList<Death>());
 		SDataUtil.saveData(player, "reward_queue", new ArrayList<SerialItemStack>());
@@ -74,6 +78,85 @@ public class SPlayerUtil
 		}
 
 		return players;
+	}
+
+	/**
+	 * Returns the number of tasks assigned all time for <code>player</code>.
+	 * 
+	 * @return int
+	 */
+	public static int getTotalAssignments(OfflinePlayer player)
+	{
+		return SObjUtil.toInteger(SDataUtil.getData(player, "task_assignments_total"));
+	}
+
+	/**
+	 * Returns the number of task completions for <code>player</code>.
+	 * 
+	 * @return int
+	 */
+	public static int getCompletions(OfflinePlayer player)
+	{
+		return SObjUtil.toInteger(SDataUtil.getData(player, "task_completions"));
+	}
+
+	/**
+	 * Gives the <code>player</code> a task completion.
+	 * 
+	 * @param player the player to give the completion to.
+	 */
+	public static void addCompletion(OfflinePlayer player)
+	{
+		if(SDataUtil.hasData(player, "task_completions"))
+		{
+			SDataUtil.saveData(player, "task_completions", getCompletions(player) + 1);
+		}
+	}
+
+	/**
+	 * Returns the number of task expirations for <code>player</code>.
+	 * 
+	 * @return int
+	 */
+	public static int getExpirations(OfflinePlayer player)
+	{
+		return SObjUtil.toInteger(SDataUtil.getData(player, "task_expirations"));
+	}
+
+	/**
+	 * Gives the <code>player</code> a task expiration.
+	 * 
+	 * @param player the player to give the expiration to.
+	 */
+	public static void addExpiration(OfflinePlayer player)
+	{
+		if(SDataUtil.hasData(player, "task_expirations"))
+		{
+			SDataUtil.saveData(player, "task_expirations", getExpirations(player) + 1);
+		}
+	}
+
+	/**
+	 * Returns the number of task forfeits for <code>player</code>.
+	 * 
+	 * @return int
+	 */
+	public static int getForfeits(OfflinePlayer player)
+	{
+		return SObjUtil.toInteger(SDataUtil.getData(player, "task_forfeits"));
+	}
+
+	/**
+	 * Gives the <code>player</code> a task forfeit.
+	 * 
+	 * @param player the player to give the forfeit to.
+	 */
+	public static void addForfeit(OfflinePlayer player)
+	{
+		if(SDataUtil.hasData(player, "task_forfeits"))
+		{
+			SDataUtil.saveData(player, "task_forfeits", getForfeits(player) + 1);
+		}
 	}
 
 	/**
@@ -153,8 +236,20 @@ public class SPlayerUtil
 	{
 		if(SDataUtil.hasData(player, "points"))
 		{
-			SDataUtil.saveData(player, "points", getPoints(player) + points);
+			setPoints(player, getPoints(player) + points);
 		}
+	}
+
+	/**
+	 * Subtracts <code>points</code> from the <code>player</code>'s total points.
+	 * 
+	 * @param player the player to edit.
+	 * @param points the number of points to subtract.
+	 */
+	public static void subtractPoints(OfflinePlayer player, int points)
+	{
+		if(points > getPoints(player)) setPoints(player, 0);
+		else setPoints(player, getPoints(player) - points);
 	}
 
 	/**

@@ -20,11 +20,14 @@
 package net.alexben.Slayer.Listeners;
 
 import net.alexben.Slayer.Events.AssignmentCompleteEvent;
+import net.alexben.Slayer.Events.AssignmentExpireEvent;
+import net.alexben.Slayer.Events.AssignmentForfeitEvent;
 import net.alexben.Slayer.Events.TaskAssignEvent;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
+import net.alexben.Slayer.Utilities.SConfigUtil;
+import net.alexben.Slayer.Utilities.SMiscUtil;
 import net.alexben.Slayer.Utilities.SPlayerUtil;
-import net.alexben.Slayer.Utilities.SUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -32,6 +35,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -47,8 +51,8 @@ public class SAssignmentListener implements Listener
 
 		if(player.isOnline())
 		{
-			SUtil.sendMsg(player.getPlayer(), ChatColor.GREEN + "You have been given a new Slayer assignment!");
-			SUtil.sendMsg(player.getPlayer(), "For details, please type " + ChatColor.AQUA + "/sl my tasks" + ChatColor.RESET + ".");
+			SMiscUtil.sendMsg(player.getPlayer(), ChatColor.GREEN + "You have been given a new Slayer assignment!");
+			SMiscUtil.sendMsg(player.getPlayer(), "For details, please type " + ChatColor.AQUA + "/sl my tasks" + ChatColor.RESET + ".");
 		}
 	}
 
@@ -71,8 +75,8 @@ public class SAssignmentListener implements Listener
 		// From this point on, return if the player is offline
 		if(!player.isOnline()) return;
 
-		SUtil.sendMsg(player, ChatColor.GREEN + "You just completed \"" + assignment.getTask().getName() + "\"!");
-		SUtil.sendMsg(player, "You have " + ChatColor.YELLOW + SPlayerUtil.getRewards(player).size() + ChatColor.RESET + " reward(s) awaiting. Use " + ChatColor.AQUA + "/sl my rewards" + ChatColor.RESET + ".");
+		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_complete").replace("{task}", assignment.getTask().getName()));
+		SMiscUtil.sendMsg(player, SMiscUtil.getString("rewards_awaiting").replace("{rewards}", "" + SPlayerUtil.getRewards(player).size()));
 
 		// Shoot a firework, woohoo!
 		Firework firework = (Firework) player.getPlayer().getLocation().getWorld().spawnEntity(player.getPlayer().getLocation(), EntityType.FIREWORK);
@@ -82,5 +86,57 @@ public class SAssignmentListener implements Listener
 		fireworkmeta.addEffect(effect);
 		fireworkmeta.setPower(1);
 		firework.setFireworkMeta(fireworkmeta);
+
+		// Tracking
+		SPlayerUtil.addCompletion(player);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onAssignmentExpire(AssignmentExpireEvent event)
+	{
+		// Do nothing if they're offline
+		if(!event.getOfflinePlayer().isOnline()) return;
+
+		Player player = event.getOfflinePlayer().getPlayer();
+		Assignment assignment = event.getAssignment();
+
+		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_expired").replace("{task}", assignment.getTask().getName()));
+
+		// Handle expiration punishment if enabled
+		if(SConfigUtil.getSettingBoolean("enable_expiration_punishment"))
+		{
+			// TODO: Update punishments.
+
+			// Remove the value of the assignment from their points
+			SPlayerUtil.subtractPoints(player, assignment.getTask().getValue());
+		}
+
+		// Tracking
+		SPlayerUtil.addExpiration(player);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onAssignmentForfeit(AssignmentForfeitEvent event)
+	{
+		// Define the variables
+		OfflinePlayer player = event.getOfflinePlayer();
+		Assignment assignment = event.getAssignment();
+
+		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_forfeit").replace("{task}", assignment.getTask().getName()));
+
+		// Handle punishments if enabled
+		if(SConfigUtil.getSettingBoolean("enable_forfeit_punishment"))
+		{
+			// TODO: Update punishments.
+
+			// Remove the value of the assignment from their points
+			SPlayerUtil.subtractPoints(player, assignment.getTask().getValue());
+
+			// Message them to inform them of their punishment
+			SMiscUtil.sendMsg(player, SMiscUtil.getString("forfeit_punishment").replace("{task}", assignment.getTask().getName()));
+		}
+
+		// Tracking
+		SPlayerUtil.addForfeit(player);
 	}
 }

@@ -33,7 +33,7 @@ import org.bukkit.OfflinePlayer;
 /**
  * Utility that handles miscellaneous methods.
  */
-public class SUtil
+public class SMiscUtil
 {
 	// Define variables
 	private static Slayer plugin = null;
@@ -66,6 +66,18 @@ public class SUtil
 	public static Slayer getInstance()
 	{
 		return plugin;
+	}
+
+	/**
+	 * Returns the string with key <code>key</code> from the Strings.yml
+	 * FileConfiguration.
+	 * 
+	 * @return String
+	 */
+	public static String getString(String key)
+	{
+		if(Slayer.stringConfig.getConfig().getString(key) == null) return null;
+		return ChatColor.translateAlternateColorCodes('&', Slayer.stringConfig.getConfig().getString(key));
 	}
 
 	/**

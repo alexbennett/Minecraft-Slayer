@@ -11,7 +11,8 @@ commands:
         permission: slayer.basic
     sladmin:
         usage: /sladmin
-        permission: slayer.admin
+        permission: slayer.basic
+        ## TODO: Remember to change this.
 permissions:
     slayer.basic:
         description: The default permission for players.

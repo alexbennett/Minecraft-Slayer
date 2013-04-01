@@ -20,9 +20,9 @@
 package net.alexben.Slayer.Listeners;
 
 import net.alexben.Slayer.Utilities.SConfigUtil;
+import net.alexben.Slayer.Utilities.SMiscUtil;
 import net.alexben.Slayer.Utilities.SPlayerUtil;
 import net.alexben.Slayer.Utilities.STaskUtil;
-import net.alexben.Slayer.Utilities.SUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -53,12 +53,12 @@ public class SPlayerListener implements Listener
 
 		if(SConfigUtil.getSettingBoolean("join_message"))
 		{
-			player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + SUtil.getInstance().getDescription().getVersion() + ChatColor.GRAY + ".");
+			player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + SMiscUtil.getInstance().getDescription().getVersion() + ChatColor.GRAY + ".");
 		}
 
 		if(SConfigUtil.getSettingBoolean("join_reminders") && STaskUtil.getActiveAssignments(player) != null)
 		{
-			SUtil.sendMsg(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY + " active task(s).");
+			SMiscUtil.sendMsg(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY + " active task(s).");
 		}
 	}
 

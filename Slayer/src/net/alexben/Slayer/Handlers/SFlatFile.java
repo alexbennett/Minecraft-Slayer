@@ -23,7 +23,7 @@ import java.io.*;
 import java.util.HashMap;
 
 import net.alexben.Slayer.Utilities.SDataUtil;
-import net.alexben.Slayer.Utilities.SUtil;
+import net.alexben.Slayer.Utilities.SMiscUtil;
 
 import org.bukkit.OfflinePlayer;
 
@@ -38,7 +38,7 @@ public class SFlatFile
 		if(!PlayerDir.exists())
 		{
 			PlayerDir.mkdirs();
-			SUtil.log("info", "New player data save directory created.");
+			SMiscUtil.log("info", "New player data save directory created.");
 		}
 	}
 
@@ -66,13 +66,13 @@ public class SFlatFile
 			long stopTimer = System.currentTimeMillis();
 			double totalTime = (double) (stopTimer - startTimer);
 
-			SUtil.log("info", playerCount + " players saved in " + (totalTime / 1000) + " seconds.");
+			SMiscUtil.log("info", playerCount + " players saved in " + (totalTime / 1000) + " seconds.");
 
 			return true;
 		}
 		catch(Exception e)
 		{
-			SUtil.log("severe", "Something went wrong while saving.");
+			SMiscUtil.log("severe", "Something went wrong while saving.");
 			e.printStackTrace();
 
 			return false;
@@ -98,7 +98,7 @@ public class SFlatFile
 		}
 		catch(Exception e)
 		{
-			SUtil.log("severe", "Something went wrong while saving players.");
+			SMiscUtil.log("severe", "Something went wrong while saving players.");
 			e.printStackTrace();
 		}
 
@@ -116,7 +116,7 @@ public class SFlatFile
 		}
 		catch(Exception e)
 		{
-			SUtil.log("severe", "Something went wrong while saving the player: " + player.getName());
+			SMiscUtil.log("severe", "Something went wrong while saving the player: " + player.getName());
 			e.printStackTrace();
 		}
 	}
@@ -130,7 +130,7 @@ public class SFlatFile
 
 		try
 		{
-			SUtil.log("info", "Loading all data...");
+			SMiscUtil.log("info", "Loading all data...");
 
 			// Start the timer
 			long startTimer = System.currentTimeMillis();
@@ -142,11 +142,11 @@ public class SFlatFile
 			long stopTimer = System.currentTimeMillis();
 			double totalTime = (double) (stopTimer - startTimer);
 
-			SUtil.log("info", playerCount + " players loaded in " + (totalTime / 1000) + " seconds.");
+			SMiscUtil.log("info", playerCount + " players loaded in " + (totalTime / 1000) + " seconds.");
 		}
 		catch(Exception e)
 		{
-			SUtil.log("severe", "Something went wrong while loading data.");
+			SMiscUtil.log("severe", "Something went wrong while loading data.");
 			e.printStackTrace();
 		}
 	}
@@ -178,7 +178,7 @@ public class SFlatFile
 					}
 					catch(Exception e)
 					{
-						SUtil.log("severe", "Could not load player: " + name);
+						SMiscUtil.log("severe", "Could not load player: " + name);
 						e.printStackTrace();
 					}
 				}

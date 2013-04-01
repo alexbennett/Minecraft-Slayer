@@ -22,12 +22,10 @@ package net.alexben.Slayer.Utilities;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.alexben.Slayer.Events.AssignmentCompleteEvent;
-import net.alexben.Slayer.Events.TaskAssignEvent;
+import net.alexben.Slayer.Events.*;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.Task;
 
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -77,19 +75,41 @@ public class STaskUtil
 	 */
 	public static void assignRandomTask(Player player)
 	{
+		// Define the initial random task and other variables
 		Task task = getRandomTask();
+		int i = 0;
 
-		TaskAssignEvent taskAssignEvent = new TaskAssignEvent(player, task);
-		SUtil.getInstance().getServer().getPluginManager().callEvent(taskAssignEvent);
-		if(taskAssignEvent.isCancelled())
+		while(hasTask(player, task))
 		{
-			player.sendMessage(ChatColor.RED + "A task could not be assigned to you.");
-			return;
+			if(i >= Math.pow(tasks.size(), 2))
+			{
+				// They have all available tasks, let 'em know
+				SMiscUtil.sendMsg(player, SMiscUtil.getString("has_all_tasks"));
+
+				return;
+			}
+
+			task = getRandomTask();
+			i++;
 		}
 
 		assignTask(player, task);
+	}
 
-		return;
+	/**
+	 * Returns the assignment for <code>player</code> with an id of <code>id</code>.
+	 * 
+	 * @param player the player to check.
+	 * @param id the id to check for.
+	 * @return Assignment
+	 */
+	public static Assignment getAssignment(OfflinePlayer player, int id)
+	{
+		for(Assignment assignment : getAssignments(player))
+		{
+			if(assignment.getID() == id) return assignment;
+		}
+		return null;
 	}
 
 	/**
@@ -103,8 +123,12 @@ public class STaskUtil
 
 		for(OfflinePlayer player : SPlayerUtil.getPlayers())
 		{
+			if(getAssignments(player) == null || getAssignments(player).isEmpty()) continue;
+
 			for(Assignment assignment : getAssignments(player))
+			{
 				assignments.add(assignment);
+			}
 		}
 
 		return assignments;
@@ -121,6 +145,8 @@ public class STaskUtil
 
 		for(OfflinePlayer player : SPlayerUtil.getPlayers())
 		{
+			if(getAssignments(player) == null || getAssignments(player).isEmpty()) continue;
+
 			for(Assignment assignment : getAssignments(player))
 			{
 				if(assignment.isActive()) assignments.add(assignment);
@@ -166,22 +192,87 @@ public class STaskUtil
 	}
 
 	/**
-	 * Removes the assignment with an id matching <code>id</code> from the player.
+	 * Removes the assignment with an id matching <code>id</code> from the <code>player</code>.
 	 * Returns true upon successful removal.
 	 * 
 	 * @param player the player to remove the assignment from.
 	 * @param id the assignment to remove.
 	 * @return boolean
 	 */
-	public static boolean removeAssignment(OfflinePlayer player, int id)
+	public static boolean removeAssignment(OfflinePlayer player, int id, AssignmentRemoveEvent.RemoveReason reason)
 	{
+		if(hasAssignment(player, id))
+		{
+			Assignment assignment = getAssignment(player, id);
+
+			// Call the event
+			AssignmentRemoveEvent assignmentRemoveEvent = new AssignmentRemoveEvent(assignment.getOfflinePlayer(), assignment, reason);
+			SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentRemoveEvent);
+			if(assignmentRemoveEvent.isCancelled()) return false;
+
+			getAssignments(player).remove(assignment);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Forfeits the assignment with an id matching <code>id</code> for the <code>player</code>.
+	 * Returns true upon successful forfeit.
+	 * 
+	 * @param player the player to forfeit the assignment for.
+	 * @param id the assignment to forfeit.
+	 */
+	public static boolean forfeitAssignment(OfflinePlayer player, int id)
+	{
+		if(hasAssignment(player, id))
+		{
+			Assignment assignment = getAssignment(player, id);
+
+			// Call the event
+			AssignmentForfeitEvent assignmentForfeitEvent = new AssignmentForfeitEvent(assignment.getOfflinePlayer(), assignment);
+			SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentForfeitEvent);
+			if(assignmentForfeitEvent.isCancelled()) return false;
+
+			getAssignments(player).remove(assignment);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns true if the <code>player</code> already has the <code>task</code>.
+	 * 
+	 * @param player the player to check.
+	 * @param task the task to check for.
+	 * @return boolean
+	 */
+	public static boolean hasTask(OfflinePlayer player, Task task)
+	{
+		if(getAssignments(player) == null || getAssignments(player).isEmpty()) return false;
+
 		for(Assignment assignment : getAssignments(player))
 		{
-			if(assignment.getID() == id)
-			{
-				getAssignments(player).remove(assignment);
-				return true;
-			}
+			if(assignment.getTask().equals(task)) return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns true if the <code>player</code> already has the assignment
+	 * with an id of <code>id</code>.
+	 * 
+	 * @param player the player to check.
+	 * @param id the task to check for.
+	 * @return boolean
+	 */
+	public static boolean hasAssignment(OfflinePlayer player, int id)
+	{
+		if(getAssignments(player) == null || getAssignments(player).isEmpty()) return false;
+
+		for(Assignment assignment : getAssignments(player))
+		{
+			if(assignment.getID() == id) return true;
 		}
 		return false;
 	}
@@ -194,23 +285,37 @@ public class STaskUtil
 	 * @param task the task to assign.
 	 * @return Assignment
 	 */
-	public static Assignment assignTask(OfflinePlayer player, Task task)
+	public static Assignment assignTask(Player player, Task task)
 	{
-		Assignment assignment = new Assignment(player, task);
+		TaskAssignEvent taskAssignEvent = new TaskAssignEvent(player, task);
+		SMiscUtil.getInstance().getServer().getPluginManager().callEvent(taskAssignEvent);
 
-		if(SDataUtil.getData(player, "assignments") != null)
+		if(!taskAssignEvent.isCancelled())
 		{
-			((ArrayList<Assignment>) SDataUtil.getData(player, "assignments")).add(assignment);
+			Assignment assignment = new Assignment(player, task);
+
+			if(SDataUtil.getData(player, "assignments") != null)
+			{
+				((ArrayList<Assignment>) SDataUtil.getData(player, "assignments")).add(assignment);
+			}
+			else
+			{
+				ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+				assignments.add(assignment);
+
+				SDataUtil.saveData(player, "assignments", assignments);
+			}
+
+			// Tracking
+			SDataUtil.saveData(player, "task_completions", SPlayerUtil.getTotalAssignments(player) + 1);
+
+			return assignment;
 		}
 		else
 		{
-			ArrayList<Assignment> assignments = new ArrayList<Assignment>();
-			assignments.add(assignment);
-
-			SDataUtil.saveData(player, "assignments", assignments);
+			player.sendMessage(SMiscUtil.getString("assignment_fail"));
+			return null;
 		}
-
-		return assignment;
 	}
 
 	/**
@@ -218,6 +323,10 @@ public class STaskUtil
 	 */
 	public static void refreshAssignments()
 	{
+		// Return if there are no assignments
+		if(getAllAssignments() == null || getAllAssignments().isEmpty()) return;
+
+		// Define variables
 		int count = 0;
 
 		// Clear old assignments and stoof
@@ -226,13 +335,13 @@ public class STaskUtil
 			if(assignment.isExpired() || assignment.isFailed() || assignment.isComplete())
 			{
 				// Remove the assignment, it's no longer needed
-				removeAssignment(assignment.getPlayer(), assignment.getID());
+				removeAssignment(assignment.getOfflinePlayer(), assignment.getID(), AssignmentRemoveEvent.RemoveReason.AUTO);
 
 				count++;
 			}
 		}
 
-		SUtil.log("info", count + " inactive assignments have been cleared.");
+		if(count > 0) SMiscUtil.log("info", count + " inactive assignments have been cleared.");
 	}
 
 	/**
@@ -240,10 +349,21 @@ public class STaskUtil
 	 */
 	public static void refreshTimedAssignments()
 	{
+		// Return if there are no assignments
+		if(getAllActiveAssignments() == null || getAllActiveAssignments().isEmpty()) return;
+
 		for(Assignment assignment : getAllActiveAssignments())
 		{
 			if(assignment.getTask().isTimed() && assignment.getTimeLeft() <= 0)
 			{
+				// Call the event
+				AssignmentExpireEvent assignmentExpireEvent = new AssignmentExpireEvent(assignment.getOfflinePlayer(), assignment);
+				SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentExpireEvent);
+				if(assignmentExpireEvent.isCancelled()) return;
+
+				// Log the expiration
+				SMiscUtil.log("info", "An assignment (#: " + assignment.getID() + ") for " + assignment.getOfflinePlayer().getName() + " has expired.");
+
 				// It's expired. Set it to failed and inactive.
 				assignment.setFailed(true);
 				assignment.setExpired(true);
@@ -281,7 +401,7 @@ public class STaskUtil
 				// Message the player on even kills
 				if(assignment.getAmountObtained() % 2 == 0 && !assignment.isComplete())
 				{
-					SUtil.sendMsg(player, "You have " + ChatColor.YELLOW + assignment.getAmountObtained() + ChatColor.RESET + " of " + ChatColor.YELLOW + assignment.getAmountNeeded() + ChatColor.RESET + " kills needed for \"" + ChatColor.YELLOW + assignment.getTask().getName() + ChatColor.RESET + "\".");
+					SMiscUtil.sendMsg(player, SMiscUtil.getString("mob_task_update").replace("{obtained}", "" + assignment.getAmountObtained()).replace("{needed}", "" + assignment.getAmountNeeded()).replace("{task}", assignment.getTask().getName()));
 				}
 
 				// Now handle completed assignments
@@ -289,7 +409,7 @@ public class STaskUtil
 				{
 					// The assignment is complete, call the event
 					AssignmentCompleteEvent assignmentCompleteEvent = new AssignmentCompleteEvent(player, assignment);
-					SUtil.getInstance().getServer().getPluginManager().callEvent(assignmentCompleteEvent);
+					SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentCompleteEvent);
 					if(assignmentCompleteEvent.isCancelled()) return;
 
 					// Set the assignment to inactive
@@ -336,7 +456,7 @@ public class STaskUtil
 				// For items, always message the player (makes up for the possibility of picking up multiple items and not receiving the message
 				if(!assignment.isComplete())
 				{
-					SUtil.sendMsg(player, "You have " + ChatColor.YELLOW + assignment.getAmountObtained() + ChatColor.RESET + " of " + ChatColor.YELLOW + assignment.getAmountNeeded() + ChatColor.RESET + " items needed for \"" + ChatColor.YELLOW + assignment.getTask().getName() + ChatColor.RESET + "\".");
+					SMiscUtil.sendMsg(player, SMiscUtil.getString("item_task_update").replace("{obtained}", "" + assignment.getAmountObtained()).replace("{needed}", "" + assignment.getAmountNeeded()).replace("{task}", assignment.getTask().getName()));
 				}
 
 				// Now handle completed assignments
@@ -344,7 +464,7 @@ public class STaskUtil
 				{
 					// The assignment is complete, call the event
 					AssignmentCompleteEvent assignmentCompleteEvent = new AssignmentCompleteEvent(player, assignment);
-					SUtil.getInstance().getServer().getPluginManager().callEvent(assignmentCompleteEvent);
+					SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentCompleteEvent);
 					if(assignmentCompleteEvent.isCancelled()) return;
 
 					// Set the assignment to inactive
@@ -363,8 +483,6 @@ public class STaskUtil
 	 */
 	public static void unprocessItem(Player player, ItemStack item)
 	{
-		// TODO: Validate this to make sure it's fool-proof.
-
 		// First get their assignments
 		for(Assignment assignment : getAssignments(player))
 		{

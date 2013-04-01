@@ -1,9 +1,14 @@
 # Slayer Configuration
 join_message: true
 join_reminders: true
+
+# Restrictions
 enable_task_list: true
 task_limit: 5
+enable_forfeit: true
+enable_forfeit_punishment: true
+enable_expiration_punishment: true
 
-# Data related
+# Data Related
 assignment_refresh_freq: 300 #seconds
 save_freq: 300 #seconds

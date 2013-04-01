@@ -92,7 +92,7 @@ public class Assignment implements Serializable
 	 * 
 	 * @return OfflinePlayer
 	 */
-	public OfflinePlayer getPlayer()
+	public OfflinePlayer getOfflinePlayer()
 	{
 		return Bukkit.getOfflinePlayer(player);
 	}

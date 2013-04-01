@@ -20,8 +20,8 @@
 package net.alexben.Slayer.Handlers;
 
 import net.alexben.Slayer.Utilities.SConfigUtil;
+import net.alexben.Slayer.Utilities.SMiscUtil;
 import net.alexben.Slayer.Utilities.STaskUtil;
-import net.alexben.Slayer.Utilities.SUtil;
 
 import org.bukkit.Bukkit;
 
@@ -34,7 +34,7 @@ public class SScheduler
 		int saveFrequency = SConfigUtil.getSettingInt("save_freq") * 20;
 
 		// Save data
-		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SUtil.getInstance(), new Runnable()
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SMiscUtil.getInstance(), new Runnable()
 		{
 			@Override
 			public void run()
@@ -44,7 +44,7 @@ public class SScheduler
 		}, saveFrequency, saveFrequency);
 
 		// Update time-restricted assignments
-		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SUtil.getInstance(), new Runnable()
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SMiscUtil.getInstance(), new Runnable()
 		{
 			@Override
 			public void run()
@@ -54,7 +54,7 @@ public class SScheduler
 		}, 0, 1);
 
 		// Clear completed/failed/inactive assignments
-		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(SUtil.getInstance(), new Runnable()
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(SMiscUtil.getInstance(), new Runnable()
 		{
 			@Override
 			public void run()
@@ -62,11 +62,11 @@ public class SScheduler
 				// Remove the assignment
 				STaskUtil.refreshAssignments();
 			}
-		}, SConfigUtil.getSettingInt("assignment_refresh_freq") * 20);
+		}, 0, SConfigUtil.getSettingInt("assignment_refresh_freq") * 20);
 	}
 
 	public static void stopThreads()
 	{
-		Bukkit.getServer().getScheduler().cancelTasks(SUtil.getInstance());
+		Bukkit.getServer().getScheduler().cancelTasks(SMiscUtil.getInstance());
 	}
 }

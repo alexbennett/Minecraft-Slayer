@@ -2,6 +2,7 @@
 
 {{http://alexben.net/projects/bukkit/Slayer/slayer_logo.png|Slayer}}
 
+
 == Installation
 
 To install **Slayer**, simply drop the //Slayer.jar// file into your plugins directory and reload! A new configuration file will be generated automatically and you can use it to fine-tune your Slayer installation.
@@ -16,6 +17,7 @@ To install **Slayer**, simply drop the //Slayer.jar// file into your plugins dir
 * Sends active progress messages to players upon completing elements of their assigned tasks.
 * Customizable messages for Slayer-related events via the generated {{{strings.yml}}} file.
 
+
 === Planned Features
 
 * Advanced Leaderboard 
@@ -26,6 +28,14 @@ To install **Slayer**, simply drop the //Slayer.jar// file into your plugins dir
 * More task types and features!
 
 //Any feature planned above is subject to change or removal, though unlikely.//
+
+
+== Permissions
+
+|= Node          |= Description                                    |
+| slayer.basic   | Allows for basic use of the **Slayer** plugin.  |
+| slayer.admin   | Gives administrative permissions to the player. |
+
 
 == Commands
 
@@ -40,25 +50,31 @@ To install **Slayer**, simply drop the //Slayer.jar// file into your plugins dir
 | /sl my rewards                    | Returns a list of the player's current available rewards.                    |
 | /sl claim                         | Claims all available rewards.                                                |
 | /sl forfeit task <assignment #>   | Allows the player to forfeit an assignment and if enabled, will punish them. |
-|= Administrative Commands          |= Description                                                                 |                 
+|= Administrative Commands          |=                                                                             |                 
 | /sladmin                          | Returns a list of available administrative commands.                         |
 | /sladmin remove task <player> <#> | Removes the task with the specified id from the player.                      |
 | /sl set points <player> <amount>  | Sets the points for the player to the amount specified.                      |
 
-== Permissions
-
-|= Node          |= Description                                    |
-| slayer.basic   | Allows for basic use of the **Slayer** plugin.  |
-| slayer.admin   | Gives administrative permissions to the player. |
-
 
 == Configuration
 
-Yet to be written.
+|= Setting                  |= Default     |= Description                                                 |
+| join_message              | true         | Sends quick message about **Slayer** when joining.           |
+| join_reminders            | true         | Sends the player a task reminder when joining.               |
+| enable_task_list          | true         | Allows players to see a full list of available tasks.        |
+| task_limit                | 5            | The maximum number of tasks a player can have at a time.     |
+| enable_forfeit            | true         | Allows players for forfeit tasks after being assigned.       |
+| enable_forfeit_punishment | true         | Punishes the player by removing points from their score.     |
+| assignment_refresh_freq   | 300          | The frequency //(in seconds)// to clear up old assignments.      |
+| save_freq                 | 300          | The frequency //(in seconds)// at which to save **Slayer** data. |
+
+
+== Support and Suggestions
+
+To report bugs, make suggestions, or receive support for **Slayer**, please leave a comment [[http://dev.bukkit.org/server-mods/slayer/#comments|below]] and I will get back to you as soon as possible.
+
 
 == Miscellaneous
-
-Yet to be written.
 
 {{http://mcstats.org/signature/Slayer.png|MCStats}}
 

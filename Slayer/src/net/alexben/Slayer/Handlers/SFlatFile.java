@@ -55,7 +55,9 @@ public class SFlatFile
 		{
 			// Clear files first
 			for(File file : PlayerDir.listFiles())
+			{
 				file.delete();
+			}
 
 			// Start the timer
 			long startTimer = System.currentTimeMillis();
@@ -66,7 +68,7 @@ public class SFlatFile
 			long stopTimer = System.currentTimeMillis();
 			double totalTime = (double) (stopTimer - startTimer);
 
-			SMiscUtil.log("info", playerCount + " players saved in " + (totalTime / 1000) + " seconds.");
+			SMiscUtil.log("info", playerCount + " player(s) saved in " + (totalTime / 1000) + " seconds.");
 
 			return true;
 		}
@@ -142,7 +144,7 @@ public class SFlatFile
 			long stopTimer = System.currentTimeMillis();
 			double totalTime = (double) (stopTimer - startTimer);
 
-			SMiscUtil.log("info", playerCount + " players loaded in " + (totalTime / 1000) + " seconds.");
+			SMiscUtil.log("info", playerCount + " player(s) loaded in " + (totalTime / 1000) + " seconds.");
 		}
 		catch(Exception e)
 		{

@@ -87,6 +87,7 @@ public class SPlayerUtil
 	 */
 	public static int getTotalAssignments(OfflinePlayer player)
 	{
+		if(SDataUtil.getData(player, "task_assignments_total") == null) SDataUtil.saveData(player, "task_assignments_total", 0);
 		return SObjUtil.toInteger(SDataUtil.getData(player, "task_assignments_total"));
 	}
 
@@ -97,6 +98,7 @@ public class SPlayerUtil
 	 */
 	public static int getCompletions(OfflinePlayer player)
 	{
+		if(SDataUtil.getData(player, "task_completions") == null) SDataUtil.saveData(player, "task_completions", 0);
 		return SObjUtil.toInteger(SDataUtil.getData(player, "task_completions"));
 	}
 
@@ -120,6 +122,7 @@ public class SPlayerUtil
 	 */
 	public static int getExpirations(OfflinePlayer player)
 	{
+		if(SDataUtil.getData(player, "task_expirations") == null) SDataUtil.saveData(player, "task_expirations", 0);
 		return SObjUtil.toInteger(SDataUtil.getData(player, "task_expirations"));
 	}
 
@@ -143,6 +146,7 @@ public class SPlayerUtil
 	 */
 	public static int getForfeits(OfflinePlayer player)
 	{
+		if(SDataUtil.getData(player, "task_forfeits") == null) SDataUtil.saveData(player, "task_forfeits", 0);
 		return SObjUtil.toInteger(SDataUtil.getData(player, "task_forfeits"));
 	}
 

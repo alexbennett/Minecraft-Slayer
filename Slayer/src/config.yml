@@ -10,5 +10,5 @@ enable_forfeit_punishment: true
 enable_expiration_punishment: true
 
 # Data Related
-assignment_refresh_freq: 300 #seconds
+assignment_refresh_freq: 120 #seconds
 save_freq: 300 #seconds

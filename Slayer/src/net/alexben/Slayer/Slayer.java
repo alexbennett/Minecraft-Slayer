@@ -60,7 +60,7 @@ public class Slayer extends JavaPlugin
 		loadConfigs();
 		loadListeners();
 		loadCommands();
-		// loadMetrics(); TODO: Enable before release
+		loadMetrics();
 		loadTasks();
 
 		// Start the scheduler
@@ -147,16 +147,18 @@ public class Slayer extends JavaPlugin
 				{
 					// Define variables
 					int itemID, amount = 1;
+					byte itemByte = (byte) 0;
 
 					// Cast the object to a map
 					Map<String, Object> reward = (Map<String, Object>) object;
 
 					// Update variables
 					itemID = SObjUtil.toInteger(reward.get("itemid"));
+					if(reward.get("itembyte") != null) itemByte = (byte) SObjUtil.toInteger(reward.get("itembyte"));
 					if(reward.get("amount") != null) amount = SObjUtil.toInteger(reward.get("amount"));
 
 					// Create the item
-					ItemStack item = new ItemStack(itemID, amount);
+					ItemStack item = new ItemStack(itemID, amount, itemByte);
 
 					// Add the enchantments if they are wanted
 					if(reward.get("enchantments") != null)

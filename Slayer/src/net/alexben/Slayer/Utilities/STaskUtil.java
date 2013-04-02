@@ -431,6 +431,8 @@ public class STaskUtil
 	 */
 	public static void processItem(Player player, ItemStack item)
 	{
+		// TODO: Destroy items as they're obtained for a task. Possibly implement Demigods-like chest feature?
+
 		// Return if they have no assignments
 		if(getAssignments(player) == null) return;
 

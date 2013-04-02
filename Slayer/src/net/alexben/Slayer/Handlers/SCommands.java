@@ -70,6 +70,9 @@ public class SCommands implements CommandExecutor
 	 */
 	public boolean slayer(Player player, String[] args)
 	{
+		// Check permissions
+		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+
 		if(args.length == 0)
 		{
 			SMiscUtil.sendMsg(player, "Command Directory");
@@ -81,7 +84,7 @@ public class SCommands implements CommandExecutor
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl my info");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl claim");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl forfeit task <assignment #>");
-			player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "/sladmin");
+			if(SMiscUtil.hasPermissionOrOP(player, "slayer.admin")) player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "/sladmin");
 
 			return true;
 		}
@@ -253,7 +256,7 @@ public class SCommands implements CommandExecutor
 						{
 							if(assignment.getTask().getType().equals(Task.TaskType.MOB))
 							{
-								player.sendMessage(ChatColor.GRAY + "     - Mob: " + ChatColor.YELLOW + SObjUtil.capitalize(assignment.getTask().getMob().name().toLowerCase()));
+								player.sendMessage(ChatColor.GRAY + "     - Mob: " + ChatColor.YELLOW + SObjUtil.capitalize(assignment.getTask().getMob().getName().toLowerCase()));
 								player.sendMessage(ChatColor.GRAY + "     - Kills: " + ChatColor.YELLOW + assignment.getAmountObtained() + ChatColor.GRAY + "/" + ChatColor.YELLOW + assignment.getAmountNeeded());
 							}
 							else if(assignment.getTask().getType().equals(Task.TaskType.ITEM))

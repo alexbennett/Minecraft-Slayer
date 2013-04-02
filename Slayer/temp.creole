@@ -14,7 +14,9 @@ Yet to be written.
 
 == Commands
 
-Yet to be written.
+|= |= Command |= Description |
+| a | table | row |
+| b | table | row |
 
 
 == Permissions
@@ -32,4 +34,4 @@ Yet to be written.
 
 {{http://mcstats.org/signature/JustAFK.png|MCStats}}
 
-[[http://mcstats.org/plugin/Slayer|MCStats]] | [[http://github.com/alexbennett/Minecraft-Slayer/|Source]]) | [[http://www.censoredsoftware.com/|Censored Software]]
+[[http://mcstats.org/plugin/Slayer|MCStats]] | [[http://github.com/alexbennett/Minecraft-Slayer/|Source]] | [[http://www.censoredsoftware.com/|Censored Software]]

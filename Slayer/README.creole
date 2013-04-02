@@ -2,13 +2,11 @@
 
 {{http://alexben.net/projects/bukkit/Slayer/slayer_logo.png|Slayer}}
 
-\\
 
 == Installation
 
 To install **Slayer**, simply drop the //Slayer.jar// file into your plugins directory and reload! A new configuration file will be generated automatically and you can use it to fine-tune your Slayer installation.
 
-\\
 
 == Miscellaneous
 

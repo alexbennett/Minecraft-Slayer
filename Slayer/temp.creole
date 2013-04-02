@@ -4,24 +4,52 @@
 
 == Installation
 
-To install **Slayer**, simply drop the *Slayer.jar* file into your plugins directory and reload! A new configuration file will be generated automatically and you can use it to fine-tune your Slayer installation.
+To install **Slayer**, simply drop the //Slayer.jar// file into your plugins directory and reload! A new configuration file will be generated automatically and you can use it to fine-tune your Slayer installation.
 
 
 == Features
 
-Yet to be written.
+* Generates a {{{tasks.yml}}} file which allows you to //completely// customize your server's tasks.
+** Currently supports **timed tasks**, **item obtaining tasks**, **mob killing tasks**, and more to come!
+* Specify item rewards for task completions (with enchantments too!).
+* Set limits on how many tasks players can have at any given time.
+* Sends active progress messages to players upon completing elements of their assigned tasks.
+* Customizable messages for Slayer-related events via the generated {{{strings.yml}}} file.
 
+=== Planned Features
+
+* Advanced Leaderboard 
+* In-depth Statistics
+* Advanced Reward System
+** Give players economy-related rewards (will work with most major economy plugins)
+** Tiered Reward Unlocking
+* More task types and features!
+
+//Any feature planned above is subject to change or removal, though unlikely.//
 
 == Commands
 
-|= |= Command |= Description |
-| a | table | row |
-| b | table | row |
-
+|= Basic Commands                   |= Description                                                                 |
+| /slayer                           | Returns some information about the **Slayer** plugin.                        |
+| /sl                               | Returns a list of available commands.                                        |
+| /sl leaderboard                   | Displays the Slayer task leaderboard.                                        |
+| /sl tasks                         | If enabled, this will give the player a list of all available tasks.         |
+| /sl get task                      | Assigns the player a new, random task.                                       |
+| /sl my info                       | Gives the player some Slayer info about themselves.                          |
+| /sl my tasks                      | Shows the player a list of their current tasks.                              |
+| /sl my rewards                    | Returns a list of the player's current available rewards.                    |
+| /sl claim                         | Claims all available rewards.                                                |
+| /sl forfeit task <assignment #>   | Allows the player to forfeit an assignment and if enabled, will punish them. |
+|= Administrative Commands          |= Description                                                                 |                 
+| /sladmin                          | Returns a list of available administrative commands.                         |
+| /sladmin remove task <player> <#> | Removes the task with the specified id from the player.                      |
+| /sl set points <player> <amount>  | Sets the points for the player to the amount specified.                      |
 
 == Permissions
 
-Yet to be written.
+|= Node          |= Description                                    |
+| slayer.basic   | Allows for basic use of the **Slayer** plugin.  |
+| slayer.admin   | Gives administrative permissions to the player. |
 
 
 == Configuration
@@ -32,6 +60,6 @@ Yet to be written.
 
 Yet to be written.
 
-{{http://mcstats.org/signature/JustAFK.png|MCStats}}
+{{http://mcstats.org/signature/Slayer.png|MCStats}}
 
 [[http://mcstats.org/plugin/Slayer|MCStats]] | [[http://github.com/alexbennett/Minecraft-Slayer/|Source]] | [[http://www.censoredsoftware.com/|Censored Software]]

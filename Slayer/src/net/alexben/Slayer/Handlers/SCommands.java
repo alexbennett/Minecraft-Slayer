@@ -20,7 +20,6 @@
 package net.alexben.Slayer.Handlers;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import net.alexben.Slayer.Events.AssignmentRemoveEvent;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
@@ -187,21 +186,8 @@ public class SCommands implements CommandExecutor
 			}
 			else if(action.equalsIgnoreCase("leaderboard"))
 			{
-				// TODO: This could use some improving.
-
-				SMiscUtil.sendMsg(player, "Leaderboard" + ChatColor.GRAY + " (Not Fully Functional)");
-				player.sendMessage(" ");
-
-				int pos = 1;
-
-				for(Map.Entry<Integer, OfflinePlayer> leader : SStatsUtil.getTopPoints().entrySet())
-				{
-					player.sendMessage(ChatColor.AQUA + "  [" + pos + "] " + ChatColor.WHITE + leader.getValue().getName() + ChatColor.YELLOW + " (Points: " + leader.getKey() + ")");
-					pos++;
-				}
-
-				player.sendMessage(" ");
-
+				// TODO: Make this work and stuff.
+				SMiscUtil.sendMsg(player, ChatColor.AQUA + "Coming Soon!");
 				return true;
 			}
 			else if(action.equalsIgnoreCase("my"))
@@ -215,10 +201,10 @@ public class SCommands implements CommandExecutor
 					player.sendMessage("  > Assignments:");
 					player.sendMessage(" ");
 					player.sendMessage("     - Active: " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size());
+					player.sendMessage("     - Completions: " + ChatColor.GREEN + SPlayerUtil.getCompletions(player));
 					player.sendMessage("     - Forfeits: " + ChatColor.RED + SPlayerUtil.getForfeits(player));
 					player.sendMessage("     - Expirations: " + ChatColor.RED + SPlayerUtil.getExpirations(player));
-					player.sendMessage("     - Completions: " + ChatColor.GREEN + SPlayerUtil.getCompletions(player));
-					player.sendMessage("     - Total Assignments: " + ChatColor.GREEN + SPlayerUtil.getTotalAssignments(player));
+					player.sendMessage("     - Total Given: " + ChatColor.GREEN + SPlayerUtil.getTotalAssignments(player));
 					player.sendMessage(" ");
 					player.sendMessage("  > Available Rewards: " + ChatColor.GREEN + SPlayerUtil.getRewards(player).size());
 					player.sendMessage(" ");
@@ -263,7 +249,7 @@ public class SCommands implements CommandExecutor
 
 						player.sendMessage(ChatColor.GRAY + " > " + color + assignment.getTask().getName() + ChatColor.RESET + timeLimit + miscTag);
 
-						if(!assignment.isExpired() && !assignment.isFailed())
+						if(!assignment.isExpired() && !assignment.isFailed() && !assignment.isComplete())
 						{
 							if(assignment.getTask().getType().equals(Task.TaskType.MOB))
 							{
@@ -310,7 +296,7 @@ public class SCommands implements CommandExecutor
 						// Define variables
 						String enchanted = "";
 
-						if(reward.getEnchantments() != null)
+						if(reward.getEnchantments() != null && !reward.getEnchantments().isEmpty())
 						{
 							enchanted = ChatColor.GREEN + "(Enchanted)";
 						}
@@ -319,7 +305,7 @@ public class SCommands implements CommandExecutor
 					}
 
 					player.sendMessage(" ");
-					player.sendMessage("You can claim your rewards by using " + ChatColor.GREEN + "/sl claim" + ChatColor.RESET + ".");
+					player.sendMessage("You can claim your rewards by using " + ChatColor.GOLD + "/sl claim" + ChatColor.RESET + ".");
 
 					return true;
 				}
@@ -361,6 +347,9 @@ public class SCommands implements CommandExecutor
 	 */
 	public boolean sl_admin(Player player, String[] args)
 	{
+		// Check permissions
+		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.admin")) return SMiscUtil.noPermission(player);
+
 		if(args.length == 0)
 		{
 			SMiscUtil.sendMsg(player, "Admin Directory");

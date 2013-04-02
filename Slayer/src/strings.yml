@@ -7,7 +7,7 @@
 ##    - {task}: The name of the task.
 ##    - {obtained}: The amount of items or mobs obtained for the task.
 ##    - {needed}: The amount of items or mobs needed for the task.
-##    - {rewards}: The number of aways for the player.
+##    - {rewards}: The number of awards for the player.
 ##
 ## Colors:
 ##    - White:        &f
@@ -36,6 +36,7 @@ assignment_expired: 'Your assignment "&b{task}&f" has expired!'
 assignment_complete: '&aYou just completed "&b{task}&a"!'
 assignment_forfeit: 'You have forfeited "&b{task}&f"!'
 forfeit_punishment: '&cYou have been punished for forfeiting a task!'
+new_assignment: '&aYou have been given a new Slayer assignment!'
 
 # Deny Messages
 no_tasks: 'You currently have no Slayer tasks.'

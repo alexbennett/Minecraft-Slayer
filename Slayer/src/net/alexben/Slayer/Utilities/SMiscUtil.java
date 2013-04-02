@@ -29,6 +29,7 @@ import net.alexben.Slayer.Slayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 /**
  * Utility that handles miscellaneous methods.
@@ -129,6 +130,18 @@ public class SMiscUtil
 	public static void sendAdminMsg(OfflinePlayer player, String msg)
 	{
 		player.getPlayer().sendMessage(pluginColor + "[SL Admin] " + ChatColor.RESET + msg);
+	}
+
+	/**
+	 * Sends a no permission error to <code>player</code> and always returns true.
+	 * 
+	 * @param player the player to message.
+	 * @return boolean
+	 */
+	public static boolean noPermission(Player player)
+	{
+		sendMsg(player, ChatColor.RED + "You don't have permission to use that command.");
+		return true;
 	}
 
 	/**

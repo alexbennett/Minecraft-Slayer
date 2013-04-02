@@ -253,7 +253,7 @@ public class STaskUtil
 
 		for(Assignment assignment : getAssignments(player))
 		{
-			if(assignment.getTask().equals(task)) return true;
+			if(assignment.getTask().equals(task) && assignment.isActive()) return true;
 		}
 		return false;
 	}
@@ -307,7 +307,7 @@ public class STaskUtil
 			}
 
 			// Tracking
-			SDataUtil.saveData(player, "task_completions", SPlayerUtil.getTotalAssignments(player) + 1);
+			SDataUtil.saveData(player, "task_assignments_total", SPlayerUtil.getTotalAssignments(player) + 1);
 
 			return assignment;
 		}

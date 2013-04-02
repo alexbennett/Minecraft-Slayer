@@ -51,8 +51,8 @@ public class SAssignmentListener implements Listener
 
 		if(player.isOnline())
 		{
-			SMiscUtil.sendMsg(player.getPlayer(), ChatColor.GREEN + "You have been given a new Slayer assignment!");
-			SMiscUtil.sendMsg(player.getPlayer(), "For details, please type " + ChatColor.AQUA + "/sl my tasks" + ChatColor.RESET + ".");
+			SMiscUtil.sendMsg(player.getPlayer(), SMiscUtil.getString("new_assignment"));
+			SMiscUtil.sendMsg(player.getPlayer(), "For details, please type " + ChatColor.GOLD + "/sl my tasks" + ChatColor.RESET + ".");
 		}
 	}
 

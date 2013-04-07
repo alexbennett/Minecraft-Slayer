@@ -72,7 +72,7 @@ public class SPlayerListener implements Listener
 				}
 				else
 				{
-					player.sendMessage("Please update by using " + ChatColor.GOLD + "/slayer update");
+					player.sendMessage("Please update by using " + ChatColor.GOLD + "/slayer update" + ChatColor.WHITE + ".");
 				}
 			}
 		}

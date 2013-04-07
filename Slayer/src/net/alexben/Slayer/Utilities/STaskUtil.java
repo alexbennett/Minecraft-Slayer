@@ -157,6 +157,91 @@ public class STaskUtil
 	}
 
 	/**
+	 * Returns an ArrayList of all timed server-wide assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllTimedAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(Assignment assignment : getAllAssignments())
+		{
+			if(assignment.getTask().isTimed()) assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	/**
+	 * Returns an ArrayList of all untimed server-wide assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllUntimedAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(Assignment assignment : getAllAssignments())
+		{
+			if(!assignment.getTask().isTimed()) assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	/**
+	 * Returns an ArrayList of all completed assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllCompleteAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(Assignment assignment : getAllAssignments())
+		{
+			if(assignment.isComplete()) assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	/**
+	 * Returns an ArrayList of all expired assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllExpiredAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(Assignment assignment : getAllAssignments())
+		{
+			if(assignment.isExpired()) assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	/**
+	 * Returns an ArrayList of all failed assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllFailedAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(Assignment assignment : getAllAssignments())
+		{
+			if(assignment.isFailed()) assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	/**
 	 * Returns an ArrayList of all assignments for <code>player</code>.
 	 * 
 	 * @param player the player to check.
@@ -431,8 +516,6 @@ public class STaskUtil
 	 */
 	public static void processItem(Player player, ItemStack item)
 	{
-		// TODO: Destroy items as they're obtained for a task. Possibly implement Demigods-like chest feature?
-
 		// Return if they have no assignments
 		if(getAssignments(player) == null) return;
 
@@ -485,6 +568,9 @@ public class STaskUtil
 	 */
 	public static void unprocessItem(Player player, ItemStack item)
 	{
+		// Return if they have no assignments
+		if(getAssignments(player) == null) return;
+
 		// First get their assignments
 		for(Assignment assignment : getAssignments(player))
 		{

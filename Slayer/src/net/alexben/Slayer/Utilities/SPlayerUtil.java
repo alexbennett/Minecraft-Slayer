@@ -32,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -171,31 +172,49 @@ public class SPlayerUtil
 	 */
 	public static void addReward(OfflinePlayer player, SerialItemStack item)
 	{
+		for(SerialItemStack serialReward : ((ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue")))
+		{
+			if(serialReward.toItemStack().isSimilar(item.toItemStack()))
+			{
+				serialReward.setAmount(serialReward.toItemStack().getAmount() + item.toItemStack().getAmount());
+				return;
+			}
+		}
+
 		((ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue")).add(item);
 	}
 
 	/**
 	 * Removes the reward matching <code>item</code> from the <code>player</code>'s
-	 * reward queue.
+	 * reward queue and returns true if successful.
 	 * 
 	 * @param player the player to remove the reward from.
 	 * @param item the reward to remove.
+	 * @return boolean
 	 */
-	public static void removeReward(OfflinePlayer player, ItemStack item)
+	public static boolean removeReward(OfflinePlayer player, ItemStack item)
 	{
 		ArrayList<SerialItemStack> rewards = (ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue");
 
-		int i = 0;
-
 		for(SerialItemStack reward : rewards)
 		{
-			if(reward.toItemStack().equals(item))
+			if(reward.toItemStack().isSimilar(item))
 			{
-				rewards.remove(i);
-				return;
+				int amount = reward.toItemStack().getAmount() - item.getAmount();
+
+				if(amount < 1)
+				{
+					rewards.remove(rewards.indexOf(reward));
+				}
+				else
+				{
+					reward.setAmount(amount);
+				}
+
+				return true;
 			}
-			i++;
 		}
+		return false;
 	}
 
 	/**
@@ -214,6 +233,25 @@ public class SPlayerUtil
 		}
 
 		return rewards;
+	}
+
+	/**
+	 * Returns the total number of items in the <code>player</code>'s reward
+	 * queue.
+	 * 
+	 * @param player the player whose queue to check.
+	 * @return int
+	 */
+	public static int getRewardAmount(OfflinePlayer player)
+	{
+		int count = 0;
+
+		for(ItemStack item : getRewards(player))
+		{
+			count += item.getAmount();
+		}
+
+		return count;
 	}
 
 	/**
@@ -342,5 +380,37 @@ public class SPlayerUtil
 	public static ArrayList<Death> getDeaths(OfflinePlayer player)
 	{
 		return (ArrayList<Death>) SDataUtil.getData(player, "deaths");
+	}
+
+	/**
+	 * Opens an inventory used to process task items.
+	 * 
+	 * @param player the player for whom to open the inventory.
+	 */
+	public static void openProcessingInventory(Player player)
+	{
+		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Item Processing Inventory");
+		SDataUtil.saveData(player, "inv_process", true);
+		player.openInventory(inventory);
+	}
+
+	/**
+	 * Generates a reward inventory based off of the <code>player</code>'s current
+	 * reward items and opens it.
+	 * 
+	 * @param player the player to open the inventory for.
+	 */
+	public static void openRewardBackpack(Player player)
+	{
+		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, player.getName() + "'s Rewards");
+
+		for(ItemStack item : getRewards(player))
+		{
+			inventory.addItem(item);
+		}
+
+		SDataUtil.saveData(player, "inv_rewards", true);
+
+		player.openInventory(inventory);
 	}
 }

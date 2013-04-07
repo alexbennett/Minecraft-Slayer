@@ -19,17 +19,16 @@
 
 package net.alexben.Slayer.Listeners;
 
-import net.alexben.Slayer.Utilities.SConfigUtil;
-import net.alexben.Slayer.Utilities.SMiscUtil;
-import net.alexben.Slayer.Utilities.SPlayerUtil;
-import net.alexben.Slayer.Utilities.STaskUtil;
+import net.alexben.Slayer.Libraries.Objects.Assignment;
+import net.alexben.Slayer.Libraries.Objects.Task;
+import net.alexben.Slayer.Utilities.*;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -51,14 +50,86 @@ public class SPlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 
-		if(SConfigUtil.getSettingBoolean("join_message"))
+		if(SConfigUtil.getSettingBoolean("misc.join_message"))
 		{
 			player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + SMiscUtil.getInstance().getDescription().getVersion() + ChatColor.GRAY + ".");
 		}
 
-		if(SConfigUtil.getSettingBoolean("join_reminders") && STaskUtil.getActiveAssignments(player) != null)
+		if(SConfigUtil.getSettingBoolean("tasks.join_reminders") && STaskUtil.getActiveAssignments(player) != null)
 		{
 			SMiscUtil.sendMsg(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY + " active task(s).");
+		}
+
+		if(SConfigUtil.getSettingBoolean("update.notify") && SMiscUtil.hasPermissionOrOP(player, "slayer.update"))
+		{
+			if(SUpdateUtil.check())
+			{
+				player.sendMessage(ChatColor.RED + "There is a new stable release for Slayer.");
+
+				if(SConfigUtil.getSettingBoolean("update.auto"))
+				{
+					player.sendMessage("Please " + ChatColor.YELLOW + "reload the server " + ChatColor.WHITE + " to finish the auto-update.");
+				}
+				else
+				{
+					player.sendMessage("Please update by using " + ChatColor.GOLD + "/slayer update");
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onInventoryCloseEvent(InventoryCloseEvent event)
+	{
+		// Return if it isn't a player inventory
+		if(!(event.getPlayer() instanceof Player)) return;
+
+		// Define variables
+		Player player = (Player) event.getPlayer();
+
+		if(event.getInventory().getName().toLowerCase().contains("processing"))
+		{
+			// TODO: Pre-process items into stacks so multiple messages don't get sent.
+
+			// If they don't have the data then return
+			if(!SDataUtil.hasData(player, "inv_process")) return;
+
+			for(ItemStack item : event.getInventory().getContents())
+			{
+				STaskUtil.processItem(player, item);
+			}
+
+			SDataUtil.removeData(player, "inv_process");
+		}
+		else if(event.getInventory().getName().toLowerCase().contains("rewards"))
+		{
+			for(ItemStack reward : SPlayerUtil.getRewards(player))
+			{
+				if(!event.getInventory().containsAtLeast(reward, 1))
+				{
+					SPlayerUtil.removeReward(player, reward);
+				}
+
+				for(ItemStack item : event.getInventory().getContents())
+				{
+					if(item != null)
+					{
+						if(reward.isSimilar(item))
+						{
+							if(reward.getAmount() > item.getAmount())
+							{
+								int amount = reward.getAmount() - item.getAmount();
+								ItemStack newItem = reward.clone();
+								newItem.setAmount(amount);
+
+								SPlayerUtil.removeReward(player, newItem);
+							}
+						}
+					}
+				}
+			}
+
+			SDataUtil.removeData(player, "inv_rewards");
 		}
 	}
 
@@ -68,15 +139,32 @@ public class SPlayerListener implements Listener
 		Player player = event.getPlayer();
 		ItemStack item = event.getItem().getItemStack();
 
-		STaskUtil.processItem(player, item);
-	}
+		if(STaskUtil.getActiveAssignments(player) != null)
+		{
+			for(Assignment assignment : STaskUtil.getActiveAssignments(player))
+			{
+				// Continue if it isn't an item task or if it isn't the correct item
+				if(!assignment.getTask().getType().equals(Task.TaskType.ITEM) || !assignment.getTask().getItem().isSimilar(item)) continue;
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	private void onPlayerDropItemEvent(PlayerDropItemEvent event)
-	{
-		Player player = event.getPlayer();
-		ItemStack item = event.getItemDrop().getItemStack();
+				// Define count
+				int count = item.getAmount();
 
-		STaskUtil.unprocessItem(player, item);
+				// Loop through inventory
+				for(ItemStack stack : player.getInventory().getContents())
+				{
+					// If it's the same item then add to the count
+					if(assignment.getTask().getItem().isSimilar(stack))
+					{
+						count += stack.getAmount();
+					}
+				}
+
+				// Check the count against the progress
+				if(count >= assignment.getAmountLeft())
+				{
+					SMiscUtil.sendMsg(player, SMiscUtil.getString("enough_items").replace("{task}", assignment.getTask().getName()));
+				}
+			}
+		}
 	}
 }

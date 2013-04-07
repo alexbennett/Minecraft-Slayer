@@ -125,4 +125,14 @@ public class SerialItemStack implements Serializable
 
 		return item;
 	}
+
+	/**
+	 * Sets the amount of this item to <code>amount</code>.
+	 * 
+	 * @param amount the amount to set.
+	 */
+	public void setAmount(int amount)
+	{
+		this.amount = amount;
+	}
 }

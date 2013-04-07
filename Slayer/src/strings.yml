@@ -1,33 +1,3 @@
-##
-## This file (strings.yml) is used as a resource for the plugin to determine what
-## messages to display where and how they should be formatted. Edit as you wish,
-## though the defaults are highly recommended.
-##
-## Variables:
-##    - {task}: The name of the task.
-##    - {obtained}: The amount of items or mobs obtained for the task.
-##    - {needed}: The amount of items or mobs needed for the task.
-##    - {rewards}: The number of awards for the player.
-##
-## Colors:
-##    - White:        &f
-##    - Black:        &0
-##    - Blue:         &9
-##    - Dark Blue:    &1
-##    - Green:        &a
-##    - Dark Green:   &2
-##    - Aqua:         &b
-##    - Dark Aqua:    &3
-##    - Red:          &c
-##    - Dark Red:     &4
-##    - Gray:         &7
-##    - Dark Gray:    &8
-##    - Purple:       &5
-##    - Light Purple: &d
-##    - Gold:         &6
-##    - Yellow:       &e
-##
-
 # Update Messages
 mob_task_update: 'You have &e{obtained}&f of &e{needed}&f kills needed for "&b{task}&f".'
 item_task_update: 'You have &e{obtained}&f of &e{needed}&f items needed for "&b{task}&f".'
@@ -37,6 +7,7 @@ assignment_complete: '&aYou just completed "&b{task}&a"!'
 assignment_forfeit: 'You have forfeited "&b{task}&f"!'
 forfeit_punishment: '&cYou have been punished for forfeiting a task!'
 new_assignment: '&aYou have been given a new Slayer assignment!'
+enough_items: 'You can now finish "&b{task}&f"! Use &6/sl process&f.'
 
 # Deny Messages
 no_tasks: 'You currently have no Slayer tasks.'
@@ -44,3 +15,4 @@ no_rewards: 'You have no rewards... Go complete some tasks!'
 has_all_tasks: 'You already have all available tasks!'
 has_met_limit: 'You should complete some of those tasks first...'
 assignment_fail: '&cA task could not be assigned to you.'
+camping_spawners: 'You should stop camping spawners...'

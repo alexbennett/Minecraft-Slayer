@@ -19,6 +19,7 @@
 
 package net.alexben.Slayer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,20 +29,21 @@ import net.alexben.Slayer.Handlers.SFlatFile;
 import net.alexben.Slayer.Handlers.SScheduler;
 import net.alexben.Slayer.Libraries.ConfigAccessor;
 import net.alexben.Slayer.Libraries.Metrics;
+import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
 import net.alexben.Slayer.Libraries.Objects.Task;
 import net.alexben.Slayer.Listeners.SAssignmentListener;
 import net.alexben.Slayer.Listeners.SEntityListener;
 import net.alexben.Slayer.Listeners.SPlayerListener;
-import net.alexben.Slayer.Utilities.SConfigUtil;
-import net.alexben.Slayer.Utilities.SMiscUtil;
-import net.alexben.Slayer.Utilities.SObjUtil;
-import net.alexben.Slayer.Utilities.STaskUtil;
+import net.alexben.Slayer.Utilities.*;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -68,6 +70,10 @@ public class Slayer extends JavaPlugin
 
 		// Load data
 		SFlatFile.load();
+		validatePlayers();
+
+		// Lastly check for an update
+		checkUpdate();
 
 		// Log that JustAFK successfully loaded
 		SMiscUtil.log("info", "Slayer has been successfully enabled!");
@@ -82,10 +88,38 @@ public class Slayer extends JavaPlugin
 		SMiscUtil.log("info", "Disabled!");
 	}
 
+	private void validatePlayers()
+	{
+		for(Player player : Bukkit.getOnlinePlayers())
+		{
+			SPlayerUtil.createSave(player);
+		}
+	}
+
 	private void loadConfigs()
 	{
-		taskConfig = new ConfigAccessor(this, "tasks.yml");
+		// LEGACY: Move the old tasks.yml config if it still exists.
+		File taskFile = new File(this.getDataFolder() + File.separator + "tasks.yml");
+
+		if(taskFile.exists())
+		{
+			// Create the folder and move the file
+			new File(this.getDataFolder() + File.separator + "tasks").mkdir();
+			taskFile.renameTo(new File(this.getDataFolder() + File.separator + "tasks" + File.separator + "tasks.yml"));
+
+			// Log the update
+			SMiscUtil.log("info", "\"task.yml\" file moved for new save system.");
+		}
+
+		// Define the configs
+		taskConfig = new ConfigAccessor(this, "tasks/tasks.yml");
 		stringConfig = new ConfigAccessor(this, "strings.yml");
+
+		// Set the option to copy defaults
+		stringConfig.getConfig().options().copyDefaults(true);
+
+		// Save the defaults
+		stringConfig.saveConfig();
 	}
 
 	private void loadListeners()
@@ -108,7 +142,92 @@ public class Slayer extends JavaPlugin
 	{
 		try
 		{
+			// Define the Metrics instance
 			Metrics metrics = new Metrics(this);
+
+			// Define the Graphs
+			Metrics.Graph typeGraph = metrics.createGraph("Item vs. Mob Tasks");
+			Metrics.Graph timedGraph = metrics.createGraph("Timed vs. Untimed Tasks");
+			Metrics.Graph statusGraph = metrics.createGraph("Assignment Status Comparison");
+
+			// Add Graph Data
+			typeGraph.addPlotter(new Metrics.Plotter("Item Based")
+			{
+				@Override
+				public int getValue()
+				{
+					int count = 0;
+
+					for(Assignment assignment : STaskUtil.getAllAssignments())
+					{
+						if(assignment.getTask().getType().equals(Task.TaskType.ITEM)) count++;
+					}
+
+					return count;
+				}
+			});
+
+			typeGraph.addPlotter(new Metrics.Plotter("Mob Based")
+			{
+				@Override
+				public int getValue()
+				{
+					int count = 0;
+
+					for(Assignment assignment : STaskUtil.getAllAssignments())
+					{
+						if(assignment.getTask().getType().equals(Task.TaskType.MOB)) count++;
+					}
+
+					return count;
+				}
+			});
+
+			timedGraph.addPlotter(new Metrics.Plotter("Timed")
+			{
+				@Override
+				public int getValue()
+				{
+					return STaskUtil.getAllUntimedAssignments().size();
+				}
+			});
+
+			timedGraph.addPlotter(new Metrics.Plotter("Untimed")
+			{
+				@Override
+				public int getValue()
+				{
+					return STaskUtil.getAllTimedAssignments().size();
+				}
+			});
+
+			statusGraph.addPlotter(new Metrics.Plotter("Complete")
+			{
+				@Override
+				public int getValue()
+				{
+					return STaskUtil.getAllCompleteAssignments().size();
+				}
+			});
+
+			statusGraph.addPlotter(new Metrics.Plotter("Expired")
+			{
+				@Override
+				public int getValue()
+				{
+					return STaskUtil.getAllExpiredAssignments().size();
+				}
+			});
+
+			statusGraph.addPlotter(new Metrics.Plotter("Active")
+			{
+				@Override
+				public int getValue()
+				{
+					return STaskUtil.getAllActiveAssignments().size();
+				}
+			});
+
 			metrics.enable();
 		}
 		catch(IOException e)
@@ -211,5 +330,40 @@ public class Slayer extends JavaPlugin
 
 		// Log the tasks loaded
 		SMiscUtil.log("info", count + " task(s) loaded into memory.");
+	}
+
+	/**
+	 * Checks to see if an update is available for Slayer.
+	 */
+	private void checkUpdate()
+	{
+		// Define variables
+		boolean auto = SConfigUtil.getSettingBoolean("update.auto");
+		boolean notify = SConfigUtil.getSettingBoolean("update.notify");
+
+		// Check for updates, and then update if need be
+		if(auto || notify)
+		{
+			if(SUpdateUtil.check())
+			{
+				if(auto)
+				{
+					SUpdateUtil.execute();
+				}
+				else if(notify)
+				{
+					Bukkit.broadcast(ChatColor.RED + "There is a new stable release for Slayer.", "slayer.update");
+
+					if(auto)
+					{
+						Bukkit.broadcast("Please " + ChatColor.YELLOW + "reload the server " + ChatColor.WHITE + "to finish the auto-update.", "slayer.update");
+					}
+					else
+					{
+						Bukkit.broadcast("Please update by using " + ChatColor.GOLD + "/slayer update", "slayer.update");
+					}
+				}
+			}
+		}
 	}
 }

@@ -30,7 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class ConfigAccessor
 {
-
 	private final String fileName;
 	private final JavaPlugin plugin;
 
@@ -39,13 +38,18 @@ public class ConfigAccessor
 
 	public ConfigAccessor(JavaPlugin plugin, String fileName)
 	{
+		// Safety checks
 		if(plugin == null) throw new IllegalArgumentException("Plugin can't be null.");
 		if(!plugin.isInitialized()) throw new IllegalArgumentException("Plugin must be initialized.");
+
+		// Set variables
 		this.plugin = plugin;
 		this.fileName = fileName;
 		File dataFolder = plugin.getDataFolder();
 		if(dataFolder == null) throw new IllegalStateException();
 		this.configFile = new File(plugin.getDataFolder(), fileName);
+
+		// Save defaults
 		saveDefaultConfig();
 	}
 
@@ -97,5 +101,4 @@ public class ConfigAccessor
 			this.plugin.saveResource(fileName, false);
 		}
 	}
-
 }

@@ -1,8 +1,21 @@
 # Task Configuration
 tasks:
 
+    - name: "Mmm, bacon!"
+      desc: "Eh, could use some syrup."
+      enabled: true
+      timelimit: 10 #minutes
+      mob: pig
+      amount: 5
+      value: 10
+      reward:
+          - itemid: 320
+            amount: 10
+          - itemid: 329
+            amount: 1
+
     - name: "Zombieland"
-      desc: "Kill 10 zombies to receive a reward!"
+      desc: "Kill some zombies to receive a reward!"
       enabled: true
       timelimit: 10 #minutes
       mob: zombie
@@ -15,7 +28,7 @@ tasks:
                 - knockback: 1
 
     - name: "Gravedigger"
-      desc: "Obtain 15 bones to earn a reward!"
+      desc: "Obtain some bones to earn a reward!"
       enabled: true
       timelimit: none
       item: 352
@@ -47,7 +60,7 @@ tasks:
           - itemid: 322
             amount: 1
 
-    - name: "Fus Doh Rah!"
+    - name: "Fus Ro Dah!"
       desc: "Are you a true Dragonborn?"
       enabled: true
       timelimit: none

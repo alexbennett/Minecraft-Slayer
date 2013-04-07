@@ -1,14 +1,34 @@
 # Slayer Configuration
-join_message: true
-join_reminders: true
+misc:
+    join_message: true
+
+# Updating
+update:
+    auto: true
+    notify: true
 
 # Restrictions
-enable_task_list: true
-task_limit: 5
-enable_forfeit: true
-enable_forfeit_punishment: true
-enable_expiration_punishment: true
+tasks:
+    limit: 5
+    full_list: true
+    join_reminders: true
+    completion_firework: true
+
+# Forfeit Handling
+forfeit:
+    enable: true
+    punish: true
+
+# Expiration Handling
+expiration:
+    punish: true
+
+# Blocking
+block:
+    spawner_kills: true
 
 # Data Related
-assignment_refresh_freq: 120 #seconds
-save_freq: 300 #seconds
+data:
+    save_freq: 300 #seconds
+    assignment_refresh_freq: 120 #seconds
+    entity_tracking_period: 1200 #seconds

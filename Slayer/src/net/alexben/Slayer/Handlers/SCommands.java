@@ -46,20 +46,64 @@ public class SCommands implements CommandExecutor
 		if(command.getName().equalsIgnoreCase("sl")) return slayer(player, args);
 		if(command.getName().equalsIgnoreCase("slayer"))
 		{
-			player.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
-			player.sendMessage(ChatColor.RED + "     Slayer" + ChatColor.GRAY + " is a plugin developed on the Bukkit platform for");
-			player.sendMessage(ChatColor.GRAY + " Minecraft Survival Multiplayer with the intentions of bringing a");
-			player.sendMessage(ChatColor.GRAY + "      full, easily expandable task system to the battlefield.");
-			player.sendMessage(" ");
-			player.sendMessage(ChatColor.GRAY + "    For support or to suggest new features, visit the " + ChatColor.RED + "Slayer");
-			player.sendMessage(ChatColor.GRAY + "     BukkitDev project page located at the link given below.");
-			player.sendMessage(" ");
-			player.sendMessage(ChatColor.GRAY + " Author: " + ChatColor.AQUA + "_Alex " + ChatColor.GRAY + "(" + ChatColor.AQUA + "http://alexben.net/t" + ChatColor.GRAY + ")");
-			player.sendMessage(ChatColor.GRAY + " Source: " + ChatColor.AQUA + "http://github.com/alexbennett/Minecraft-Slayer/");
-			player.sendMessage(ChatColor.GRAY + " BukkitDev: " + ChatColor.AQUA + "http://dev.bukkit.org/server-mods/slayer/");
-			player.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
+			if(args.length == 0)
+			{
+				player.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
+				player.sendMessage(ChatColor.RED + "     Slayer" + ChatColor.GRAY + " is a plugin developed on the Bukkit platform for");
+				player.sendMessage(ChatColor.GRAY + " Minecraft Survival Multiplayer with the intentions of bringing a");
+				player.sendMessage(ChatColor.GRAY + "      full, easily expandable task system to the battlefield.");
+				player.sendMessage(" ");
+				player.sendMessage(ChatColor.GRAY + "    For support or to suggest new features, visit the " + ChatColor.RED + "Slayer");
+				player.sendMessage(ChatColor.GRAY + "     BukkitDev project page located at the link given below.");
+				player.sendMessage(" ");
+				player.sendMessage(ChatColor.GRAY + " Author: " + ChatColor.AQUA + "_Alex " + ChatColor.GRAY + "(" + ChatColor.AQUA + "http://alexben.net/t" + ChatColor.GRAY + ")");
+				player.sendMessage(ChatColor.GRAY + " Source: " + ChatColor.AQUA + "http://github.com/alexbennett/Minecraft-Slayer/");
+				player.sendMessage(ChatColor.GRAY + " BukkitDev: " + ChatColor.AQUA + "http://dev.bukkit.org/server-mods/slayer/");
+				player.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
 
-			return true;
+				return true;
+			}
+			else if(args[0].equalsIgnoreCase("update"))
+			{
+				// Check Permissions
+				if(!SMiscUtil.hasPermissionOrOP(player, "slayer.update"))
+				{
+					SMiscUtil.sendMsg(player, ChatColor.RED + "You don't have permission to do that.");
+				}
+
+				if(args.length == 1)
+				{
+					SMiscUtil.sendMsg(player, "Latest Slayer version: " + ChatColor.GREEN + SUpdateUtil.getLatestVersion());
+					SMiscUtil.sendMsg(player, "Current Slayer version: " + ChatColor.RED + SMiscUtil.getInstance().getDescription().getVersion());
+
+					if(SUpdateUtil.check())
+					{
+						SMiscUtil.sendMsg(player, "Please type " + ChatColor.GOLD + "/slayer update confirm" + ChatColor.WHITE + " to update.");
+					}
+					else
+					{
+						SMiscUtil.sendMsg(player, ChatColor.GREEN + "This server is running the latest version!");
+					}
+
+					return true;
+				}
+				else if(args[1].equalsIgnoreCase("confirm"))
+				{
+					if(!SUpdateUtil.check()) return true;
+
+					SMiscUtil.sendMsg(player, "Starting download...");
+
+					if(SUpdateUtil.execute())
+					{
+						SMiscUtil.sendMsg(player, ChatColor.GREEN + "Download complete! " + ChatColor.WHITE + "Reload to apply the changes.");
+						return true;
+					}
+					else
+					{
+						SMiscUtil.sendMsg(player, ChatColor.RED + "Download failed...");
+					}
+				}
+			}
 		}
 
 		return false;
@@ -79,10 +123,10 @@ public class SCommands implements CommandExecutor
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl leaderboard");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl tasks");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl get task");
+			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl process");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl my tasks");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl my rewards");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl my info");
-			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl claim");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl forfeit task <assignment #>");
 			if(SMiscUtil.hasPermissionOrOP(player, "slayer.admin")) player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "/sladmin");
 
@@ -97,6 +141,12 @@ public class SCommands implements CommandExecutor
 			if(args.length > 2) option1 = args[2];
 			if(args.length > 3) option2 = args[3];
 
+			if(action.equalsIgnoreCase("process"))
+			{
+				SPlayerUtil.openProcessingInventory(player);
+
+				return true;
+			}
 			if(action.equalsIgnoreCase("get"))
 			{
 				if(category == null)
@@ -126,7 +176,7 @@ public class SCommands implements CommandExecutor
 			else if(action.equalsIgnoreCase("forfeit"))
 			{
 				// If this command is disabled then return
-				if(!SConfigUtil.getSettingBoolean("enable_forfeit"))
+				if(!SConfigUtil.getSettingBoolean("forfeit.enable"))
 				{
 					SMiscUtil.sendMsg(player, "That functionality is disabled.");
 
@@ -160,7 +210,7 @@ public class SCommands implements CommandExecutor
 			else if(action.equalsIgnoreCase("tasks"))
 			{
 				// If this command is disabled then return
-				if(!SConfigUtil.getSettingBoolean("enable_task_list"))
+				if(!SConfigUtil.getSettingBoolean("tasks.full_list"))
 				{
 					SMiscUtil.sendMsg(player, "That functionality is disabled.");
 
@@ -209,7 +259,7 @@ public class SCommands implements CommandExecutor
 					player.sendMessage("     - Expirations: " + ChatColor.RED + SPlayerUtil.getExpirations(player));
 					player.sendMessage("     - Total Given: " + ChatColor.GREEN + SPlayerUtil.getTotalAssignments(player));
 					player.sendMessage(" ");
-					player.sendMessage("  > Available Rewards: " + ChatColor.GREEN + SPlayerUtil.getRewards(player).size());
+					player.sendMessage("  > Available Rewards: " + ChatColor.GREEN + SPlayerUtil.getRewardAmount(player));
 					player.sendMessage(" ");
 					player.sendMessage("  > Statistics: " + ChatColor.AQUA + "Coming Soon!");
 					player.sendMessage(" ");
@@ -286,62 +336,14 @@ public class SCommands implements CommandExecutor
 						return true;
 					}
 
-					String message;
-					if(rewards.size() > 1) message = ChatColor.YELLOW + "" + rewards.size() + ChatColor.RESET + " rewards await you:";
-					else message = ChatColor.YELLOW + "" + rewards.size() + ChatColor.RESET + " reward awaits you:";
-
-					// They have rewards, list them
-					SMiscUtil.sendMsg(player, message);
-					player.sendMessage(" ");
-
-					for(ItemStack reward : rewards)
-					{
-						// Define variables
-						String enchanted = "";
-
-						if(reward.getEnchantments() != null && !reward.getEnchantments().isEmpty())
-						{
-							enchanted = ChatColor.GREEN + "(Enchanted)";
-						}
-
-						player.sendMessage(" > " + reward.getType().name() + ChatColor.YELLOW + " (Amount: " + reward.getAmount() + ") " + enchanted);
-					}
-
-					player.sendMessage(" ");
-					player.sendMessage("You can claim your rewards by using " + ChatColor.GOLD + "/sl claim" + ChatColor.RESET + ".");
+					SPlayerUtil.openRewardBackpack(player);
 
 					return true;
 				}
-			}
-
-			// TODO: Rework reward system. It's largely redundant and... well useless.
-
-			else if(action.equalsIgnoreCase("claim"))
-			{
-				ArrayList<ItemStack> rewards = SPlayerUtil.getRewards(player);
-
-				// If they don't have rewards then tell them and return
-				if(rewards.isEmpty())
-				{
-					SMiscUtil.sendMsg(player, SMiscUtil.getString("no_rewards"));
-
-					return true;
-				}
-
-				// Remove the reward from their queue
-				for(ItemStack reward : rewards)
-				{
-					player.getInventory().addItem(reward);
-					SPlayerUtil.removeReward(player, reward);
-				}
-
-				// Send the appropriate message depending on the amount of rewards available
-				if(rewards.size() > 1) SMiscUtil.sendMsg(player, "You have been given all " + ChatColor.YELLOW + rewards.size() + ChatColor.RESET + " of your rewards, enjoy!");
-				else SMiscUtil.sendMsg(player, "You have been given your " + ChatColor.YELLOW + "1" + ChatColor.RESET + " available reward, enjoy!");
-
-				return true;
 			}
 		}
+
+		SMiscUtil.sendMsg(player, "Error");
 		return false;
 	}
 
@@ -356,6 +358,8 @@ public class SCommands implements CommandExecutor
 		if(args.length == 0)
 		{
 			SMiscUtil.sendMsg(player, "Admin Directory");
+			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin save");
+			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin clear entities");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin remove task <player> <id>");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin set points <player> <points>");
 
@@ -401,6 +405,32 @@ public class SCommands implements CommandExecutor
 
 					return true;
 				}
+			}
+			else if(action.equalsIgnoreCase("clear"))
+			{
+				if(category.equalsIgnoreCase("entities"))
+				{
+					SMiscUtil.sendAdminMsg(player, ChatColor.YELLOW + "Clearing all saved entities...");
+					SEntityUtil.getEntityMap().clear();
+					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + "Entities cleared!");
+
+					return true;
+				}
+			}
+			else if(action.equalsIgnoreCase("save"))
+			{
+				SMiscUtil.sendAdminMsg(player, ChatColor.YELLOW + "Forcing save...");
+
+				if(SFlatFile.save())
+				{
+					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + "Saved!");
+				}
+				else
+				{
+					SMiscUtil.sendAdminMsg(player, ChatColor.RED + "Save failed... check the console.");
+				}
+
+				return true;
 			}
 		}
 

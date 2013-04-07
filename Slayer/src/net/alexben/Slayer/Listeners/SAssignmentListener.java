@@ -76,16 +76,19 @@ public class SAssignmentListener implements Listener
 		if(!player.isOnline()) return;
 
 		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_complete").replace("{task}", assignment.getTask().getName()));
-		SMiscUtil.sendMsg(player, SMiscUtil.getString("rewards_awaiting").replace("{rewards}", "" + SPlayerUtil.getRewards(player).size()));
+		SMiscUtil.sendMsg(player, SMiscUtil.getString("rewards_awaiting").replace("{rewards}", "" + SPlayerUtil.getRewardAmount(player)));
 
 		// Shoot a firework, woohoo!
-		Firework firework = (Firework) player.getPlayer().getLocation().getWorld().spawnEntity(player.getPlayer().getLocation(), EntityType.FIREWORK);
-		FireworkMeta fireworkmeta = firework.getFireworkMeta();
-		FireworkEffect.Type type = FireworkEffect.Type.BALL_LARGE;
-		FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.AQUA).withFade(Color.FUCHSIA).with(type).trail(true).build();
-		fireworkmeta.addEffect(effect);
-		fireworkmeta.setPower(1);
-		firework.setFireworkMeta(fireworkmeta);
+		if(SConfigUtil.getSettingBoolean("expiration.punish"))
+		{
+			Firework firework = (Firework) player.getPlayer().getLocation().getWorld().spawnEntity(player.getPlayer().getLocation(), EntityType.FIREWORK);
+			FireworkMeta fireworkmeta = firework.getFireworkMeta();
+			FireworkEffect.Type type = FireworkEffect.Type.BALL_LARGE;
+			FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.AQUA).withFade(Color.FUCHSIA).with(type).trail(true).build();
+			fireworkmeta.addEffect(effect);
+			fireworkmeta.setPower(1);
+			firework.setFireworkMeta(fireworkmeta);
+		}
 
 		// Tracking
 		SPlayerUtil.addCompletion(player);
@@ -103,7 +106,7 @@ public class SAssignmentListener implements Listener
 		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_expired").replace("{task}", assignment.getTask().getName()));
 
 		// Handle expiration punishment if enabled
-		if(SConfigUtil.getSettingBoolean("enable_expiration_punishment"))
+		if(SConfigUtil.getSettingBoolean("expiration.punish"))
 		{
 			// TODO: Update punishments.
 
@@ -125,7 +128,7 @@ public class SAssignmentListener implements Listener
 		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_forfeit").replace("{task}", assignment.getTask().getName()));
 
 		// Handle punishments if enabled
-		if(SConfigUtil.getSettingBoolean("enable_forfeit_punishment"))
+		if(SConfigUtil.getSettingBoolean("forfeit.punish"))
 		{
 			// TODO: Update punishments.
 

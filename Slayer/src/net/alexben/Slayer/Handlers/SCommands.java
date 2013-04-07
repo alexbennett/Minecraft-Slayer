@@ -276,7 +276,7 @@ public class SCommands implements CommandExecutor
 					}
 
 					// Define variables
-					ArrayList<Assignment> assignments = STaskUtil.getAssignments(player);
+					ArrayList<Assignment> assignments = STaskUtil.getDisplayedAssignments(player);
 
 					player.sendMessage(" ");
 					if(assignments.size() > 1) SMiscUtil.sendMsg(player, "Your current assignments are:");
@@ -286,23 +286,27 @@ public class SCommands implements CommandExecutor
 					// List the tasks
 					for(Assignment assignment : assignments)
 					{
+						// Continue to the next assignment if it isn't on display
+						if(!assignment.isDisplayed()) continue;
+
 						String color = "" + ChatColor.AQUA;
 						if(!assignment.isActive()) color = "" + ChatColor.GRAY;
 						if(assignment.isComplete()) color = "" + ChatColor.AQUA;
 						if(assignment.isExpired()) color = ChatColor.RED + "" + ChatColor.STRIKETHROUGH;
-						if(assignment.isFailed()) color = ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH;
+						if(assignment.isForfeited()) color = ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH;
 
 						String timeLimit = "", miscTag = "";
 						if(assignment.getTask().isTimed() && assignment.isActive())
 						{
 							timeLimit = ChatColor.GRAY + " (Time Remaining: " + ChatColor.YELLOW + assignment.getTimeLeft() + " minutes" + ChatColor.GRAY + ")";
 						}
-						if(assignment.isExpired() || assignment.isFailed()) miscTag = ChatColor.RED + " [FAILED]";
+						if(assignment.isForfeited()) miscTag = ChatColor.RED + " [FORFEITED]";
+						else if(assignment.isExpired()) miscTag = ChatColor.RED + " [EXPIRED]";
 						else if(assignment.isComplete()) miscTag = ChatColor.GREEN + " [COMPLETE]";
 
 						player.sendMessage(ChatColor.GRAY + " > " + color + assignment.getTask().getName() + ChatColor.RESET + timeLimit + miscTag);
 
-						if(!assignment.isExpired() && !assignment.isFailed() && !assignment.isComplete())
+						if(!assignment.isExpired() && !assignment.isFailed() && !assignment.isComplete() && !assignment.isForfeited())
 						{
 							if(assignment.getTask().getType().equals(Task.TaskType.MOB))
 							{

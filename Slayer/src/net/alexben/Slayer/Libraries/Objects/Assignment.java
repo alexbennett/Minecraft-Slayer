@@ -33,7 +33,7 @@ public class Assignment implements Serializable
 	private int id, progress;
 	private long expiration;
 	private Task task;
-	private boolean active, failed, expired;
+	private boolean display, active, failed, expired, forfeited;
 
 	public Assignment(OfflinePlayer player, Task task)
 	{
@@ -43,6 +43,7 @@ public class Assignment implements Serializable
 		this.active = true;
 		this.failed = false;
 		this.expired = false;
+		this.display = true;
 		this.task = task;
 		this.expiration = System.currentTimeMillis() + (task.getTimeLimit() * 60000); // Converts to milliseconds
 	}
@@ -68,6 +69,16 @@ public class Assignment implements Serializable
 	}
 
 	/**
+	 * Sets the forfeit status of the task.
+	 * 
+	 * @param status the boolean to set the task to.
+	 */
+	public void setForfeited(boolean status)
+	{
+		forfeited = status;
+	}
+
+	/**
 	 * Sets the expiration status of the task.
 	 * 
 	 * @param status the boolean to set the task to.
@@ -75,6 +86,16 @@ public class Assignment implements Serializable
 	public void setExpired(boolean status)
 	{
 		expired = status;
+	}
+
+	/**
+	 * Sets the display status of the task.
+	 * 
+	 * @param status the boolean to set the task to.
+	 */
+	public void setDisplay(boolean status)
+	{
+		display = status;
 	}
 
 	/**
@@ -155,6 +176,26 @@ public class Assignment implements Serializable
 	public boolean isExpired()
 	{
 		return expired;
+	}
+
+	/**
+	 * Returns true/false depending on if the task is forfeited or not.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isForfeited()
+	{
+		return forfeited;
+	}
+
+	/**
+	 * Returns true/false depending on if the task is displayed or not.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isDisplayed()
+	{
+		return display;
 	}
 
 	/**

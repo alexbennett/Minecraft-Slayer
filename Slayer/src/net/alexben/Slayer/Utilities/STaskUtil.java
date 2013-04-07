@@ -242,6 +242,23 @@ public class STaskUtil
 	}
 
 	/**
+	 * Returns an ArrayList of all forfeited assignments.
+	 * 
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getAllForfeitedAssignments()
+	{
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+		for(Assignment assignment : getAllAssignments())
+		{
+			if(assignment.isForfeited()) assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	/**
 	 * Returns an ArrayList of all assignments for <code>player</code>.
 	 * 
 	 * @param player the player to check.
@@ -254,6 +271,26 @@ public class STaskUtil
 			return (ArrayList<Assignment>) SDataUtil.getData(player, "assignments");
 		}
 		return null;
+	}
+
+	/**
+	 * Returns an ArrayList of active assignments for <code>player</code>.
+	 * 
+	 * @param player the player to check.
+	 * @return ArrayList
+	 */
+	public static ArrayList<Assignment> getDisplayedAssignments(OfflinePlayer player)
+	{
+		ArrayList<Assignment> temp = new ArrayList<Assignment>();
+
+		if(getAssignments(player) == null) return temp;
+
+		for(Assignment assignment : getAssignments(player))
+		{
+			if(assignment.isDisplayed()) temp.add(assignment);
+		}
+
+		return temp;
 	}
 
 	/**
@@ -319,7 +356,8 @@ public class STaskUtil
 			SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentForfeitEvent);
 			if(assignmentForfeitEvent.isCancelled()) return false;
 
-			getAssignments(player).remove(assignment);
+			assignment.setForfeited(true);
+			assignment.setActive(false);
 			return true;
 		}
 		return false;
@@ -417,16 +455,20 @@ public class STaskUtil
 		// Clear old assignments and stoof
 		for(Assignment assignment : getAllAssignments())
 		{
-			if(assignment.isExpired() || assignment.isFailed() || assignment.isComplete())
+			if(!assignment.isActive() || assignment.isExpired() || assignment.isFailed() || assignment.isComplete() || assignment.isForfeited())
 			{
+				// Continue if the assignment isn't displayable
+				if(!assignment.isDisplayed()) continue;
+
 				// Remove the assignment, it's no longer needed
-				removeAssignment(assignment.getOfflinePlayer(), assignment.getID(), AssignmentRemoveEvent.RemoveReason.AUTO);
+				assignment.setDisplay(false);
+				assignment.setActive(false);
 
 				count++;
 			}
 		}
 
-		if(count > 0) SMiscUtil.log("info", count + " inactive assignments have been cleared.");
+		if(count > 0) SMiscUtil.log("info", count + " inactive assignments have been updated.");
 	}
 
 	/**

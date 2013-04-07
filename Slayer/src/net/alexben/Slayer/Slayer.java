@@ -183,7 +183,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			timedGraph.addPlotter(new Metrics.Plotter("Timed")
+			timedGraph.addPlotter(new Metrics.Plotter("Untimed")
 			{
 				@Override
 				public int getValue()
@@ -192,7 +192,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			timedGraph.addPlotter(new Metrics.Plotter("Untimed")
+			timedGraph.addPlotter(new Metrics.Plotter("Timed")
 			{
 				@Override
 				public int getValue()
@@ -216,6 +216,15 @@ public class Slayer extends JavaPlugin
 				public int getValue()
 				{
 					return STaskUtil.getAllExpiredAssignments().size();
+				}
+			});
+
+			statusGraph.addPlotter(new Metrics.Plotter("Forfeited")
+			{
+				@Override
+				public int getValue()
+				{
+					return STaskUtil.getAllForfeitedAssignments().size();
 				}
 			});
 

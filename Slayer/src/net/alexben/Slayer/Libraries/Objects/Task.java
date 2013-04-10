@@ -21,7 +21,11 @@ package net.alexben.Slayer.Libraries.Objects;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
+import net.alexben.Slayer.Utilities.SItemUtil;
+
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,19 +33,20 @@ public class Task implements Serializable
 {
 	private static final long serialVersionUID = 1869297353395176134L;
 	private String name = null, desc = null;
-	private int value, amountNeeded, timeLimit;
+	private int level, value, amountNeeded, timeLimit;
 	private SerialItemStack item;
 	private TaskType type;
 	private EntityType entity;
 	private ArrayList<SerialItemStack> reward = new ArrayList<SerialItemStack>();
 
-	public Task(String task, String desc, int timeLimit, int value, ArrayList<SerialItemStack> rewards, int amount, EntityType entity)
+	public Task(String task, String desc, int timeLimit, int value, int level, ArrayList<SerialItemStack> rewards, int amount, EntityType entity)
 	{
 		this.name = task;
 		this.desc = desc;
 		this.timeLimit = timeLimit;
 		this.amountNeeded = amount;
 		this.value = value;
+		this.level = level;
 		this.entity = entity;
 		this.type = TaskType.MOB;
 
@@ -54,13 +59,14 @@ public class Task implements Serializable
 		}
 	}
 
-	public Task(String task, String desc, int timeLimit, int value, ArrayList<SerialItemStack> rewards, int amount, ItemStack item)
+	public Task(String task, String desc, int timeLimit, int value, int level, ArrayList<SerialItemStack> rewards, int amount, ItemStack item)
 	{
 		this.name = task;
 		this.desc = desc;
 		this.timeLimit = timeLimit;
 		this.amountNeeded = amount;
 		this.value = value;
+		this.level = level;
 		this.item = new SerialItemStack(item);
 		this.type = TaskType.ITEM;
 
@@ -121,6 +127,40 @@ public class Task implements Serializable
 	public int getValue()
 	{
 		return value;
+	}
+
+	/**
+	 * Returns the level of the task.
+	 * 
+	 * @return Integer
+	 */
+	public int getLevel()
+	{
+		return level;
+	}
+
+	/**
+	 * Returns a book with information from the task.
+	 * 
+	 * @return ItemStack
+	 */
+	public ItemStack getBook()
+	{
+		List<String> pages = new ArrayList<String>();
+
+		// Set variables used in the book
+		String goal = null;
+
+		if(type.equals(TaskType.ITEM))
+		{
+			goal = "Your goal will be to obtain " + amountNeeded + " " + item.toItemStack().getType().name().toLowerCase() + "s.";
+		}
+
+		// Create the content
+		pages.add(desc + "\n\n" + goal);
+
+		// Return the book
+		return SItemUtil.createBook(name, ChatColor.AQUA + "Level " + level + " Slayer Master", pages);
 	}
 
 	/**

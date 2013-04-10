@@ -8,6 +8,7 @@ tasks:
       mob: pig
       amount: 5
       value: 10
+      level: 1
       reward:
           - itemid: 320
             amount: 10
@@ -21,6 +22,7 @@ tasks:
       mob: zombie
       amount: 11
       value: 27
+      level: 1
       reward:
           - itemid: 276
             amount: 1
@@ -34,6 +36,7 @@ tasks:
       item: 352
       amount: 18
       value: 14
+      level: 1
       reward:
           - itemid: 397
             amount: 1
@@ -56,6 +59,7 @@ tasks:
       mob: creeper
       amount: 23
       value: 76
+      level: 1
       reward:
           - itemid: 322
             amount: 1
@@ -67,6 +71,7 @@ tasks:
       mob: enderdragon
       amount: 1
       value: 10000
+      level: 1
       reward:
           - itemid: 310
             amount: 2
@@ -93,6 +98,7 @@ tasks:
       item: 353
       amount: 80
       value: 25
+      level: 1
       reward:
           - itemid: 354
             amount: 1
@@ -104,6 +110,7 @@ tasks:
       item: 326
       amount: 3
       value: 17
+      level: 1
       reward:
           - itemid: 259
             amount: 3
@@ -115,6 +122,7 @@ tasks:
       item: 376
       amount: 5
       value: 46
+      level: 1
       reward:
           - itemid: 373
             itembyte: 8202
@@ -127,6 +135,7 @@ tasks:
       mob: endercrystal
       amount: 5
       value: 270
+      level: 1
       reward:
           - itemid: 373
             itembyte: 8289
@@ -142,6 +151,7 @@ tasks:
       item: 370
       amount: 19
       value: 60
+      level: 1
       reward:
           - itemid: 38
             amount: 12
@@ -155,6 +165,7 @@ tasks:
       item: 264
       amount: 2
       value: 11
+      level: 1
       reward:
           - itemid: 355
             amount: 1
@@ -168,6 +179,7 @@ tasks:
       mob: cow
       amount: 24
       value: 48
+      level: 1
       reward:
           - itemid: 402
             amount: 6
@@ -183,6 +195,7 @@ tasks:
       item: 335
       amount: 4
       value: 23
+      level: 1
       reward:
           - itemid: 357
             itembyte: 8202
@@ -195,6 +208,7 @@ tasks:
       mob: skeleton
       amount: 38
       value: 157
+      level: 1
       reward:
           - itemid: 276
             amount: 1
@@ -208,6 +222,7 @@ tasks:
       item: 349
       amount: 13
       value: 23
+      level: 1
       reward:
           - itemid: 350
             amount: 13
@@ -219,6 +234,7 @@ tasks:
       item: 84
       amount: 1
       value: 28
+      level: 1
       reward:
           - itemid: 2265
             amount: 1
@@ -230,6 +246,7 @@ tasks:
       item: 377
       amount: 126
       value: 350
+      level: 1
       reward:
           - itemid: 310
             amount: 1

@@ -58,6 +58,42 @@ public class STaskUtil
 	}
 
 	/**
+	 * Returns an ArrayList of all tasks with a level matching <code>level</code>.
+	 * 
+	 * @param level the level to look for.
+	 * @return ArrayList
+	 */
+	public static ArrayList<Task> getTasksWithLevel(int level)
+	{
+		ArrayList<Task> tasks = new ArrayList<Task>();
+
+		for(Task task : tasks)
+		{
+			if(task.getLevel() == level) tasks.add(task);
+		}
+
+		return tasks;
+	}
+
+	/**
+	 * Returns an ArrayList of all tasks with a level less than or equal to <code>level</code>.
+	 * 
+	 * @param level the level to max at.
+	 * @return ArrayList
+	 */
+	public static ArrayList<Task> getTasksUpToLevel(int level)
+	{
+		ArrayList<Task> tasks = new ArrayList<Task>();
+
+		for(Task task : tasks)
+		{
+			if(task.getLevel() <= level) tasks.add(task);
+		}
+
+		return tasks;
+	}
+
+	/**
 	 * Returns a random slayer task created from the task configuration.
 	 * 
 	 * @return Task

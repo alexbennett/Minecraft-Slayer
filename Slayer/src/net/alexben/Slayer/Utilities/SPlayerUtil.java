@@ -398,7 +398,7 @@ public class SPlayerUtil
 	 * Generates a reward inventory based off of the <code>player</code>'s current
 	 * reward items and opens it.
 	 * 
-	 * @param player the player to open the inventory for.
+	 * @param player the player for whom to open the inventory.
 	 */
 	public static void openRewardBackpack(Player player)
 	{
@@ -412,5 +412,18 @@ public class SPlayerUtil
 		SDataUtil.saveData(player, "inv_rewards", true);
 
 		player.openInventory(inventory);
+	}
+
+	/**
+	 * Generates an inventory populated with task papers and booklets used
+	 * to allow players to view available tasks based on their current level.
+	 * 
+	 * @param player the player for whom to open the inventory.
+	 */
+	public static void openTaskInventory(Player player)
+	{
+		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Your Available Tasks");
+
+		// TODO
 	}
 }

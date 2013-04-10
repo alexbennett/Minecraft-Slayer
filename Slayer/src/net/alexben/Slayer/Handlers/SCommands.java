@@ -158,7 +158,7 @@ public class SCommands implements CommandExecutor
 
 				if(category.equalsIgnoreCase("task"))
 				{
-					if(STaskUtil.getActiveAssignments(player).size() >= SConfigUtil.getSettingInt("task_limit"))
+					if(STaskUtil.getActiveAssignments(player).size() >= SConfigUtil.getSettingInt("tasks.limit"))
 					{
 						// They've already met the task limit, tell 'em
 						SMiscUtil.sendMsg(player, SMiscUtil.getString("has_met_limit"));

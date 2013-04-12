@@ -22,14 +22,16 @@ package net.alexben.Slayer.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import net.alexben.Slayer.Slayer;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 /**
  * Utility that handles miscellaneous methods.
@@ -79,6 +81,18 @@ public class SMiscUtil
 	{
 		if(Slayer.stringConfig.getConfig().getString(key) == null) return null;
 		return ChatColor.translateAlternateColorCodes('&', Slayer.stringConfig.getConfig().getString(key));
+	}
+
+	/**
+	 * Returns the value of the item/entity with the name <code>name</code> from the values.yml FileConfiguration.
+	 * 
+	 * @param name the name to whose value to look for.
+	 * @return Integer
+	 */
+	public static int getValue(String name)
+	{
+		// TODO: Unimplemented as of now.
+		return 0;
 	}
 
 	/**
@@ -183,5 +197,75 @@ public class SMiscUtil
 		}
 
 		return players;
+	}
+
+	/**
+	 * Shoots a random firework at the <code>location</code>.
+	 * 
+	 * @param location the location to launch the firework from.
+	 */
+	public static void shootRandomFirework(Location location)
+	{
+		// Define variables
+		Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+		FireworkMeta fireworkMeta = firework.getFireworkMeta();
+		Random r = new Random();
+
+		// Get random type
+		int rt = r.nextInt(4) + 1;
+		FireworkEffect.Type type = FireworkEffect.Type.BALL;
+		if(rt == 1) type = FireworkEffect.Type.BALL;
+		if(rt == 2) type = FireworkEffect.Type.BALL_LARGE;
+		if(rt == 3) type = FireworkEffect.Type.BURST;
+		if(rt == 4) type = FireworkEffect.Type.CREEPER;
+		if(rt == 5) type = FireworkEffect.Type.STAR;
+
+		// Get random colors
+		Color color1 = getColor(r.nextInt(17) + 1);
+		Color color2 = getColor(r.nextInt(17) + 1);
+
+		// Create the effect
+		FireworkEffect effect = FireworkEffect.builder().flicker(r.nextBoolean()).withColor(color1).withFade(color2).with(type).trail(r.nextBoolean()).build();
+
+		// Apply the effect
+		fireworkMeta.addEffect(effect);
+
+		// Get random power
+		int power = r.nextInt(2) + 1;
+		fireworkMeta.setPower(power);
+
+		// Apply everything
+		firework.setFireworkMeta(fireworkMeta);
+	}
+
+	/**
+	 * Returns a color based on i <code>i</code>.
+	 * 
+	 * @param i the number of color to return.
+	 * @return Color
+	 */
+	public static Color getColor(int i)
+	{
+		Color color = null;
+
+		if(i == 1) color = Color.AQUA;
+		if(i == 2) color = Color.BLACK;
+		if(i == 3) color = Color.BLUE;
+		if(i == 4) color = Color.FUCHSIA;
+		if(i == 5) color = Color.GRAY;
+		if(i == 6) color = Color.GREEN;
+		if(i == 7) color = Color.LIME;
+		if(i == 8) color = Color.MAROON;
+		if(i == 9) color = Color.NAVY;
+		if(i == 10) color = Color.OLIVE;
+		if(i == 11) color = Color.ORANGE;
+		if(i == 12) color = Color.PURPLE;
+		if(i == 13) color = Color.RED;
+		if(i == 14) color = Color.SILVER;
+		if(i == 15) color = Color.TEAL;
+		if(i == 16) color = Color.WHITE;
+		if(i == 17) color = Color.YELLOW;
+
+		return color;
 	}
 }

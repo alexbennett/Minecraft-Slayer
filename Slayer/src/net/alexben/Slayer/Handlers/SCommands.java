@@ -261,7 +261,11 @@ public class SCommands implements CommandExecutor
 					player.sendMessage(" ");
 					player.sendMessage("  > Available Rewards: " + ChatColor.GREEN + SPlayerUtil.getRewardAmount(player));
 					player.sendMessage(" ");
-					player.sendMessage("  > Statistics: " + ChatColor.AQUA + "Coming Soon!");
+					player.sendMessage("  > Statistics:");
+					player.sendMessage(" ");
+					player.sendMessage("     - Level: " + ChatColor.AQUA + SPlayerUtil.getLevel(player));
+					player.sendMessage("     - Points: " + ChatColor.AQUA + SPlayerUtil.getPoints(player) + ChatColor.GRAY + " (" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY + " until level " + ((int) SPlayerUtil.getLevel(player) + 1) + ")");
+					player.sendMessage("     - Rank: " + ChatColor.AQUA + "Coming Soon!");
 					player.sendMessage(" ");
 					return true;
 				}
@@ -318,6 +322,7 @@ public class SCommands implements CommandExecutor
 								player.sendMessage(ChatColor.GRAY + "     - Item: " + ChatColor.YELLOW + SObjUtil.capitalize(assignment.getTask().getItem().getType().name().toLowerCase()));
 								player.sendMessage(ChatColor.GRAY + "     - Obtained: " + ChatColor.YELLOW + assignment.getAmountObtained() + ChatColor.GRAY + "/" + ChatColor.YELLOW + assignment.getAmountNeeded());
 							}
+							player.sendMessage(ChatColor.GRAY + "     - Points: " + ChatColor.YELLOW + assignment.getTask().getValue());
 							player.sendMessage(ChatColor.GRAY + "     - Assignment #: " + ChatColor.YELLOW + assignment.getID());
 							player.sendMessage(ChatColor.GRAY + "     - Description: " + ChatColor.YELLOW + assignment.getTask().getDesc());
 						}

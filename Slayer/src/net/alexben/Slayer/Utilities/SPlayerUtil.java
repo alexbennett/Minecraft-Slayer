@@ -307,6 +307,17 @@ public class SPlayerUtil
 	}
 
 	/**
+	 * Returns the points goal until <code>player</code>'s next level.
+	 * 
+	 * @param player the player to check.
+	 * @return Integer
+	 */
+	public static int getPointsGoal(OfflinePlayer player)
+	{
+		return (int) Math.ceil(26 * Math.pow(getLevel(player) + 1, 2));
+	}
+
+	/**
 	 * Sets the <code>player</code>'s level to <code>points</code>.
 	 * 
 	 * @param player the player to edit.
@@ -326,7 +337,7 @@ public class SPlayerUtil
 	{
 		if(SDataUtil.hasData(player, "level"))
 		{
-			setPoints(player, getPoints(player) + 1);
+			setLevel(player, getLevel(player) + 1);
 		}
 		else
 		{

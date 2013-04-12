@@ -60,11 +60,8 @@ public class SAssignmentListener implements Listener
 	private void onAssignmentComplete(AssignmentCompleteEvent event)
 	{
 		// Define variables
-		final OfflinePlayer player = event.getPlayer();
+		final Player player = event.getPlayer();
 		final Assignment assignment = event.getAssignment();
-
-		// Reward the player and add the slayer points
-		SPlayerUtil.addPoints(player, assignment.getTask().getValue());
 
 		// Add the rewards to their reward queue
 		for(ItemStack item : assignment.getTask().getReward())
@@ -79,7 +76,7 @@ public class SAssignmentListener implements Listener
 		SMiscUtil.sendMsg(player, SMiscUtil.getString("rewards_awaiting").replace("{rewards}", "" + SPlayerUtil.getRewardAmount(player)));
 
 		// Shoot a firework, woohoo!
-		if(SConfigUtil.getSettingBoolean("expiration.punish"))
+		if(SConfigUtil.getSettingBoolean("expiration.completion_firework"))
 		{
 			Firework firework = (Firework) player.getPlayer().getLocation().getWorld().spawnEntity(player.getPlayer().getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkmeta = firework.getFireworkMeta();
@@ -93,9 +90,28 @@ public class SAssignmentListener implements Listener
 		// Tracking
 		SPlayerUtil.addCompletion(player);
 
-		// Handle leveling
-		int currentLevel = SPlayerUtil.getLevel(player);
+		// Handle points and leveling
+		SPlayerUtil.addPoints(player, assignment.getTask().getValue());
 
+		if(SPlayerUtil.getPoints(player) >= SPlayerUtil.getPointsGoal(player))
+		{
+			// Loop and make sure they didn't get a crap-ton of points and if so update accordingly
+			while(SPlayerUtil.getPoints(player) >= SPlayerUtil.getPointsGoal(player))
+			{
+				// Get rid of the points
+				SPlayerUtil.subtractPoints(player, SPlayerUtil.getPointsGoal(player));
+
+				// Add the level
+				SPlayerUtil.addLevel(player);
+			}
+
+			// Message the player
+			SMiscUtil.sendMsg(player, SMiscUtil.getString("level_up_msg1").replace("{level}", "" + SPlayerUtil.getLevel(player)));
+			SMiscUtil.sendMsg(player, SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player))));
+
+			// Shoot a random firework!
+			SMiscUtil.shootRandomFirework(player.getLocation());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -113,9 +129,6 @@ public class SAssignmentListener implements Listener
 		if(SConfigUtil.getSettingBoolean("expiration.punish"))
 		{
 			// TODO: Update punishments.
-
-			// Remove the value of the assignment from their points
-			SPlayerUtil.subtractPoints(player, assignment.getTask().getValue());
 		}
 
 		// Tracking
@@ -135,12 +148,6 @@ public class SAssignmentListener implements Listener
 		if(SConfigUtil.getSettingBoolean("forfeit.punish"))
 		{
 			// TODO: Update punishments.
-
-			// Remove the value of the assignment from their points
-			SPlayerUtil.subtractPoints(player, assignment.getTask().getValue());
-
-			// Message them to inform them of their punishment
-			SMiscUtil.sendMsg(player, SMiscUtil.getString("forfeit_punishment").replace("{task}", assignment.getTask().getName()));
 		}
 
 		// Tracking

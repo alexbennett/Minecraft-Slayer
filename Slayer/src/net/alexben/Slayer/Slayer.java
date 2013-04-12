@@ -259,13 +259,20 @@ public class Slayer extends JavaPlugin
 			if(!SObjUtil.toBoolean(task.get("enabled"))) continue;
 
 			// Define variables
-			int timeLimit = 0;
 			ArrayList<SerialItemStack> rewards = new ArrayList<SerialItemStack>();
+			int timeLimit = 0;
+			int level = 1;
+			int value = SObjUtil.toInteger(task.get("value"));
 
-			// Figure out time limit
-			if(!task.get("timelimit").equals("none"))
+			// Validate variables
+			if(task.get("timelimit") != null && !task.get("timelimit").equals("none"))
 			{
 				timeLimit = SObjUtil.toInteger(task.get("timelimit"));
+			}
+
+			if(task.get("level") != null && task.get("level").equals(0))
+			{
+				level = SObjUtil.toInteger(task.get("level"));
 			}
 
 			// All of this to simply handle rewards...
@@ -297,22 +304,22 @@ public class Slayer extends JavaPlugin
 
 							for(Map.Entry<String, Object> enchantment : enchantments.entrySet())
 							{
-								int level = 0;
+								int enchLevel = 0;
 								Enchantment enchant = Enchantment.getByName(enchantment.getKey().toUpperCase());
 
 								// Determine the appropriate level
 								if(enchantment.getValue().equals("max"))
 								{
 									// Use max level
-									level = enchant.getMaxLevel();
+									enchLevel = enchant.getMaxLevel();
 								}
 								else
 								{
 									// Use the level given
-									level = SObjUtil.toInteger(enchantment.getValue());
+									enchLevel = SObjUtil.toInteger(enchantment.getValue());
 								}
 
-								item.addUnsafeEnchantment(enchant, level);
+								item.addUnsafeEnchantment(enchant, enchLevel);
 							}
 						}
 					}
@@ -325,11 +332,11 @@ public class Slayer extends JavaPlugin
 			// Create the actual task
 			if(task.get("mob") != null)
 			{
-				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("value")), rewards, SObjUtil.toInteger(task.get("amount")), EntityType.fromName((String) task.get("mob")));
+				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, value, level, rewards, SObjUtil.toInteger(task.get("amount")), EntityType.fromName((String) task.get("mob")));
 			}
 			else if(task.get("item") != null)
 			{
-				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("value")), rewards, SObjUtil.toInteger(task.get("amount")), new ItemStack(SObjUtil.toInteger(task.get("item"))));
+				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, value, level, rewards, SObjUtil.toInteger(task.get("amount")), new ItemStack(SObjUtil.toInteger(task.get("item"))));
 			}
 
 			// Increase the count for logging and load the task into the instance

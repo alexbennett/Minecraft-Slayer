@@ -92,6 +92,10 @@ public class SAssignmentListener implements Listener
 
 		// Tracking
 		SPlayerUtil.addCompletion(player);
+
+		// Handle leveling
+		int currentLevel = SPlayerUtil.getLevel(player);
+
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

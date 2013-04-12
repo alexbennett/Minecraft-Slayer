@@ -52,6 +52,7 @@ public class SPlayerUtil
 
 		// This is really simple for the time being and almost unnecessary, but I'm adding it for future expansion.
 		SDataUtil.saveData(player, "points", 0);
+		SDataUtil.saveData(player, "level", 1);
 		SDataUtil.saveData(player, "task_assignments_total", 0);
 		SDataUtil.saveData(player, "task_completions", 0);
 		SDataUtil.saveData(player, "task_forfeits", 0);
@@ -303,6 +304,46 @@ public class SPlayerUtil
 	public static int getPoints(OfflinePlayer player)
 	{
 		return SObjUtil.toInteger(SDataUtil.getData(player, "points"));
+	}
+
+	/**
+	 * Sets the <code>player</code>'s level to <code>points</code>.
+	 * 
+	 * @param player the player to edit.
+	 * @param levels the points to set to.
+	 */
+	public static void setLevel(OfflinePlayer player, int levels)
+	{
+		SDataUtil.saveData(player, "level", levels);
+	}
+
+	/**
+	 * Gives the <code>player</code> a single level.
+	 * 
+	 * @param player the player to give points to.
+	 */
+	public static void addLevel(OfflinePlayer player)
+	{
+		if(SDataUtil.hasData(player, "level"))
+		{
+			setPoints(player, getPoints(player) + 1);
+		}
+		else
+		{
+			SDataUtil.saveData(player, "level", 2);
+		}
+	}
+
+	/**
+	 * Returns the <code>player</code>'s level.
+	 * 
+	 * @param player the player to check.
+	 * @return Integer
+	 */
+	public static int getLevel(OfflinePlayer player)
+	{
+		if(!SDataUtil.hasData(player, "level")) SDataUtil.saveData(player, "level", 1);
+		return SObjUtil.toInteger(SDataUtil.getData(player, "level"));
 	}
 
 	/**

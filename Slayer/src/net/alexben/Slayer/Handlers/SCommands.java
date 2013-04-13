@@ -74,8 +74,8 @@ public class SCommands implements CommandExecutor
 
 				if(args.length == 1)
 				{
-					SMiscUtil.sendMsg(player, "Latest Slayer version: " + ChatColor.GREEN + Slayer.update.getLatestVersion());
-					SMiscUtil.sendMsg(player, "Current Slayer version: " + ChatColor.RED + SMiscUtil.getInstance().getDescription().getVersion());
+					SMiscUtil.sendMsg(player, "Latest Slayer version: " + ChatColor.YELLOW + Slayer.update.getLatestVersion());
+					SMiscUtil.sendMsg(player, "Server Slayer version: " + ChatColor.YELLOW + SMiscUtil.getInstance().getDescription().getVersion());
 
 					if(Slayer.update.check() || !Slayer.update.supported())
 					{
@@ -235,6 +235,9 @@ public class SCommands implements CommandExecutor
 				}
 
 				player.sendMessage(" ");
+
+				// TODO
+				SPlayerUtil.openTaskInventory(player);
 
 				return true;
 			}

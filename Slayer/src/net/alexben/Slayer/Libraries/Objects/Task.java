@@ -26,6 +26,7 @@ import java.util.List;
 import net.alexben.Slayer.Utilities.SItemUtil;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -146,21 +147,31 @@ public class Task implements Serializable
 	 */
 	public ItemStack getBook()
 	{
-		List<String> pages = new ArrayList<String>();
+		List<String> lore = new ArrayList<String>();
 
 		// Set variables used in the book
 		String goal = null;
 
 		if(type.equals(TaskType.ITEM))
 		{
-			goal = "Your goal will be to obtain " + amountNeeded + " " + item.toItemStack().getType().name().toLowerCase() + "s.";
+			goal = "Your goal will be to obtain " + amountNeeded + " " + item.toItemStack().getType().name().toLowerCase().replace("_", " ") + "(s).";
+		}
+		else if(type.equals(TaskType.MOB))
+		{
+			goal = "Your goal will be to kill " + amountNeeded + " " + entity.getName().replace("_", " ") + "(s).";
 		}
 
 		// Create the content
-		pages.add(desc + "\n\n" + goal);
+		lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "(Level " + ChatColor.RED + ChatColor.ITALIC + level + ChatColor.GRAY + ChatColor.ITALIC + " Slayer Task)");
+		lore.add("");
+		lore.add(ChatColor.GREEN + "\"" + desc + "\"");
+		lore.add("");
+		lore.add(ChatColor.GRAY + "Goal: " + ChatColor.YELLOW + goal);
+		lore.add(ChatColor.GRAY + "Rewards: " + ChatColor.YELLOW + reward.size() + " item(s)");
+		lore.add(ChatColor.GRAY + "Points: " + ChatColor.YELLOW + value);
 
 		// Return the book
-		return SItemUtil.createBook(name, ChatColor.AQUA + "Level " + level + " Slayer Master", pages);
+		return SItemUtil.createItem(Material.PAPER, ChatColor.AQUA + name, lore, null);
 	}
 
 	/**

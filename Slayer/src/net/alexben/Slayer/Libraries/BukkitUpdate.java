@@ -41,11 +41,11 @@ public class BukkitUpdate implements Listener
 			this.filesFeed = new URL(url);
 			this.command = command;
 			this.permission = permission;
-			this.logger = plugin.getLogger();
+			this.logger = Logger.getLogger("Minecraft");
 		}
 		catch(Exception e)
 		{
-			this.logger.severe("Could not connect to BukkitDev");
+			this.logger.severe("[ " + this.plugin.getName() + "] Could not connect to BukkitDev");
 		}
 	}
 
@@ -73,7 +73,7 @@ public class BukkitUpdate implements Listener
 				if(!this.supported)
 				{
 					Bukkit.broadcast(ChatColor.RED + "The version of " + ChatColor.YELLOW + this.plugin.getName() + ChatColor.RED + " you are using is not supported.", this.permission);
-					Bukkit.broadcast(ChatColor.RED + "It has been removed from BukkitDev. This " + ChatColor.ITALIC + ChatColor.BOLD + "may" + ChatColor.RESET + ChatColor.RED + " be because it", this.permission);
+					Bukkit.broadcast(ChatColor.RED + "It has been removed from BukkitDev. This " + ChatColor.ITALIC + "may" + ChatColor.RESET + ChatColor.RED + " be because it", this.permission);
 					if(auto)
 					{
 						Bukkit.broadcast(ChatColor.RED + "is not safe.", this.permission);
@@ -105,7 +105,7 @@ public class BukkitUpdate implements Listener
 			int bytesTransferred = 0;
 			String downloadLink = this.jarLink;
 
-			this.logger.info("Attempting to download the latest version...");
+			this.logger.info("[ " + this.plugin.getName() + "] Attempting to download the latest version...");
 
 			// Set latest build URL
 			URL plugin = new URL(downloadLink);
@@ -121,7 +121,7 @@ public class BukkitUpdate implements Listener
 
 			// Create new .jar file and add it to update directory
 			File pluginUpdate = new File("plugins" + File.separator + Bukkit.getUpdateFolder() + File.separator + this.plugin + ".jar");
-			this.logger.info("File will been written to: " + pluginUpdate.getCanonicalPath());
+			this.logger.info("[ " + this.plugin.getName() + "] [ " + this.plugin.getName() + "] File will been written to: " + pluginUpdate.getCanonicalPath());
 
 			InputStream is = pluginCon.getInputStream();
 			OutputStream os = new FileOutputStream(pluginUpdate);
@@ -138,7 +138,7 @@ public class BukkitUpdate implements Listener
 
 					if(percentTransferred != 100)
 					{
-						this.logger.info("Download progress: " + percentTransferred + "%");
+						this.logger.info("[ " + this.plugin.getName() + "] Download progress: " + percentTransferred + "%");
 					}
 				}
 			}
@@ -148,22 +148,22 @@ public class BukkitUpdate implements Listener
 			os.close();
 
 			// Download complete!
-			this.logger.info("Download complete!");
-			this.logger.info("Update will complete on next server reload.");
+			this.logger.info("[ " + this.plugin.getName() + "] Download complete!");
+			this.logger.info("[ " + this.plugin.getName() + "] Update will complete on next server reload.");
 
 			return true;
 		}
 		catch(MalformedURLException e)
 		{
-			this.logger.warning("Error accessing URL: " + e);
+			this.logger.warning("[ " + this.plugin.getName() + "] Error accessing URL: " + e);
 		}
 		catch(FileNotFoundException e)
 		{
-			this.logger.warning("Error accessing URL: " + e);
+			this.logger.warning("[ " + this.plugin.getName() + "] Error accessing URL: " + e);
 		}
 		catch(IOException e)
 		{
-			this.logger.warning("Error downloading file: " + e);
+			this.logger.warning("[ " + this.plugin.getName() + "] Error downloading file: " + e);
 		}
 
 		return false;
@@ -186,7 +186,7 @@ public class BukkitUpdate implements Listener
 			}
 			catch(Exception e)
 			{
-				this.logger.warning("Failed to find download page.");
+				this.logger.warning("[ " + this.plugin.getName() + "] Failed to find download page.");
 			}
 			input.close();
 
@@ -196,7 +196,7 @@ public class BukkitUpdate implements Listener
 			}
 			catch(Exception e)
 			{
-				this.logger.warning("Failed to open connection with download page.");
+				this.logger.warning("[ " + this.plugin.getName() + "] Failed to open connection with download page.");
 			}
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -225,29 +225,34 @@ public class BukkitUpdate implements Listener
 				String[] current = currentVersion.split("\\.");
 				String[] latest = this.version.split("\\.");
 
-				// Current Version
-				int currentMajor = Integer.parseInt(current[0]);
-				int currentMinor = Integer.parseInt(current[1]);
-				int currentBuild = Integer.parseInt(current[2]);
-
-				// Latest Version
-				int latestMajor = Integer.parseInt(latest[0]);
-				int latestMinor = Integer.parseInt(latest[1]);
-				int latestBuild = Integer.parseInt(latest[2]);
-
 				// All possible updates that are new
-				if(currentMajor < latestMajor) return true;
-				else if(currentMajor == latestMajor && currentMinor < latestMinor) return true;
-				else if(currentMinor == latestMinor && currentBuild < latestBuild) return true;
+				if(latest.length == 2)
+				{
+					if(Integer.parseInt(current[0]) < Integer.parseInt(latest[0])) return true;
+					else if(Integer.parseInt(current[0]) == Integer.parseInt(latest[0]) && Integer.parseInt(current[1]) < Integer.parseInt(latest[1])) return true;
+				}
+				else if(latest.length == 3)
+				{
+					if(Integer.parseInt(current[0]) < Integer.parseInt(latest[0])) return true;
+					else if(Integer.parseInt(current[0]) == Integer.parseInt(latest[0]) && Integer.parseInt(current[1]) < Integer.parseInt(latest[1])) return true;
+					else if(Integer.parseInt(current[1]) == Integer.parseInt(latest[1]) && Integer.parseInt(current[2]) < Integer.parseInt(latest[2])) return true;
+				}
+				else if(latest.length == 4)
+				{
+					if(Integer.parseInt(current[0]) < Integer.parseInt(latest[0])) return true;
+					else if(Integer.parseInt(current[0]) == Integer.parseInt(latest[0]) && Integer.parseInt(current[1]) < Integer.parseInt(latest[1])) return true;
+					else if(Integer.parseInt(current[1]) == Integer.parseInt(latest[1]) && Integer.parseInt(current[2]) < Integer.parseInt(latest[2])) return true;
+					else if(Integer.parseInt(current[2]) == Integer.parseInt(latest[2]) && Integer.parseInt(current[3]) < Integer.parseInt(latest[3])) return true;
+				}
 			}
 			catch(Exception e)
 			{
-				this.logger.warning("Could not parse version number.");
+				this.logger.warning("[ " + this.plugin.getName() + "] Could not parse version number.");
 			}
 		}
 		catch(Exception e)
 		{
-			this.logger.warning("Failed to read download page.");
+			this.logger.warning("[ " + this.plugin.getName() + "] Failed to read download page.");
 		}
 
 		return false;
@@ -274,7 +279,7 @@ public class BukkitUpdate implements Listener
 		}
 		catch(Exception e)
 		{
-			this.logger.warning("Failed to read download page.");
+			this.logger.warning("[ " + this.plugin.getName() + "] Failed to read download page.");
 		}
 
 		return false;
@@ -303,7 +308,7 @@ public class BukkitUpdate implements Listener
 		if(!this.supported && player.isOp() || player.hasPermission(this.permission))
 		{
 			player.sendMessage(ChatColor.RED + "The version of " + ChatColor.YELLOW + this.plugin.getName() + ChatColor.RED + " you are using is not supported.");
-			player.sendMessage(ChatColor.RED + "It has been removed from BukkitDev. This " + ChatColor.ITALIC + ChatColor.BOLD + "may" + ChatColor.RESET + ChatColor.RED + " be because it");
+			player.sendMessage(ChatColor.RED + "It has been removed from BukkitDev. This " + ChatColor.ITALIC + "may" + ChatColor.RESET + ChatColor.RED + " be because it");
 
 			if(auto)
 			{

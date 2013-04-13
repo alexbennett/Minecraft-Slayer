@@ -272,7 +272,7 @@ public class Slayer extends JavaPlugin
 				timeLimit = SObjUtil.toInteger(task.get("timelimit"));
 			}
 
-			if(task.get("level") != null && task.get("level").equals(0))
+			if(task.get("level") != null && !task.get("level").equals(0))
 			{
 				level = SObjUtil.toInteger(task.get("level"));
 			}

@@ -27,8 +27,10 @@ import net.alexben.Slayer.Handlers.SFlatFile;
 import net.alexben.Slayer.Libraries.Objects.Death;
 import net.alexben.Slayer.Libraries.Objects.Kill;
 import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
+import net.alexben.Slayer.Libraries.Objects.Task;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -474,8 +476,20 @@ public class SPlayerUtil
 	 */
 	public static void openTaskInventory(Player player)
 	{
-		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Your Available Tasks");
+		// Define variables
+		int level = getLevel(player);
+		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.GREEN + "(Click to Choose)");
 
-		// TODO
+		// Loop through tasks and determine which ones to display
+		for(Task task : STaskUtil.getTasks())
+		{
+			if(task.getLevel() <= level)
+			{
+				inventory.addItem(task.getBook());
+			}
+		}
+
+		// Open the inventory
+		player.openInventory(inventory);
 	}
 }

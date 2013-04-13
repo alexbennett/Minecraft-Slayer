@@ -59,23 +59,6 @@ public class SPlayerListener implements Listener
 		{
 			SMiscUtil.sendMsg(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY + " active task(s).");
 		}
-
-		if(SConfigUtil.getSettingBoolean("update.notify") && SMiscUtil.hasPermissionOrOP(player, "slayer.update"))
-		{
-			if(SUpdateUtil.check())
-			{
-				player.sendMessage(ChatColor.RED + "There is a new stable release for Slayer.");
-
-				if(SConfigUtil.getSettingBoolean("update.auto"))
-				{
-					player.sendMessage("Please " + ChatColor.YELLOW + "reload the server " + ChatColor.WHITE + " to finish the auto-update.");
-				}
-				else
-				{
-					player.sendMessage("Please update by using " + ChatColor.GOLD + "/slayer update" + ChatColor.WHITE + ".");
-				}
-			}
-		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import net.alexben.Slayer.Events.AssignmentRemoveEvent;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.Task;
+import net.alexben.Slayer.Slayer;
 import net.alexben.Slayer.Utilities.*;
 
 import org.bukkit.Bukkit;
@@ -73,10 +74,10 @@ public class SCommands implements CommandExecutor
 
 				if(args.length == 1)
 				{
-					SMiscUtil.sendMsg(player, "Latest Slayer version: " + ChatColor.GREEN + SUpdateUtil.getLatestVersion());
+					SMiscUtil.sendMsg(player, "Latest Slayer version: " + ChatColor.GREEN + Slayer.update.getLatestVersion());
 					SMiscUtil.sendMsg(player, "Current Slayer version: " + ChatColor.RED + SMiscUtil.getInstance().getDescription().getVersion());
 
-					if(SUpdateUtil.check())
+					if(Slayer.update.check() || !Slayer.update.supported())
 					{
 						SMiscUtil.sendMsg(player, "Please type " + ChatColor.GOLD + "/slayer update confirm" + ChatColor.WHITE + " to update.");
 					}
@@ -89,11 +90,11 @@ public class SCommands implements CommandExecutor
 				}
 				else if(args[1].equalsIgnoreCase("confirm"))
 				{
-					if(!SUpdateUtil.check()) return true;
+					if(!Slayer.update.check()) return true;
 
 					SMiscUtil.sendMsg(player, "Starting download...");
 
-					if(SUpdateUtil.execute())
+					if(Slayer.update.download())
 					{
 						SMiscUtil.sendMsg(player, ChatColor.GREEN + "Download complete! " + ChatColor.WHITE + "Reload to apply the changes.");
 						return true;

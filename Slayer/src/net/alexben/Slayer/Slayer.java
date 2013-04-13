@@ -27,6 +27,7 @@ import java.util.Map;
 import net.alexben.Slayer.Handlers.SCommands;
 import net.alexben.Slayer.Handlers.SFlatFile;
 import net.alexben.Slayer.Handlers.SScheduler;
+import net.alexben.Slayer.Libraries.BukkitUpdate;
 import net.alexben.Slayer.Libraries.ConfigAccessor;
 import net.alexben.Slayer.Libraries.Metrics;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
@@ -38,7 +39,6 @@ import net.alexben.Slayer.Listeners.SPlayerListener;
 import net.alexben.Slayer.Utilities.*;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -50,6 +50,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Slayer extends JavaPlugin
 {
 	public static ConfigAccessor taskConfig, stringConfig;
+	public static BukkitUpdate update;
 
 	@Override
 	public void onEnable()
@@ -72,8 +73,9 @@ public class Slayer extends JavaPlugin
 		SFlatFile.load();
 		validatePlayers();
 
-		// Lastly check for an update
-		checkUpdate();
+		// Lastly initialize the auto-updater
+		update = new BukkitUpdate(this, "http://dev.bukkit.org/server-mods/slayer/files.rss", "/slayer update", "slayer.update");
+		update.initialize();
 
 		// Log that JustAFK successfully loaded
 		SMiscUtil.log("info", "Slayer has been successfully enabled!");
@@ -346,40 +348,5 @@ public class Slayer extends JavaPlugin
 
 		// Log the tasks loaded
 		SMiscUtil.log("info", count + " task(s) loaded into memory.");
-	}
-
-	/**
-	 * Checks to see if an update is available for Slayer.
-	 */
-	private void checkUpdate()
-	{
-		// Define variables
-		boolean auto = SConfigUtil.getSettingBoolean("update.auto");
-		boolean notify = SConfigUtil.getSettingBoolean("update.notify");
-
-		// Check for updates, and then update if need be
-		if(auto || notify)
-		{
-			if(SUpdateUtil.check())
-			{
-				if(auto)
-				{
-					SUpdateUtil.execute();
-				}
-				else if(notify)
-				{
-					Bukkit.broadcast(ChatColor.RED + "There is a new stable release for Slayer.", "slayer.update");
-
-					if(auto)
-					{
-						Bukkit.broadcast("Please " + ChatColor.YELLOW + "reload the server " + ChatColor.WHITE + "to finish the auto-update.", "slayer.update");
-					}
-					else
-					{
-						Bukkit.broadcast("Please update by using " + ChatColor.GOLD + "/slayer update", "slayer.update");
-					}
-				}
-			}
-		}
 	}
 }

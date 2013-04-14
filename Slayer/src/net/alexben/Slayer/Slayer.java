@@ -156,7 +156,7 @@ public class Slayer extends JavaPlugin
 			Metrics.Graph statusGraph = metrics.createGraph("Assignment Status Comparison");
 
 			// Add Graph Data
-			typeGraph.addPlotter(new Metrics.Plotter("Item Based")
+			typeGraph.addPlotter(new Metrics.Plotter("Total ~=~ Item Based")
 			{
 				@Override
 				public int getValue()
@@ -172,7 +172,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			typeGraph.addPlotter(new Metrics.Plotter("Mob Based")
+			typeGraph.addPlotter(new Metrics.Plotter("Total ~=~ Mob Based")
 			{
 				@Override
 				public int getValue()
@@ -188,7 +188,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			timedGraph.addPlotter(new Metrics.Plotter("Untimed")
+			timedGraph.addPlotter(new Metrics.Plotter("Total ~=~ Untimed")
 			{
 				@Override
 				public int getValue()
@@ -197,7 +197,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			timedGraph.addPlotter(new Metrics.Plotter("Timed")
+			timedGraph.addPlotter(new Metrics.Plotter("Total ~=~ Timed")
 			{
 				@Override
 				public int getValue()
@@ -206,7 +206,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Complete")
+			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Completed")
 			{
 				@Override
 				public int getValue()
@@ -215,7 +215,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Expired")
+			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Expired")
 			{
 				@Override
 				public int getValue()
@@ -224,7 +224,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Forfeited")
+			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Forfeited")
 			{
 				@Override
 				public int getValue()
@@ -233,7 +233,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Active")
+			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Active")
 			{
 				@Override
 				public int getValue()

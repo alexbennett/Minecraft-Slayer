@@ -36,6 +36,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 
 /**
  * Utility for all player-related methods.
@@ -55,6 +59,7 @@ public class SPlayerUtil
 		// This is really simple for the time being and almost unnecessary, but I'm adding it for future expansion.
 		SDataUtil.saveData(player, "points", 0);
 		SDataUtil.saveData(player, "level", 1);
+		SDataUtil.saveData(player, "scoreboard", true);
 		SDataUtil.saveData(player, "task_assignments_total", 0);
 		SDataUtil.saveData(player, "task_completions", 0);
 		SDataUtil.saveData(player, "task_forfeits", 0);
@@ -82,6 +87,73 @@ public class SPlayerUtil
 		}
 
 		return players;
+	}
+
+	/**
+	 * Returns true if the <code>player</code> has their scoreboard enabled.
+	 * 
+	 * @param player the player to check.
+	 * @return boolean
+	 */
+	public static boolean scoreboardEnabled(OfflinePlayer player)
+	{
+		if(SDataUtil.hasData(player, "scoreboard"))
+		{
+			return SObjUtil.toBoolean(SDataUtil.getData(player, "scoreboard"));
+		}
+		else return true;
+	}
+
+	/**
+	 * Toggles the Slayer scoreboard to <code>option</code> for <code>player</code>.
+	 * 
+	 * @param player the player to update.
+	 * @param option the option to set.
+	 */
+	public static void toggleScoreboard(Player player, boolean option)
+	{
+		SDataUtil.saveData(player, "scoreboard", option);
+		updateScoreboard(player);
+	}
+
+	/**
+	 * Updates all data in the scoreboard for the <code>player</code>.
+	 * 
+	 * @param player the player to update for.
+	 */
+	public static void updateScoreboard(Player player)
+	{
+		// Define variables
+		Scoreboard slayer = Bukkit.getScoreboardManager().getNewScoreboard();
+
+		// Define objective
+		Objective info = slayer.registerNewObjective("player_info", "dummy");
+		info.setDisplaySlot(DisplaySlot.SIDEBAR);
+		info.setDisplayName(ChatColor.AQUA + "Your Slayer Statistics");
+
+		// Add the data if the scoreboard is enabled
+		if(SConfigUtil.getSettingBoolean("misc.private_scoreboard") && scoreboardEnabled(player))
+		{
+			Score level = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Level:"));
+			level.setScore(getLevel(player));
+
+			Score points = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Points:"));
+			points.setScore(getPoints(player));
+
+			Score nextLevelPoints = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Points Needed:"));
+			nextLevelPoints.setScore(getPointsGoal(player) - getPoints(player));
+
+			Score activeTasks = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Active Tasks:"));
+			activeTasks.setScore(STaskUtil.getActiveAssignments(player).size());
+
+			Score rewards = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Rewards:"));
+			rewards.setScore(SPlayerUtil.getRewardAmount(player));
+
+			player.setScoreboard(slayer);
+		}
+
+		// Update the scoreboard
+		player.setScoreboard(slayer);
 	}
 
 	/**
@@ -478,7 +550,7 @@ public class SPlayerUtil
 	{
 		// Define variables
 		int level = getLevel(player);
-		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.GREEN + "(Click to Choose)");
+		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.DARK_PURPLE + "(Click to Choose)");
 
 		// Loop through tasks and determine which ones to display
 		for(Task task : STaskUtil.getTasks())

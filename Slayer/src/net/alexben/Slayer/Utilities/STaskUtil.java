@@ -26,6 +26,7 @@ import net.alexben.Slayer.Events.*;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.Task;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -91,6 +92,22 @@ public class STaskUtil
 		}
 
 		return tasks;
+	}
+
+	/**
+	 * Returns the Task with the name <code>name</code>.
+	 * 
+	 * @param name the name of the task to return.
+	 * @return Task
+	 */
+	public static Task getTaskByName(String name)
+	{
+		for(Task task : tasks)
+		{
+			if(task.getName().equalsIgnoreCase(ChatColor.stripColor(name))) return task;
+		}
+
+		return null;
 	}
 
 	/**

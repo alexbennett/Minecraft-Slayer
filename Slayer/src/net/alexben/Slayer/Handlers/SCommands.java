@@ -128,6 +128,7 @@ public class SCommands implements CommandExecutor
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl my tasks");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl my rewards");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl my info");
+			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl scoreboard");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl forfeit task <assignment #>");
 			if(SMiscUtil.hasPermissionOrOP(player, "slayer.admin")) player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "/sladmin");
 
@@ -140,7 +141,6 @@ public class SCommands implements CommandExecutor
 			action = args[0];
 			if(args.length > 1) category = args[1];
 			if(args.length > 2) option1 = args[2];
-			if(args.length > 3) option2 = args[3];
 
 			if(action.equalsIgnoreCase("process"))
 			{
@@ -148,7 +148,22 @@ public class SCommands implements CommandExecutor
 
 				return true;
 			}
-			if(action.equalsIgnoreCase("get"))
+			else if(action.equalsIgnoreCase("scoreboard"))
+			{
+				if(SPlayerUtil.scoreboardEnabled(player))
+				{
+					SPlayerUtil.toggleScoreboard(player, false);
+					SMiscUtil.sendMsg(player, SMiscUtil.getString("scoreboard_disabled"));
+				}
+				else
+				{
+					SPlayerUtil.toggleScoreboard(player, true);
+					SMiscUtil.sendMsg(player, SMiscUtil.getString("scoreboard_enabled"));
+				}
+
+				return true;
+			}
+			else if(action.equalsIgnoreCase("get"))
 			{
 				if(category == null)
 				{
@@ -179,7 +194,7 @@ public class SCommands implements CommandExecutor
 				// If this command is disabled then return
 				if(!SConfigUtil.getSettingBoolean("forfeit.enable"))
 				{
-					SMiscUtil.sendMsg(player, "That functionality is disabled.");
+					SMiscUtil.sendMsg(player, SMiscUtil.getString("disabled_functionality"));
 
 					return true;
 				}
@@ -213,7 +228,7 @@ public class SCommands implements CommandExecutor
 				// If this command is disabled then return
 				if(!SConfigUtil.getSettingBoolean("tasks.full_list"))
 				{
-					SMiscUtil.sendMsg(player, "That functionality is disabled.");
+					SMiscUtil.sendMsg(player, SMiscUtil.getString("disabled_functionality"));
 
 					return true;
 				}
@@ -294,9 +309,6 @@ public class SCommands implements CommandExecutor
 					// List the tasks
 					for(Assignment assignment : assignments)
 					{
-						// Continue to the next assignment if it isn't on display
-						if(!assignment.isDisplayed()) continue;
-
 						String color = "" + ChatColor.AQUA;
 						if(!assignment.isActive()) color = "" + ChatColor.GRAY;
 						if(assignment.isComplete()) color = "" + ChatColor.AQUA;

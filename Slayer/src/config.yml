@@ -1,6 +1,7 @@
 # Slayer Configuration
 misc:
     join_message: true
+    private_scoreboard: true
 
 # Updating
 update:

@@ -16,7 +16,10 @@ has_all_tasks: 'You already have all available tasks!'
 has_met_limit: 'You should complete some of those tasks first...'
 assignment_fail: '&cA task could not be assigned to you.'
 camping_spawners: 'You should stop camping spawners...'
+disabled_functionality: '&cThat functionality is disabled.'
 
 # Miscellaneous Messages
 level_up_msg1: '&7You just leveled up to level &c{level}&7!'
 level_up_msg2: '&7You need &b{points}&7 points for your next level.'
+scoreboard_enabled: 'Your Slayer scoreboard has been enabled!'
+scoreboard_disabled: 'Your Slayer scoreboard has been disabled!'

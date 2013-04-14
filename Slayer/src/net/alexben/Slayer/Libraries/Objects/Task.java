@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.alexben.Slayer.Utilities.SItemUtil;
+import net.alexben.Slayer.Utilities.SObjUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -154,11 +155,11 @@ public class Task implements Serializable
 
 		if(type.equals(TaskType.ITEM))
 		{
-			goal = "Your goal will be to obtain " + amountNeeded + " " + item.toItemStack().getType().name().toLowerCase().replace("_", " ") + "(s).";
+			goal = "Obtain " + amountNeeded + " " + SObjUtil.capitalize(item.toItemStack().getType().name().toLowerCase().replace("_", " ")) + "(s)";
 		}
 		else if(type.equals(TaskType.MOB))
 		{
-			goal = "Your goal will be to kill " + amountNeeded + " " + entity.getName().replace("_", " ") + "(s).";
+			goal = "Kill " + amountNeeded + " " + SObjUtil.capitalize(entity.getName().replace("_", " ")) + "(s)";
 		}
 
 		// Create the content

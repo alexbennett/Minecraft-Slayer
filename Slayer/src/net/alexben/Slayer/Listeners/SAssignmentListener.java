@@ -47,13 +47,16 @@ public class SAssignmentListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onTaskAssign(TaskAssignEvent event)
 	{
-		OfflinePlayer player = event.getPlayer();
+		Player player = event.getPlayer();
 
 		if(player.isOnline())
 		{
 			SMiscUtil.sendMsg(player.getPlayer(), SMiscUtil.getString("new_assignment"));
 			SMiscUtil.sendMsg(player.getPlayer(), "For details, please type " + ChatColor.GOLD + "/sl my tasks" + ChatColor.RESET + ".");
 		}
+
+		// Update the scoreboard
+		SPlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -112,6 +115,9 @@ public class SAssignmentListener implements Listener
 			// Shoot a random firework!
 			SMiscUtil.shootRandomFirework(player.getLocation());
 		}
+
+		// Update the scoreboard
+		SPlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -133,6 +139,9 @@ public class SAssignmentListener implements Listener
 
 		// Tracking
 		SPlayerUtil.addExpiration(player);
+
+		// Update the scoreboard
+		SPlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

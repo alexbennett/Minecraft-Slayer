@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -59,6 +60,9 @@ public class SPlayerListener implements Listener
 		{
 			SMiscUtil.sendMsg(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY + " active task(s).");
 		}
+
+		// Update the scoreboard
+		SPlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -114,6 +118,9 @@ public class SPlayerListener implements Listener
 
 			SDataUtil.removeData(player, "inv_rewards");
 		}
+
+		// Update the scoreboard
+		SPlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -148,6 +155,31 @@ public class SPlayerListener implements Listener
 					SMiscUtil.sendMsg(player, SMiscUtil.getString("enough_items").replace("{task}", assignment.getTask().getName()));
 				}
 			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	private void onInventoryClickEvent(InventoryClickEvent event)
+	{
+		Player player = (Player) event.getWhoClicked();
+
+		if(event.getInventory().getName().toLowerCase().contains("slayer tasks"))
+		{
+			// Return if the item is null
+			if(event.getCurrentItem().getItemMeta() == null) return;
+
+			player.sendMessage(event.getCurrentItem().getItemMeta().getDisplayName());
+
+			if(STaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName()) != null)
+			{
+				player.sendMessage("Matched task!");
+				SDataUtil.saveData(player, "clicked_task", STaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName()));
+
+				player.closeInventory();
+
+			}
+
+			event.setCancelled(true);
 		}
 	}
 }

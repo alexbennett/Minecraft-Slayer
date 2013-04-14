@@ -71,7 +71,9 @@ public class Slayer extends JavaPlugin
 
 		// Load data
 		SFlatFile.load();
-		validatePlayers();
+
+		// Update players
+		updatePlayers();
 
 		// Lastly initialize the auto-updater
 		update = new BukkitUpdate(this, "http://dev.bukkit.org/server-mods/slayer/files.rss", "/slayer update", "slayer.update");
@@ -90,11 +92,12 @@ public class Slayer extends JavaPlugin
 		SMiscUtil.log("info", "Disabled!");
 	}
 
-	private void validatePlayers()
+	private void updatePlayers()
 	{
 		for(Player player : Bukkit.getOnlinePlayers())
 		{
 			SPlayerUtil.createSave(player);
+			SPlayerUtil.updateScoreboard(player);
 		}
 	}
 

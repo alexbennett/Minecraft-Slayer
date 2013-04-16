@@ -90,6 +90,8 @@ public class SPlayerListener implements Listener
 		}
 		else if(event.getInventory().getName().toLowerCase().contains("rewards"))
 		{
+			// TODO: Ensure that this doesn't glitch out (splitting stacks causing rewards to be lost)
+
 			for(ItemStack reward : SPlayerUtil.getRewards(player))
 			{
 				if(!event.getInventory().containsAtLeast(reward, 1))
@@ -152,7 +154,7 @@ public class SPlayerListener implements Listener
 				// Check the count against the progress
 				if(count >= assignment.getAmountLeft())
 				{
-					SMiscUtil.sendMsg(player, SMiscUtil.getString("enough_items").replace("{task}", assignment.getTask().getName()));
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("enough_items").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/sl process" + ChatColor.GRAY));
 				}
 			}
 		}
@@ -166,17 +168,24 @@ public class SPlayerListener implements Listener
 		if(event.getInventory().getName().toLowerCase().contains("slayer tasks"))
 		{
 			// Return if the item is null
-			if(event.getCurrentItem().getItemMeta() == null) return;
-
-			player.sendMessage(event.getCurrentItem().getItemMeta().getDisplayName());
+			if(event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null) return;
 
 			if(STaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName()) != null)
 			{
-				player.sendMessage("Matched task!");
-				SDataUtil.saveData(player, "clicked_task", STaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName()));
+				// Define variables
+				Task task = STaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName());
 
+				// Ask them if they would like to accept the task
+				player.sendMessage(ChatColor.GRAY + SMiscUtil.getString("task_selected").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
+				player.sendMessage(ChatColor.GRAY + SMiscUtil.getString("task_selected_accept").replace("{command}", ChatColor.GOLD + "/accept" + ChatColor.GRAY));
+
+				// TODO: Tell them if they already have the data before saving data.
+
+				// Save the task clicked for use later
+				SDataUtil.saveData(player, "clicked_task", task);
+
+				// Close the inventory
 				player.closeInventory();
-
 			}
 
 			event.setCancelled(true);

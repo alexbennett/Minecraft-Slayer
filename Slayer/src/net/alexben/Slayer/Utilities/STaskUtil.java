@@ -66,14 +66,14 @@ public class STaskUtil
 	 */
 	public static ArrayList<Task> getTasksWithLevel(int level)
 	{
-		ArrayList<Task> tasks = new ArrayList<Task>();
+		ArrayList<Task> temp = new ArrayList<Task>();
 
 		for(Task task : tasks)
 		{
-			if(task.getLevel() == level) tasks.add(task);
+			if(task.getLevel() == level) temp.add(task);
 		}
 
-		return tasks;
+		return temp;
 	}
 
 	/**
@@ -84,14 +84,14 @@ public class STaskUtil
 	 */
 	public static ArrayList<Task> getTasksUpToLevel(int level)
 	{
-		ArrayList<Task> tasks = new ArrayList<Task>();
+		ArrayList<Task> temp = new ArrayList<Task>();
 
 		for(Task task : tasks)
 		{
-			if(task.getLevel() <= level) tasks.add(task);
+			if(task.getLevel() <= level) temp.add(task);
 		}
 
-		return tasks;
+		return temp;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class STaskUtil
 			if(i >= Math.pow(tasks.size(), 2))
 			{
 				// They have all available tasks, let 'em know
-				SMiscUtil.sendMsg(player, SMiscUtil.getString("has_all_tasks"));
+				SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("has_all_tasks"));
 
 				return;
 			}
@@ -485,11 +485,14 @@ public class STaskUtil
 			// Tracking
 			SDataUtil.saveData(player, "task_assignments_total", SPlayerUtil.getTotalAssignments(player) + 1);
 
+			// Update scoreboard
+			SPlayerUtil.updateScoreboard(player);
+
 			return assignment;
 		}
 		else
 		{
-			player.sendMessage(SMiscUtil.getString("assignment_fail"));
+			player.sendMessage(ChatColor.RED + SMiscUtil.getString("give_assignment_fail"));
 			return null;
 		}
 	}
@@ -581,7 +584,7 @@ public class STaskUtil
 				// Message the player on even kills
 				if(assignment.getAmountObtained() % 2 == 0 && !assignment.isComplete())
 				{
-					SMiscUtil.sendMsg(player, SMiscUtil.getString("mob_task_update").replace("{obtained}", "" + assignment.getAmountObtained()).replace("{needed}", "" + assignment.getAmountNeeded()).replace("{task}", assignment.getTask().getName()));
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("mob_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained()).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded()).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 				}
 
 				// Now handle completed assignments
@@ -636,7 +639,7 @@ public class STaskUtil
 				// For items, always message the player (makes up for the possibility of picking up multiple items and not receiving the message
 				if(!assignment.isComplete())
 				{
-					SMiscUtil.sendMsg(player, SMiscUtil.getString("item_task_update").replace("{obtained}", "" + assignment.getAmountObtained()).replace("{needed}", "" + assignment.getAmountNeeded()).replace("{task}", assignment.getTask().getName()));
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("item_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained()).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded()).replace("{task}", ChatColor.AQUA + assignment.getTask().getName()));
 				}
 
 				// Now handle completed assignments

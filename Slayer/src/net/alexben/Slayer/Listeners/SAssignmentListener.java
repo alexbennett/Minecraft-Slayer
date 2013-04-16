@@ -51,12 +51,9 @@ public class SAssignmentListener implements Listener
 
 		if(player.isOnline())
 		{
-			SMiscUtil.sendMsg(player.getPlayer(), SMiscUtil.getString("new_assignment"));
-			SMiscUtil.sendMsg(player.getPlayer(), "For details, please type " + ChatColor.GOLD + "/sl my tasks" + ChatColor.RESET + ".");
+			SMiscUtil.sendMsg(player.getPlayer(), ChatColor.GREEN + SMiscUtil.getString("new_assignment"));
+			SMiscUtil.sendMsg(player.getPlayer(), ChatColor.GRAY + SMiscUtil.getString("new_assignment_details").replace("{command}", ChatColor.GOLD + "/sl my tasks" + ChatColor.GRAY));
 		}
-
-		// Update the scoreboard
-		SPlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -75,11 +72,11 @@ public class SAssignmentListener implements Listener
 		// From this point on, return if the player is offline
 		if(!player.isOnline()) return;
 
-		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_complete").replace("{task}", assignment.getTask().getName()));
-		SMiscUtil.sendMsg(player, SMiscUtil.getString("rewards_awaiting").replace("{rewards}", "" + SPlayerUtil.getRewardAmount(player)));
+		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("assignment_complete").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
+		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("rewards_awaiting").replace("{rewards}", ChatColor.YELLOW + "" + SPlayerUtil.getRewardAmount(player) + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/rewards" + ChatColor.GRAY));
 
 		// Shoot a firework, woohoo!
-		if(SConfigUtil.getSettingBoolean("expiration.completion_firework"))
+		if(SConfigUtil.getSettingBoolean("tasks.completion_firework"))
 		{
 			Firework firework = (Firework) player.getPlayer().getLocation().getWorld().spawnEntity(player.getPlayer().getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkmeta = firework.getFireworkMeta();
@@ -109,8 +106,8 @@ public class SAssignmentListener implements Listener
 			}
 
 			// Message the player
-			SMiscUtil.sendMsg(player, SMiscUtil.getString("level_up_msg1").replace("{level}", "" + SPlayerUtil.getLevel(player)));
-			SMiscUtil.sendMsg(player, SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player))));
+			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg1").replace("{level}", ChatColor.GREEN + "" + SPlayerUtil.getLevel(player)));
+			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY));
 
 			// Shoot a random firework!
 			SMiscUtil.shootRandomFirework(player.getLocation());
@@ -129,7 +126,7 @@ public class SAssignmentListener implements Listener
 		Player player = event.getOfflinePlayer().getPlayer();
 		Assignment assignment = event.getAssignment();
 
-		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_expired").replace("{task}", assignment.getTask().getName()));
+		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("assignment_expired").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 
 		// Handle expiration punishment if enabled
 		if(SConfigUtil.getSettingBoolean("expiration.punish"))
@@ -151,7 +148,7 @@ public class SAssignmentListener implements Listener
 		OfflinePlayer player = event.getOfflinePlayer();
 		Assignment assignment = event.getAssignment();
 
-		SMiscUtil.sendMsg(player, SMiscUtil.getString("assignment_forfeit").replace("{task}", assignment.getTask().getName()));
+		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("assignment_forfeit").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 
 		// Handle punishments if enabled
 		if(SConfigUtil.getSettingBoolean("forfeit.punish"))
@@ -161,5 +158,11 @@ public class SAssignmentListener implements Listener
 
 		// Tracking
 		SPlayerUtil.addForfeit(player);
+
+		if(player.isOnline())
+		{
+			// Update scoreboard
+			SPlayerUtil.updateScoreboard(player.getPlayer());
+		}
 	}
 }

@@ -169,7 +169,8 @@ public class Task implements Serializable
 		lore.add("");
 		lore.add(ChatColor.GRAY + "Goal: " + ChatColor.YELLOW + goal);
 		lore.add(ChatColor.GRAY + "Rewards: " + ChatColor.YELLOW + reward.size() + " item(s)");
-		lore.add(ChatColor.GRAY + "Points: " + ChatColor.YELLOW + value);
+		lore.add(ChatColor.GRAY + "Points: " + ChatColor.GREEN + value);
+		if(isTimed()) lore.add(ChatColor.GRAY + "Time Limit: " + ChatColor.RED + timeLimit + " minutes");
 
 		// Return the book
 		return SItemUtil.createItem(Material.PAPER, ChatColor.AQUA + name, lore, null);

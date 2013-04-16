@@ -141,6 +141,12 @@ public class Slayer extends JavaPlugin
 		getCommand("sl").setExecutor(executor);
 		getCommand("slayer").setExecutor(executor);
 		getCommand("sladmin").setExecutor(executor);
+		getCommand("tasks").setExecutor(executor);
+		getCommand("accept").setExecutor(executor);
+		getCommand("mytasks").setExecutor(executor);
+		getCommand("process").setExecutor(executor);
+		getCommand("rewards").setExecutor(executor);
+		getCommand("forfeit").setExecutor(executor);
 	}
 
 	private void loadMetrics()
@@ -156,7 +162,7 @@ public class Slayer extends JavaPlugin
 			Metrics.Graph statusGraph = metrics.createGraph("Assignment Status Comparison");
 
 			// Add Graph Data
-			typeGraph.addPlotter(new Metrics.Plotter("Total ~=~ Item Based")
+			typeGraph.addPlotter(new Metrics.Plotter("Item Based")
 			{
 				@Override
 				public int getValue()
@@ -172,7 +178,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			typeGraph.addPlotter(new Metrics.Plotter("Total ~=~ Mob Based")
+			typeGraph.addPlotter(new Metrics.Plotter("Mob Based")
 			{
 				@Override
 				public int getValue()
@@ -188,7 +194,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			timedGraph.addPlotter(new Metrics.Plotter("Total ~=~ Untimed")
+			timedGraph.addPlotter(new Metrics.Plotter("Untimed")
 			{
 				@Override
 				public int getValue()
@@ -197,7 +203,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			timedGraph.addPlotter(new Metrics.Plotter("Total ~=~ Timed")
+			timedGraph.addPlotter(new Metrics.Plotter("Timed")
 			{
 				@Override
 				public int getValue()
@@ -206,7 +212,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Completed")
+			statusGraph.addPlotter(new Metrics.Plotter("Completed")
 			{
 				@Override
 				public int getValue()
@@ -215,7 +221,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Expired")
+			statusGraph.addPlotter(new Metrics.Plotter("Expired")
 			{
 				@Override
 				public int getValue()
@@ -224,7 +230,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Forfeited")
+			statusGraph.addPlotter(new Metrics.Plotter("Forfeited")
 			{
 				@Override
 				public int getValue()
@@ -233,7 +239,7 @@ public class Slayer extends JavaPlugin
 				}
 			});
 
-			statusGraph.addPlotter(new Metrics.Plotter("Total ~=~ Active")
+			statusGraph.addPlotter(new Metrics.Plotter("Active")
 			{
 				@Override
 				public int getValue()

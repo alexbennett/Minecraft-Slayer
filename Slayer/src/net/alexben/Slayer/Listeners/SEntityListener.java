@@ -22,6 +22,7 @@ package net.alexben.Slayer.Listeners;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Utilities.*;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -83,7 +84,7 @@ public class SEntityListener implements Listener
 						// Message them if they have a task involving this mob
 						if(assignment.getTask().getType().equals(entity.getType()))
 						{
-							SMiscUtil.sendMsg(player, SMiscUtil.getString("camping_spawners"));
+							SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("camping_spawners"));
 							break;
 						}
 					}

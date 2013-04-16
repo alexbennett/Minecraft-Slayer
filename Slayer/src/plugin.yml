@@ -9,6 +9,18 @@ commands:
         usage: /slayer
     sladmin:
         usage: /sladmin
+    tasks:
+        usage: /tasks
+    process:
+        usage: /process
+    accept:
+        usage: /accept
+    mytasks:
+        usage: /mytasks
+    rewards:
+        usage: /rewards
+    forfeit:
+        usage: /forfeit <assignment #>
 permissions:
     slayer.basic:
         description: The default permission for players.

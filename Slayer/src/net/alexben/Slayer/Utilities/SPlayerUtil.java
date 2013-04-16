@@ -550,15 +550,12 @@ public class SPlayerUtil
 	{
 		// Define variables
 		int level = getLevel(player);
-		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.DARK_PURPLE + "(Click to Choose)");
+		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.DARK_PURPLE + "(Click to Select)");
 
 		// Loop through tasks and determine which ones to display
-		for(Task task : STaskUtil.getTasks())
+		for(Task task : STaskUtil.getTasksUpToLevel(level))
 		{
-			if(task.getLevel() <= level)
-			{
-				inventory.addItem(task.getBook());
-			}
+			inventory.addItem(task.getBook());
 		}
 
 		// Open the inventory

@@ -435,6 +435,27 @@ public class STaskUtil
 	}
 
 	/**
+	 * Returns true if the <code>player</code> has completed the <code>task</code>.
+	 * 
+	 * @param player the player to check.
+	 * @param task the task to check for.
+	 * @return boolean
+	 */
+	public static boolean hasCompleted(OfflinePlayer player, Task task)
+	{
+		// TODO: Fix this.
+
+		if(getAssignments(player) == null || getAssignments(player).isEmpty()) return false;
+
+		for(Assignment assignment : getAssignments(player))
+		{
+			if(assignment.getTask().equals(task) && !assignment.isActive() || assignment.isComplete()) return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns true if the <code>player</code> already has the assignment
 	 * with an id of <code>id</code>.
 	 * 
@@ -639,7 +660,7 @@ public class STaskUtil
 				// For items, always message the player (makes up for the possibility of picking up multiple items and not receiving the message
 				if(!assignment.isComplete())
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("item_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained()).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded()).replace("{task}", ChatColor.AQUA + assignment.getTask().getName()));
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("item_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained() + ChatColor.GRAY).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded() + ChatColor.GRAY).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 				}
 
 				// Now handle completed assignments

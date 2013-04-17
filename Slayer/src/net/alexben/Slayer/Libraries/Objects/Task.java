@@ -163,7 +163,7 @@ public class Task implements Serializable
 		}
 
 		// Create the content
-		lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "(Level " + ChatColor.RED + ChatColor.ITALIC + level + ChatColor.GRAY + ChatColor.ITALIC + " Slayer Task)");
+		lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "(Level " + ChatColor.DARK_PURPLE + ChatColor.ITALIC + level + ChatColor.GRAY + ChatColor.ITALIC + " Slayer Task)");
 		lore.add("");
 		lore.add(ChatColor.GREEN + "\"" + desc + "\"");
 		lore.add("");

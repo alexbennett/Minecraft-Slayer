@@ -19,10 +19,7 @@
 
 package net.alexben.Slayer.Listeners;
 
-import net.alexben.Slayer.Events.AssignmentCompleteEvent;
-import net.alexben.Slayer.Events.AssignmentExpireEvent;
-import net.alexben.Slayer.Events.AssignmentForfeitEvent;
-import net.alexben.Slayer.Events.TaskAssignEvent;
+import net.alexben.Slayer.Events.*;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
 import net.alexben.Slayer.Utilities.SConfigUtil;
@@ -98,19 +95,18 @@ public class SAssignmentListener implements Listener
 			// Loop and make sure they didn't get a crap-ton of points and if so update accordingly
 			while(SPlayerUtil.getPoints(player) >= SPlayerUtil.getPointsGoal(player))
 			{
-				// Get rid of the points
-				SPlayerUtil.subtractPoints(player, SPlayerUtil.getPointsGoal(player));
+				SlayerLevelUpEvent levelUpEvent = new SlayerLevelUpEvent(player, SPlayerUtil.getLevel(player), SPlayerUtil.getLevel(player) + 1);
+				SMiscUtil.getInstance().getServer().getPluginManager().callEvent(levelUpEvent);
 
-				// Add the level
-				SPlayerUtil.addLevel(player);
+				if(!levelUpEvent.isCancelled())
+				{
+					// Get rid of the points
+					SPlayerUtil.subtractPoints(player, SPlayerUtil.getPointsGoal(player));
+
+					// Add the level
+					SPlayerUtil.addLevel(player);
+				}
 			}
-
-			// Message the player
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg1").replace("{level}", ChatColor.GREEN + "" + SPlayerUtil.getLevel(player)));
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY));
-
-			// Shoot a random firework!
-			SMiscUtil.shootRandomFirework(player.getLocation());
 		}
 
 		// Update the scoreboard

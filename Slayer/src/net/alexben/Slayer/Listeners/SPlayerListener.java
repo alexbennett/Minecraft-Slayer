@@ -19,6 +19,10 @@
 
 package net.alexben.Slayer.Listeners;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.alexben.Slayer.Events.SlayerLevelUpEvent;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.Task;
 import net.alexben.Slayer.Utilities.*;
@@ -58,11 +62,25 @@ public class SPlayerListener implements Listener
 
 		if(SConfigUtil.getSettingBoolean("tasks.join_reminders") && STaskUtil.getActiveAssignments(player) != null)
 		{
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + "You currently have " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY + " active task(s).");
+			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("current_assignments_join").replace("{tasks}", ChatColor.YELLOW + "" + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/sl my tasks" + ChatColor.GRAY));
 		}
 
 		// Update the scoreboard
 		SPlayerUtil.updateScoreboard(player);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onSlayerLevelUpEvent(SlayerLevelUpEvent event)
+	{
+		// Define variables
+		Player player = event.getPlayer();
+
+		// Message the player
+		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg1").replace("{level}", ChatColor.LIGHT_PURPLE + "" + SPlayerUtil.getLevel(player) + ChatColor.GRAY));
+		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY));
+
+		// Shoot a random firework!
+		SMiscUtil.shootRandomFirework(player.getLocation());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -76,16 +94,34 @@ public class SPlayerListener implements Listener
 
 		if(event.getInventory().getName().toLowerCase().contains("processing"))
 		{
-			// TODO: Pre-process items into stacks so multiple messages don't get sent.
-
 			// If they don't have the data then return
 			if(!SDataUtil.hasData(player, "inv_process")) return;
 
+			// Define variables
+			Map<Integer, Integer> items = new HashMap<Integer, Integer>();
+
+			// Pre-process items to avoid sending so many messages
 			for(ItemStack item : event.getInventory().getContents())
 			{
-				STaskUtil.processItem(player, item);
+				if(item == null) continue;
+
+				if(items.containsKey(item.getTypeId()))
+				{
+					items.put(item.getTypeId(), items.get(item.getTypeId()) + item.getAmount());
+				}
+				else
+				{
+					items.put(item.getTypeId(), item.getAmount());
+				}
 			}
 
+			for(Map.Entry<Integer, Integer> item : items.entrySet())
+			{
+				STaskUtil.processItem(player, new ItemStack(item.getKey(), item.getValue()));
+			}
+
+			// Clear the data
+			items.clear();
 			SDataUtil.removeData(player, "inv_process");
 		}
 		else if(event.getInventory().getName().toLowerCase().contains("rewards"))
@@ -179,15 +215,22 @@ public class SPlayerListener implements Listener
 				player.sendMessage(ChatColor.GRAY + SMiscUtil.getString("task_selected").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
 				player.sendMessage(ChatColor.GRAY + SMiscUtil.getString("task_selected_accept").replace("{command}", ChatColor.GOLD + "/accept" + ChatColor.GRAY));
 
-				// TODO: Tell them if they already have the data before saving data.
-
-				// Save the task clicked for use later
-				SDataUtil.saveData(player, "clicked_task", task);
+				if(STaskUtil.hasTask(player, task))
+				{
+					// They already have the task. Message them and return.
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("has_task").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
+				}
+				else
+				{
+					// They don't have the task, save it for later use
+					SDataUtil.saveData(player, "clicked_task", task);
+				}
 
 				// Close the inventory
 				player.closeInventory();
 			}
 
+			// Finally, we cancel the event
 			event.setCancelled(true);
 		}
 	}

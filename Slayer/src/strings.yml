@@ -11,6 +11,7 @@ new_assignment_details: 'For details, please type {command}.'
 enough_items: 'You can now finish {task}! Use {command}.'
 task_selected: 'You have selected {task}.'
 task_selected_accept: 'Type {command} to accept this task.'
+current_assignments_join: 'You current have {tasks} active task(s). Use {command}.'
 
 # Deny Messages
 no_tasks: 'You currently have no Slayer tasks.'
@@ -33,6 +34,7 @@ current_assignments_are: 'Your current assignments are:'
 
 # Admin Messages
 points_set_success: 'Points set successfully to {points} for {player}.'
+level_set_success: 'Level set successfully to {level} for {player}.'
 assignment_removed: 'The assignment (#: {taskid}) has been removed.'
 assignment_not_removed: 'The assignment could not be removed.'
 saving: 'Forcing save...'

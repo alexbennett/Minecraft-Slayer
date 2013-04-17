@@ -129,8 +129,6 @@ public class SCommands implements CommandExecutor
 	 */
 	public boolean sl(Player player, String[] args)
 	{
-		// TODO: Fix a few messed up returns.
-
 		// Check permissions
 		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
 
@@ -198,8 +196,8 @@ public class SCommands implements CommandExecutor
 			}
 		}
 
-		SMiscUtil.sendMsg(player, "Error in your command.");
-		return false;
+		SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sl" + ChatColor.GRAY + ". Please try again.");
+		return true;
 	}
 
 	/**
@@ -232,15 +230,8 @@ public class SCommands implements CommandExecutor
 			// They still have room for more tasks, attempt to give them what they chose
 			Task task = (Task) SDataUtil.getData(player, "clicked_task");
 
-			if(STaskUtil.hasTask(player, task))
-			{
-				SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("has_task").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
-			}
-			else
-			{
-				// They don't have the task, give it to them
-				STaskUtil.assignTask(player, task);
-			}
+			// They don't have the task, give it to them
+			STaskUtil.assignTask(player, task);
 
 			// Clear the temporary data
 			SDataUtil.removeData(player, "clicked_task");
@@ -388,8 +379,8 @@ public class SCommands implements CommandExecutor
 		player.sendMessage(" ");
 		player.sendMessage("  > Statistics:");
 		player.sendMessage(" ");
-		player.sendMessage("     - Level: " + ChatColor.AQUA + SPlayerUtil.getLevel(player));
-		player.sendMessage("     - Points: " + ChatColor.AQUA + SPlayerUtil.getPoints(player) + ChatColor.GRAY + " (" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY + " until level " + ((int) SPlayerUtil.getLevel(player) + 1) + ")");
+		player.sendMessage("     - Level: " + ChatColor.LIGHT_PURPLE + SPlayerUtil.getLevel(player));
+		player.sendMessage("     - Points: " + ChatColor.YELLOW + SPlayerUtil.getPoints(player) + ChatColor.GRAY + " (" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY + " until level " + ((int) SPlayerUtil.getLevel(player) + 1) + ")");
 		player.sendMessage("     - Rank: " + ChatColor.AQUA + "Coming Soon!");
 		player.sendMessage(" ");
 
@@ -441,7 +432,7 @@ public class SCommands implements CommandExecutor
 			else if(assignment.isComplete()) miscTag = ChatColor.GREEN + " [COMPLETE]";
 
 			player.sendMessage(ChatColor.GRAY + " > " + color + assignment.getTask().getName() + ChatColor.RESET + timeLimit + miscTag);
-			player.sendMessage(ChatColor.GRAY + "     - Level: " + ChatColor.RED + assignment.getTask().getLevel());
+			player.sendMessage(ChatColor.GRAY + "     - Level: " + ChatColor.DARK_PURPLE + assignment.getTask().getLevel());
 			player.sendMessage(ChatColor.GRAY + "     - Points: " + ChatColor.GREEN + assignment.getTask().getValue());
 
 			if(!assignment.isExpired() && !assignment.isFailed() && !assignment.isComplete() && !assignment.isForfeited())
@@ -505,8 +496,10 @@ public class SCommands implements CommandExecutor
 			SMiscUtil.sendMsg(player, "Admin Directory");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin save");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin clear entities");
+			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin reset player <player>");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin remove task <player> <id>");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin set points <player> <points>");
+			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin set level <player> <level>");
 
 			return true;
 		}
@@ -539,14 +532,45 @@ public class SCommands implements CommandExecutor
 			}
 			else if(action.equalsIgnoreCase("set"))
 			{
+				if(category == null)
+				{
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin set" + ChatColor.GRAY + ". Please try again.");
+					return true;
+				}
+
 				if(category.equalsIgnoreCase("points"))
 				{
 					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
 					int points = SObjUtil.toInteger(option2);
 
+					// Set the points and update their scoreboard if they're online
 					SPlayerUtil.setPoints(editing, points);
 
+					if(editing.isOnline())
+					{
+						SPlayerUtil.updateScoreboard(editing.getPlayer());
+					}
+
+					// Message the admin
 					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + SMiscUtil.getString("points_set_success").replace("{player}", editing.getName()).replace("{points}", "" + points));
+
+					return true;
+				}
+				else if(category.equalsIgnoreCase("level"))
+				{
+					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
+					int level = SObjUtil.toInteger(option2);
+
+					// Set the level and update their scoreboard if they're online
+					SPlayerUtil.setLevel(editing, level);
+
+					if(editing.isOnline())
+					{
+						SPlayerUtil.updateScoreboard(editing.getPlayer());
+					}
+
+					// Message the admin
+					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + SMiscUtil.getString("level_set_success").replace("{player}", editing.getName()).replace("{level}", "" + level));
 
 					return true;
 				}
@@ -576,6 +600,34 @@ public class SCommands implements CommandExecutor
 				}
 
 				return true;
+			}
+			else if(action.equalsIgnoreCase("reset"))
+			{
+				if(category == null)
+				{
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin reset" + ChatColor.GRAY + ". Please try again.");
+					return true;
+				}
+
+				if(category.equalsIgnoreCase("player"))
+				{
+					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
+
+					// Remove all of the data
+					SDataUtil.removeAllData(editing);
+					SPlayerUtil.createSave(editing);
+
+					// Update their scoreboard if they're online
+					if(player.isOnline())
+					{
+						SPlayerUtil.updateScoreboard(player.getPlayer());
+					}
+
+					// Message the admin
+					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + "All Slayer data has been reset for " + editing.getName() + ".");
+
+					return true;
+				}
 			}
 		}
 

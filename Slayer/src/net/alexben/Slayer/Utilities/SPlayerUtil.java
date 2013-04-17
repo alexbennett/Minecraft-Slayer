@@ -388,7 +388,7 @@ public class SPlayerUtil
 	 */
 	public static int getPointsGoal(OfflinePlayer player)
 	{
-		return (int) Math.ceil(26 * Math.pow(getLevel(player) + 1, 2));
+		return (int) Math.ceil(13.4 * Math.pow(getLevel(player) + 1, 2));
 	}
 
 	/**
@@ -555,7 +555,7 @@ public class SPlayerUtil
 		// Loop through tasks and determine which ones to display
 		for(Task task : STaskUtil.getTasksUpToLevel(level))
 		{
-			inventory.addItem(task.getBook());
+			if(!STaskUtil.hasCompleted(player, task)) inventory.addItem(task.getBook());
 		}
 
 		// Open the inventory

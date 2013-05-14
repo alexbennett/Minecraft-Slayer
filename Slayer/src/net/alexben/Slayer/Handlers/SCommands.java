@@ -516,6 +516,12 @@ public class SCommands implements CommandExecutor
 			{
 				if(category.equalsIgnoreCase("task"))
 				{
+					if(option1 == null || option2 == null)
+					{
+						SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin remove task" + ChatColor.GRAY + ". Please try again.");
+						return true;
+					}
+
 					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
 					int taskID = SObjUtil.toInteger(option2);
 

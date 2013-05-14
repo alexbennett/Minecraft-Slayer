@@ -105,6 +105,16 @@ public class SAssignmentListener implements Listener
 
 					// Add the level
 					SPlayerUtil.addLevel(player);
+
+					// Message the player
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg1").replace("{level}", ChatColor.LIGHT_PURPLE + "" + SPlayerUtil.getLevel(player) + ChatColor.GRAY));
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY));
+
+					if(SConfigUtil.getSettingBoolean("misc.level_up_firework"))
+					{
+						// Shoot a random firework!
+						SMiscUtil.shootRandomFirework(player.getLocation());
+					}
 				}
 			}
 		}

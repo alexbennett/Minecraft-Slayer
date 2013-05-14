@@ -7,7 +7,7 @@ tasks:
       timelimit: 10 #minutes
       mob: pig
       amount: 5
-      value: 10
+      value: 15
       level: 1
       reward:
           - itemid: 320
@@ -20,14 +20,25 @@ tasks:
       enabled: true
       timelimit: 10 #minutes
       mob: zombie
-      amount: 11
-      value: 27
+      amount: 15
+      value: 25
       level: 1
       reward:
-          - itemid: 276
-            amount: 1
-            enchantments:
-                - knockback: 1
+         - itemid: 396
+           amount: 1
+
+
+    - name: "I'm on fire!"
+      desc: "Get me some water!"
+      enabled: true
+      timelimit: 5 #minutes
+      item: 326
+      amount: 3
+      value: 15
+      level: 1
+      reward:
+          - itemid: 259
+            amount: 3
 
     - name: "Gravedigger"
       desc: "Obtain some bones to earn a reward!"
@@ -35,10 +46,47 @@ tasks:
       timelimit: none
       item: 352
       amount: 18
-      value: 14
-      level: 1
+      value: 30
+      level: 2
       reward:
           - itemid: 397
+            amount: 1
+
+    - name: "Chef's Helper"
+      desc: "It needs some sugar... a lot actually."
+      enabled: true
+      timelimit: 25 #minutes
+      item: 353
+      amount: 80
+      value: 40
+      level: 2
+      reward:
+          - itemid: 354
+            amount: 1
+
+    - name: "Santa's Little Helper"
+      desc: "Santa really wants some milk..."
+      enabled: true
+      timelimit: 5 #minutes
+      item: 335
+      amount: 4
+      value: 25
+      level: 2
+      reward:
+          - itemid: 357
+            itembyte: 8202
+            amount: 32
+
+    - name: "Disco Party"
+      desc: "Kickin' it like it's the 80s! Kind of..."
+      enabled: true
+      timelimit: none
+      item: 84
+      amount: 1
+      value: 20
+      level: 2
+      reward:
+          - itemid: 2265
             amount: 1
 
     - name: "NA NA NA"
@@ -47,7 +95,7 @@ tasks:
       timelimit: 30 #minutes
       mob: bat
       amount: 5
-      value: 98
+      value: 25
       level: 2
       reward:
           - itemid: 311
@@ -59,98 +107,47 @@ tasks:
       timelimit: 30 #minutes
       mob: creeper
       amount: 23
-      value: 76
-      level: 2
+      value: 80
+      level: 3
       reward:
-          - itemid: 322
+          - itemid: 276
             amount: 1
-
-    - name: "Fus Ro Dah!"
-      desc: "Are you a true Dragonborn?"
-      enabled: true
-      timelimit: none
-      mob: enderdragon
-      amount: 1
-      value: 10000
-      level: 10
-      reward:
-          - itemid: 310
-            amount: 2
             enchantments:
-                - thorns: max
-          - itemid: 311
-            amount: 2
-            enchantments:
-                - thorns: max
-                - protection_fire: max
-          - itemid: 312
-            amount: 2
-            enchantments:
-                - thorns: max
-          - itemid: 313
-            amount: 2
-            enchantments:
-                - thorns: max
-
-    - name: "Chef's Helper"
-      desc: "It needs some sugar... a lot actually."
-      enabled: true
-      timelimit: 25 #minutes
-      item: 353
-      amount: 80
-      value: 25
-      level: 1
-      reward:
-          - itemid: 354
-            amount: 1
-
-    - name: "I'm on fire!"
-      desc: "Get me some water!"
-      enabled: true
-      timelimit: 5 #minutes
-      item: 326
-      amount: 3
-      value: 17
-      level: 1
-      reward:
-          - itemid: 259
-            amount: 3
+              - knockback: 1
 
     - name: "Yum... Beer!"
       desc: "I'm working on a new recipe."
       enabled: true
       timelimit: 30 #minutes
       item: 376
-      amount: 5
-      value: 46
-      level: 1
+      amount: 10
+      value: 60
+      level: 3
       reward:
           - itemid: 373
             itembyte: 8202
             amount: 1
 
-    - name: "Tears of Joy"
-      desc: "I'm not crying, I just got something in my eye."
+    - name: "I See You..."
+      desc: "And you look rather... disgusting."
       enabled: true
-      timelimit: 30 #minutes
-      item: 370
-      amount: 19
-      value: 60
+      timelimit: none
+      item: 381
+      amount: 2
+      value: 35
       level: 3
       reward:
           - itemid: 38
-            amount: 12
-          - itemid: 264
-            amount: 2
+            amount: 32
 
     - name: "Will you marry me?"
       desc: "So when's the honeymoon!?"
       enabled: true
       timelimit: 30 #minutes
       item: 264
-      amount: 2
-      value: 11
-      level: 2
+      amount: 4
+      value: 40
+      level: 3
       reward:
           - itemid: 355
             amount: 1
@@ -160,11 +157,11 @@ tasks:
     - name: "4th of July"
       desc: "You get the food, I'll get the fireworks!"
       enabled: true
-      timelimit: 10 #minutes
+      timelimit: 12 #minutes
       mob: cow
       amount: 24
-      value: 48
-      level: 1
+      value: 40
+      level: 4
       reward:
           - itemid: 402
             amount: 6
@@ -173,18 +170,31 @@ tasks:
           - itemid: 339
             amount: 12
 
-    - name: "Santa's Little Helper"
-      desc: "Santa really wants some milk..."
+    - name: "Gone Fishin'"
+      desc: "Collect some fish!"
       enabled: true
-      timelimit: 5 #minutes
-      item: 335
-      amount: 4
-      value: 23
-      level: 1
+      timelimit: 10 #minutes
+      item: 349
+      amount: 25
+      value: 35
+      level: 4
       reward:
-          - itemid: 357
-            itembyte: 8202
-            amount: 1
+          - itemid: 350
+            amount: 15
+
+    - name: "Tears of Joy"
+      desc: "I'm not crying... I just got something in my eye."
+      enabled: true
+      timelimit: 30 #minutes
+      item: 370
+      amount: 22
+      value: 120
+      level: 4
+      reward:
+          - itemid: 38
+            amount: 12
+          - itemid: 264
+            amount: 2
 
     - name: "By The Power of Grayskull"
       desc: "HEYYEYAAEYAAAEYAEYAA"
@@ -192,7 +202,7 @@ tasks:
       timelimit: 40 #minutes
       mob: skeleton
       amount: 38
-      value: 157
+      value: 160
       level: 4
       reward:
           - itemid: 276
@@ -200,37 +210,13 @@ tasks:
             enchantments:
                 - damage_all: max
 
-    - name: "Gone Fishin'"
-      desc: "Collect some fish!"
-      enabled: true
-      timelimit: 10 #minutes
-      item: 349
-      amount: 13
-      value: 23
-      level: 2
-      reward:
-          - itemid: 350
-            amount: 13
-
-    - name: "Disco Party"
-      desc: "Kickin' it like it's the 80s! Kind of..."
-      enabled: true
-      timelimit: none
-      item: 84
-      amount: 1
-      value: 28
-      level: 2
-      reward:
-          - itemid: 2265
-            amount: 1
-
     - name: "No Way In Hell"
       desc: "Is that even possible?"
       enabled: true
       timelimit: 25 #minutes
       item: 377
-      amount: 126
-      value: 350
+      amount: 115
+      value: 450
       level: 5
       reward:
           - itemid: 310
@@ -249,3 +235,30 @@ tasks:
             amount: 1
             enchantments:
                 - protection_fire: max
+
+    - name: "Fus Ro Dah!"
+      desc: "Are you a true Dragonborn?"
+      enabled: true
+      timelimit: none
+      mob: enderdragon
+      amount: 1
+      value: 750
+      level: 6
+      reward:
+          - itemid: 310
+            amount: 2
+            enchantments:
+                - thorns: max
+          - itemid: 311
+            amount: 2
+            enchantments:
+                - thorns: max
+                - protection_fire: max
+          - itemid: 312
+            amount: 2
+            enchantments:
+                - thorns: max
+          - itemid: 313
+            amount: 2
+            enchantments:
+                - thorns: max

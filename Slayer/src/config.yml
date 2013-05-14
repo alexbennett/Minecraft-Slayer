@@ -2,18 +2,21 @@
 misc:
     join_message: true
     private_scoreboard: true
+    level_up_firework: true
 
 # Updating
 update:
     auto: true
     notify: true
 
-# Restrictions
+# Tasks
 tasks:
     limit: 5
     full_list: true
     join_reminders: true
     completion_firework: true
+    point_multiplier: 1.0
+    reusable: false
 
 # Forfeit Handling
 forfeit:

@@ -250,7 +250,7 @@ public class SValueUtil
 			case DOUBLE_STEP:
 				return SMiscUtil.getValue(item.getType().name());
 
-				// TODO: Finish this if I decide to use it...
+				// Unimplemented as of now
 
 			default:
 				return 0;

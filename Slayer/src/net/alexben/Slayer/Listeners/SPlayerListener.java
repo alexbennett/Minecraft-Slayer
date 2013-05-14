@@ -22,7 +22,6 @@ package net.alexben.Slayer.Listeners;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.alexben.Slayer.Events.SlayerLevelUpEvent;
 import net.alexben.Slayer.Libraries.Objects.Assignment;
 import net.alexben.Slayer.Libraries.Objects.Task;
 import net.alexben.Slayer.Utilities.*;
@@ -70,20 +69,6 @@ public class SPlayerListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	private void onSlayerLevelUpEvent(SlayerLevelUpEvent event)
-	{
-		// Define variables
-		Player player = event.getPlayer();
-
-		// Message the player
-		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg1").replace("{level}", ChatColor.LIGHT_PURPLE + "" + SPlayerUtil.getLevel(player) + ChatColor.GRAY));
-		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY));
-
-		// Shoot a random firework!
-		SMiscUtil.shootRandomFirework(player.getLocation());
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
 	private void onInventoryCloseEvent(InventoryCloseEvent event)
 	{
 		// Return if it isn't a player inventory
@@ -100,7 +85,7 @@ public class SPlayerListener implements Listener
 			// Define variables
 			Map<Integer, Integer> items = new HashMap<Integer, Integer>();
 
-			// Pre-process items to avoid sending so many messages
+			// Pre-process items into a Map
 			for(ItemStack item : event.getInventory().getContents())
 			{
 				if(item == null) continue;
@@ -126,8 +111,6 @@ public class SPlayerListener implements Listener
 		}
 		else if(event.getInventory().getName().toLowerCase().contains("rewards"))
 		{
-			// TODO: Ensure that this doesn't glitch out (splitting stacks causing rewards to be lost)
-
 			for(ItemStack reward : SPlayerUtil.getRewards(player))
 			{
 				if(!event.getInventory().containsAtLeast(reward, 1))
@@ -135,26 +118,45 @@ public class SPlayerListener implements Listener
 					SPlayerUtil.removeReward(player, reward);
 				}
 
+				// Define variables
+				Map<Integer, Integer> items = new HashMap<Integer, Integer>();
+
+				// Pre-process items into a Map
 				for(ItemStack item : event.getInventory().getContents())
 				{
-					if(item != null)
-					{
-						if(reward.isSimilar(item))
-						{
-							if(reward.getAmount() > item.getAmount())
-							{
-								int amount = reward.getAmount() - item.getAmount();
-								ItemStack newItem = reward.clone();
-								newItem.setAmount(amount);
+					if(item == null) continue;
 
-								SPlayerUtil.removeReward(player, newItem);
-							}
+					if(items.containsKey(item.getTypeId()))
+					{
+						items.put(item.getTypeId(), items.get(item.getTypeId()) + item.getAmount());
+					}
+					else
+					{
+						items.put(item.getTypeId(), item.getAmount());
+					}
+				}
+
+				for(Map.Entry<Integer, Integer> item : items.entrySet())
+				{
+					ItemStack newItem = new ItemStack(item.getKey(), item.getValue());
+
+					if(reward.isSimilar(newItem))
+					{
+						if(reward.getAmount() > newItem.getAmount())
+						{
+							int amount = reward.getAmount() - newItem.getAmount();
+
+							newItem.setAmount(amount);
+
+							SPlayerUtil.removeReward(player, newItem);
 						}
 					}
 				}
-			}
 
-			SDataUtil.removeData(player, "inv_rewards");
+				// Clear the data
+				items.clear();
+				SDataUtil.removeData(player, "inv_rewards");
+			}
 		}
 
 		// Update the scoreboard
@@ -190,7 +192,7 @@ public class SPlayerListener implements Listener
 				// Check the count against the progress
 				if(count >= assignment.getAmountLeft())
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("enough_items").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/sl process" + ChatColor.GRAY));
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("enough_items").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/process" + ChatColor.GRAY));
 				}
 			}
 		}

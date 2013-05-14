@@ -45,7 +45,7 @@ public class BukkitUpdate implements Listener
 		}
 		catch(Exception e)
 		{
-			this.logger.severe("[ " + this.plugin.getName() + "] Could not connect to BukkitDev");
+			this.logger.severe("[" + this.plugin.getName() + "] Could not connect to BukkitDev");
 		}
 	}
 
@@ -77,7 +77,7 @@ public class BukkitUpdate implements Listener
 					if(auto)
 					{
 						Bukkit.broadcast(ChatColor.RED + "is not safe.", this.permission);
-						Bukkit.broadcast("is not safe. Please " + ChatColor.YELLOW + "reload the server " + ChatColor.WHITE + "to finish the auto-update.", this.permission);
+						Bukkit.broadcast("Please " + ChatColor.YELLOW + "reload the server " + ChatColor.WHITE + "to finish the auto-update.", this.permission);
 					}
 					else
 					{
@@ -105,7 +105,7 @@ public class BukkitUpdate implements Listener
 			int bytesTransferred = 0;
 			String downloadLink = this.jarLink;
 
-			this.logger.info("[ " + this.plugin.getName() + "] Attempting to download the latest version...");
+			this.logger.info("[" + this.plugin.getName() + "] Attempting to download the latest version...");
 
 			// Set latest build URL
 			URL plugin = new URL(downloadLink);
@@ -121,7 +121,7 @@ public class BukkitUpdate implements Listener
 
 			// Create new .jar file and add it to update directory
 			File pluginUpdate = new File("plugins" + File.separator + Bukkit.getUpdateFolder() + File.separator + this.plugin + ".jar");
-			this.logger.info("[ " + this.plugin.getName() + "] [ " + this.plugin.getName() + "] File will been written to: " + pluginUpdate.getCanonicalPath());
+			this.logger.info("[" + this.plugin.getName() + "] File will be written to: " + pluginUpdate.getCanonicalPath());
 
 			InputStream is = pluginCon.getInputStream();
 			OutputStream os = new FileOutputStream(pluginUpdate);
@@ -138,7 +138,7 @@ public class BukkitUpdate implements Listener
 
 					if(percentTransferred != 100)
 					{
-						this.logger.info("[ " + this.plugin.getName() + "] Download progress: " + percentTransferred + "%");
+						this.logger.info("[" + this.plugin.getName() + "] Download progress: " + percentTransferred + "%");
 					}
 				}
 			}
@@ -148,8 +148,8 @@ public class BukkitUpdate implements Listener
 			os.close();
 
 			// Download complete!
-			this.logger.info("[ " + this.plugin.getName() + "] Download complete!");
-			this.logger.info("[ " + this.plugin.getName() + "] Update will complete on next server reload.");
+			this.logger.info("[" + this.plugin.getName() + "] Download complete!");
+			this.logger.info("[" + this.plugin.getName() + "] Update will complete on next server reload.");
 
 			return true;
 		}
@@ -196,7 +196,7 @@ public class BukkitUpdate implements Listener
 			}
 			catch(Exception e)
 			{
-				this.logger.warning("[ " + this.plugin.getName() + "] Failed to open connection with download page.");
+				this.logger.warning("[" + this.plugin.getName() + "] Failed to open connection with download page.");
 			}
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));

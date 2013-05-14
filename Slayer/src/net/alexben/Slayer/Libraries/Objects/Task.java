@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.alexben.Slayer.Utilities.SConfigUtil;
 import net.alexben.Slayer.Utilities.SItemUtil;
 import net.alexben.Slayer.Utilities.SObjUtil;
 
@@ -128,7 +129,7 @@ public class Task implements Serializable
 	 */
 	public int getValue()
 	{
-		return value;
+		return (int) Math.ceil(value * SConfigUtil.getSettingDouble("tasks.point_multiplier"));
 	}
 
 	/**
@@ -142,11 +143,11 @@ public class Task implements Serializable
 	}
 
 	/**
-	 * Returns a book with information from the task.
+	 * Returns a piece of paper with information from the task.
 	 * 
 	 * @return ItemStack
 	 */
-	public ItemStack getBook()
+	public ItemStack getTaskSheet()
 	{
 		List<String> lore = new ArrayList<String>();
 

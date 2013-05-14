@@ -443,13 +443,11 @@ public class STaskUtil
 	 */
 	public static boolean hasCompleted(OfflinePlayer player, Task task)
 	{
-		// TODO: Fix this.
-
 		if(getAssignments(player) == null || getAssignments(player).isEmpty()) return false;
 
 		for(Assignment assignment : getAssignments(player))
 		{
-			if(assignment.getTask().equals(task) && !assignment.isActive() || assignment.isComplete()) return true;
+			if(assignment.getTask().equals(task) && (!assignment.isActive() || assignment.isComplete())) return true;
 		}
 
 		return false;
@@ -529,7 +527,7 @@ public class STaskUtil
 		// Define variables
 		int count = 0;
 
-		// Clear old assignments and stoof
+		// Hide old assignments and stoof
 		for(Assignment assignment : getAllAssignments())
 		{
 			if(!assignment.isActive() || assignment.isExpired() || assignment.isFailed() || assignment.isComplete() || assignment.isForfeited())
@@ -605,7 +603,7 @@ public class STaskUtil
 				// Message the player on even kills
 				if(assignment.getAmountObtained() % 2 == 0 && !assignment.isComplete())
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("mob_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained()).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded()).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
+					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("mob_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained() + ChatColor.GRAY).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded() + ChatColor.GRAY).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 				}
 
 				// Now handle completed assignments

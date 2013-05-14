@@ -91,7 +91,7 @@ public class SMiscUtil
 	 */
 	public static int getValue(String name)
 	{
-		// TODO: Unimplemented as of now.
+		// Unimplemented as of now
 		return 0;
 	}
 

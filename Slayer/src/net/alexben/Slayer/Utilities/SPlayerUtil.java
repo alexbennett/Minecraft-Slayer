@@ -123,6 +123,13 @@ public class SPlayerUtil
 	 */
 	public static void updateScoreboard(Player player)
 	{
+		// First do a version check to make sure we can use scoreboards
+		if(!Bukkit.getBukkitVersion().contains("1.5.1-R0.3"))
+		{
+			// TODO: Eventually remove this.
+			return;
+		}
+
 		// Define variables
 		Scoreboard slayer = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -134,19 +141,19 @@ public class SPlayerUtil
 		// Add the data if the scoreboard is enabled
 		if(SConfigUtil.getSettingBoolean("misc.private_scoreboard") && scoreboardEnabled(player))
 		{
-			Score level = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Level:"));
+			Score level = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_level")));
 			level.setScore(getLevel(player));
 
-			Score points = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Points:"));
+			Score points = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_points")));
 			points.setScore(getPoints(player));
 
-			Score nextLevelPoints = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Points Needed:"));
+			Score nextLevelPoints = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_points_needed")));
 			nextLevelPoints.setScore(getPointsGoal(player) - getPoints(player));
 
-			Score activeTasks = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Active Tasks:"));
+			Score activeTasks = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_active_tasks")));
 			activeTasks.setScore(STaskUtil.getActiveAssignments(player).size());
 
-			Score rewards = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + "Rewards:"));
+			Score rewards = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_rewards")));
 			rewards.setScore(SPlayerUtil.getRewardAmount(player));
 
 			player.setScoreboard(slayer);
@@ -392,6 +399,17 @@ public class SPlayerUtil
 	}
 
 	/**
+	 * Returns the points goal until for <code>level</code>.
+	 * 
+	 * @param level the level to check for.
+	 * @return Integer
+	 */
+	public static int getLevelPointsGoal(int level)
+	{
+		return (int) Math.ceil(13.4 * Math.pow(level, 2));
+	}
+
+	/**
 	 * Sets the <code>player</code>'s level to <code>points</code>.
 	 * 
 	 * @param player the player to edit.
@@ -555,7 +573,7 @@ public class SPlayerUtil
 		// Loop through tasks and determine which ones to display
 		for(Task task : STaskUtil.getTasksUpToLevel(level))
 		{
-			if(!STaskUtil.hasCompleted(player, task)) inventory.addItem(task.getBook());
+			if(!STaskUtil.hasCompleted(player, task) || SConfigUtil.getSettingBoolean("tasks.reusable")) inventory.addItem(task.getTaskSheet());
 		}
 
 		// Open the inventory

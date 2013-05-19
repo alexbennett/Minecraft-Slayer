@@ -19,16 +19,11 @@
 
 package net.alexben.Slayer.Utilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.alexben.Slayer.Handlers.SFlatFile;
 import net.alexben.Slayer.Libraries.Objects.Death;
 import net.alexben.Slayer.Libraries.Objects.Kill;
 import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
 import net.alexben.Slayer.Libraries.Objects.Task;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -40,6 +35,10 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Utility for all player-related methods.
@@ -123,13 +122,6 @@ public class SPlayerUtil
 	 */
 	public static void updateScoreboard(Player player)
 	{
-		// First do a version check to make sure we can use scoreboards
-		if(!Bukkit.getBukkitVersion().contains("1.5.1-R0.3"))
-		{
-			// TODO: Eventually remove this.
-			return;
-		}
-
 		// Define variables
 		Scoreboard slayer = Bukkit.getScoreboardManager().getNewScoreboard();
 

@@ -1,6 +1,6 @@
 name: Slayer
 main: net.alexben.Slayer.Slayer
-version: 1.2.2 ## TODO
+version: 1.2.2
 author: _Alex
 commands:
     sl:

@@ -1,6 +1,19 @@
 # Task Configuration
 tasks:
 
+    - name: "Something smells fishy..."
+      desc: "Pew yew!"
+      enabled: true
+      timelimit: 25 #minutes
+      item: 5
+      amount: 5
+      value: 15
+      level: 1
+      reward:
+          - command: tp {player} 300,100,300
+          - boseconomy: 50
+          - exp: 50
+
     - name: "Mmm, bacon!"
       desc: "Eh, could use some syrup."
       enabled: true

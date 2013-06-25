@@ -43,7 +43,7 @@ public class SAssignmentListener implements Listener
 		final Assignment assignment = event.getAssignment();
 
 		// Add the rewards to their reward queue
-		for(ItemStack item : assignment.getTask().getReward())
+		for(ItemStack item : assignment.getTask().getItemReward())
 		{
 			SPlayerUtil.addReward(player, new SerialItemStack(item));
 		}
@@ -78,7 +78,7 @@ public class SAssignmentListener implements Listener
 			while(SPlayerUtil.getPoints(player) >= SPlayerUtil.getPointsGoal(player))
 			{
 				SlayerLevelUpEvent levelUpEvent = new SlayerLevelUpEvent(player, SPlayerUtil.getLevel(player), SPlayerUtil.getLevel(player) + 1);
-                Slayer.plugin.getServer().getPluginManager().callEvent(levelUpEvent);
+				Slayer.plugin.getServer().getPluginManager().callEvent(levelUpEvent);
 
 				if(!levelUpEvent.isCancelled())
 				{

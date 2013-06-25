@@ -16,12 +16,12 @@ import org.bukkit.inventory.ItemStack;
 public class Task implements Serializable
 {
 	private static final long serialVersionUID = 1869297353395176134L;
-	private String name = null, desc = null;
-	private int level, value, amountNeeded, timeLimit;
+	private String name = null, desc = null, commandReward = null;
+	private int level, value, amountNeeded, timeLimit, economyReward;
 	private SerialItemStack item;
 	private TaskType type;
 	private EntityType entity;
-	private ArrayList<SerialItemStack> reward = new ArrayList<SerialItemStack>();
+	private ArrayList<SerialItemStack> itemReward = new ArrayList<SerialItemStack>();
 
 	public Task(String task, String desc, int timeLimit, int value, int level, ArrayList<SerialItemStack> rewards, int amount, EntityType entity)
 	{
@@ -38,7 +38,7 @@ public class Task implements Serializable
 		{
 			for(SerialItemStack reward : rewards)
 			{
-				this.reward.add(reward);
+				this.itemReward.add(reward);
 			}
 		}
 	}
@@ -58,7 +58,7 @@ public class Task implements Serializable
 		{
 			for(SerialItemStack reward : rewards)
 			{
-				this.reward.add(reward);
+				this.itemReward.add(reward);
 			}
 		}
 	}
@@ -150,7 +150,7 @@ public class Task implements Serializable
 		lore.add(ChatColor.GREEN + "\"" + desc + "\"");
 		lore.add("");
 		lore.add(ChatColor.GRAY + "Goal: " + ChatColor.YELLOW + goal);
-		lore.add(ChatColor.GRAY + "Rewards: " + ChatColor.YELLOW + reward.size() + " item(s)");
+		lore.add(ChatColor.GRAY + "Rewards: " + ChatColor.YELLOW + itemReward.size() + " item(s)");
 		lore.add(ChatColor.GRAY + "Points: " + ChatColor.GREEN + value);
 		if(isTimed()) lore.add(ChatColor.GRAY + "Time Limit: " + ChatColor.RED + timeLimit + " minutes");
 
@@ -163,11 +163,11 @@ public class Task implements Serializable
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList<ItemStack> getReward()
+	public ArrayList<ItemStack> getItemReward()
 	{
 		ArrayList<ItemStack> rewards = new ArrayList<ItemStack>();
 
-		for(SerialItemStack item : reward)
+		for(SerialItemStack item : itemReward)
 		{
 			rewards.add(item.toItemStack());
 		}

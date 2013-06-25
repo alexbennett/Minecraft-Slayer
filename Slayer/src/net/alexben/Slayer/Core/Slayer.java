@@ -18,6 +18,7 @@ import net.alexben.Slayer.Modules.ConfigAccessor;
 import net.alexben.Slayer.Modules.MetricsModule;
 import net.alexben.Slayer.SlayerPlugin;
 import net.alexben.Slayer.Utilities.*;
+import net.milkbowl.vault.Vault;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,7 +45,8 @@ public class Slayer
 	public static BukkitUpdate update;
 
 	// Economy plugins
-	public static BOSEconomy boseconomy = null;
+	public static BOSEconomy boseEcon = null;
+	public static Vault vaultEcon = null;
 
 	public Slayer(SlayerPlugin instance)
 	{
@@ -84,10 +86,20 @@ public class Slayer
 
 	private void loadEconomy()
 	{
-		// BOSEconomy
+		// Define and grab the plugins
 		Plugin bose = Slayer.plugin.getServer().getPluginManager().getPlugin("BOSEconomy");
+		Plugin vault = Slayer.plugin.getServer().getPluginManager().getPlugin("Vault");
 
-		if(bose != null) boseconomy = (BOSEconomy) bose;
+		if(bose != null)
+		{
+			boseEcon = (BOSEconomy) bose;
+			SMiscUtil.log("info", "[Economy] BOSEconomy detected.");
+		}
+		if(vault != null)
+		{
+			vaultEcon = (Vault) vault;
+			SMiscUtil.log("info", "[Economy] Vault detected.");
+		}
 	}
 
 	private void loadConfigs()

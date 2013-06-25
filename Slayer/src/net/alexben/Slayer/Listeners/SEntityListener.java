@@ -19,7 +19,7 @@
 
 package net.alexben.Slayer.Listeners;
 
-import net.alexben.Slayer.Libraries.Objects.Assignment;
+import net.alexben.Slayer.Core.Objects.Assignment;
 import net.alexben.Slayer.Utilities.*;
 
 import org.bukkit.ChatColor;

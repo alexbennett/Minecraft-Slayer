@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Handlers;
+package net.alexben.Slayer.Core.Handlers;
 
 import java.io.*;
 import java.util.HashMap;

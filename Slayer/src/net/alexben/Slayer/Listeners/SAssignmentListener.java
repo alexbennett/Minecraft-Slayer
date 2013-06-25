@@ -19,9 +19,10 @@
 
 package net.alexben.Slayer.Listeners;
 
-import net.alexben.Slayer.Events.*;
-import net.alexben.Slayer.Libraries.Objects.Assignment;
-import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
+import net.alexben.Slayer.Core.Events.*;
+import net.alexben.Slayer.Core.Objects.Assignment;
+import net.alexben.Slayer.Core.Objects.SerialItemStack;
+import net.alexben.Slayer.Slayer;
 import net.alexben.Slayer.Utilities.SConfigUtil;
 import net.alexben.Slayer.Utilities.SMiscUtil;
 import net.alexben.Slayer.Utilities.SPlayerUtil;
@@ -96,7 +97,7 @@ public class SAssignmentListener implements Listener
 			while(SPlayerUtil.getPoints(player) >= SPlayerUtil.getPointsGoal(player))
 			{
 				SlayerLevelUpEvent levelUpEvent = new SlayerLevelUpEvent(player, SPlayerUtil.getLevel(player), SPlayerUtil.getLevel(player) + 1);
-				SMiscUtil.getInstance().getServer().getPluginManager().callEvent(levelUpEvent);
+                Slayer.plugin.getServer().getPluginManager().callEvent(levelUpEvent);
 
 				if(!levelUpEvent.isCancelled())
 				{

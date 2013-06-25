@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Libraries.Objects;
+package net.alexben.Slayer.Core.Objects;
 
 import java.io.Serializable;
 import java.util.HashMap;

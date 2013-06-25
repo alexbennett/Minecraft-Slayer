@@ -17,9 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Events;
+package net.alexben.Slayer.Core.Events;
 
-import net.alexben.Slayer.Libraries.Objects.Assignment;
+import net.alexben.Slayer.Core.Objects.Assignment;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
@@ -29,17 +29,19 @@ import org.bukkit.event.HandlerList;
 /**
  * Called when a player's assignment expires.
  */
-public class AssignmentExpireEvent extends Event implements Cancellable
+public class AssignmentRemoveEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
 	private OfflinePlayer player;
 	private Assignment assignment;
+	private RemoveReason reason;
 	private boolean cancelled = false;
 
-	public AssignmentExpireEvent(OfflinePlayer player, Assignment assignment)
+	public AssignmentRemoveEvent(OfflinePlayer player, Assignment assignment, RemoveReason reason)
 	{
 		this.player = player;
 		this.assignment = assignment;
+		this.reason = reason;
 	}
 
 	/**
@@ -60,6 +62,16 @@ public class AssignmentExpireEvent extends Event implements Cancellable
 	public Assignment getAssignment()
 	{
 		return this.assignment;
+	}
+
+	/**
+	 * Returns the reason for removal.
+	 * 
+	 * @return RemoveReason
+	 */
+	public RemoveReason getReason()
+	{
+		return reason;
 	}
 
 	@Override
@@ -83,5 +95,10 @@ public class AssignmentExpireEvent extends Event implements Cancellable
 	public synchronized void setCancelled(boolean cancelled)
 	{
 		this.cancelled = cancelled;
+	}
+
+	public enum RemoveReason
+	{
+		AUTO, ADMIN
 	}
 }

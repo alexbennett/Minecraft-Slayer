@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Libraries.Objects;
+package net.alexben.Slayer.Core.Objects;
 
 import java.io.Serializable;
 
@@ -27,18 +27,18 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-public class Kill implements Serializable
+public class Death implements Serializable
 {
-	private static final long serialVersionUID = 1869297397495176734L;
+	private static final long serialVersionUID = 1869555397495176134L;
 	private String player = null;
 	private EntityType entity;
 	private SerialLocation location;
 
-	public Kill(Player player, Entity entity)
+	public Death(Player player, Entity entity)
 	{
 		this.player = player.getName();
 		this.entity = entity.getType();
-		this.location = new SerialLocation(entity.getLocation());
+		location = new SerialLocation(player.getLocation());
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class Kill implements Serializable
 	}
 
 	/**
-	 * Returns the entity that was killed.
+	 * Returns the location of the player that died.
 	 * 
 	 * @return Location
 	 */

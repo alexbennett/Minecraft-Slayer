@@ -17,26 +17,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Events;
+package net.alexben.Slayer.Core.Events;
 
-import net.alexben.Slayer.Libraries.Objects.Assignment;
+import net.alexben.Slayer.Core.Objects.Assignment;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player completes a Task.
+ * Called when a player's assignment expires.
  */
-public class AssignmentCompleteEvent extends Event implements Cancellable
+public class AssignmentForfeitEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
-	private Player player;
+	private OfflinePlayer player;
 	private Assignment assignment;
 	private boolean cancelled = false;
 
-	public AssignmentCompleteEvent(Player player, Assignment assignment)
+	public AssignmentForfeitEvent(OfflinePlayer player, Assignment assignment)
 	{
 		this.player = player;
 		this.assignment = assignment;
@@ -45,9 +45,9 @@ public class AssignmentCompleteEvent extends Event implements Cancellable
 	/**
 	 * Returns the player associated with the event.
 	 * 
-	 * @return Player
+	 * @return OfflinePlayer
 	 */
-	public Player getPlayer()
+	public OfflinePlayer getOfflinePlayer()
 	{
 		return this.player;
 	}

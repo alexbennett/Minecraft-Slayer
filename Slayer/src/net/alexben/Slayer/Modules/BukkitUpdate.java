@@ -3,7 +3,7 @@
  * https://github.com/betterphp/UpdateChecker/blob/master/uk/co/jacekk/bukkit/updatechecker/UpdateChecker.java
  */
 
-package net.alexben.Slayer.Libraries;
+package net.alexben.Slayer.Modules;
 
 import java.io.*;
 import java.net.MalformedURLException;

@@ -17,61 +17,58 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Events;
+package net.alexben.Slayer.Core.Events;
 
-import net.alexben.Slayer.Libraries.Objects.Assignment;
-
-import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player's assignment expires.
+ * Called when a Assignment is assigned to a player.
  */
-public class AssignmentRemoveEvent extends Event implements Cancellable
+public class SlayerLevelUpEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
-	private OfflinePlayer player;
-	private Assignment assignment;
-	private RemoveReason reason;
+	private Player player;
+	private int prevLevel, currLevel;
 	private boolean cancelled = false;
 
-	public AssignmentRemoveEvent(OfflinePlayer player, Assignment assignment, RemoveReason reason)
+	public SlayerLevelUpEvent(Player player, int prevLevel, int currLevel)
 	{
 		this.player = player;
-		this.assignment = assignment;
-		this.reason = reason;
+		this.prevLevel = prevLevel;
+		this.currLevel = currLevel;
 	}
 
 	/**
 	 * Returns the player associated with the event.
 	 * 
-	 * @return OfflinePlayer
+	 * @return Player
 	 */
-	public OfflinePlayer getOfflinePlayer()
+	public Player getPlayer()
 	{
 		return this.player;
 	}
 
 	/**
-	 * Returns the Assignment associated with the event.
+	 * Returns the previous level for the player.
 	 * 
-	 * @return Assignment
+	 * @return Integer
 	 */
-	public Assignment getAssignment()
+	public int getPreviousLevel()
 	{
-		return this.assignment;
+		return this.prevLevel;
 	}
 
 	/**
-	 * Returns the reason for removal.
+	 * Returns the current level for the player.
 	 * 
-	 * @return RemoveReason
+	 * @return Integer
 	 */
-	public RemoveReason getReason()
+	public int getCurrentLevel()
 	{
-		return reason;
+		return this.currLevel;
 	}
 
 	@Override
@@ -95,10 +92,5 @@ public class AssignmentRemoveEvent extends Event implements Cancellable
 	public synchronized void setCancelled(boolean cancelled)
 	{
 		this.cancelled = cancelled;
-	}
-
-	public enum RemoveReason
-	{
-		AUTO, ADMIN
 	}
 }

@@ -19,11 +19,12 @@
 
 package net.alexben.Slayer.Utilities;
 
-import net.alexben.Slayer.Handlers.SFlatFile;
-import net.alexben.Slayer.Libraries.Objects.Death;
-import net.alexben.Slayer.Libraries.Objects.Kill;
-import net.alexben.Slayer.Libraries.Objects.SerialItemStack;
-import net.alexben.Slayer.Libraries.Objects.Task;
+import net.alexben.Slayer.Core.Handlers.SFlatFile;
+import net.alexben.Slayer.Core.Objects.Death;
+import net.alexben.Slayer.Core.Objects.Kill;
+import net.alexben.Slayer.Core.Objects.SerialItemStack;
+import net.alexben.Slayer.Core.Objects.Task;
+import net.alexben.Slayer.Slayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -525,7 +526,7 @@ public class SPlayerUtil
 	 */
 	public static void openProcessingInventory(Player player)
 	{
-		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Item Processing Inventory");
+		Inventory inventory = Slayer.plugin.getServer().createInventory(player, 27, "Item Processing Inventory");
 		SDataUtil.saveData(player, "inv_process", true);
 		player.openInventory(inventory);
 	}
@@ -538,7 +539,7 @@ public class SPlayerUtil
 	 */
 	public static void openRewardBackpack(Player player)
 	{
-		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, player.getName() + "'s Rewards");
+		Inventory inventory = Slayer.plugin.getServer().createInventory(player, 27, player.getName() + "'s Rewards");
 
 		for(ItemStack item : getRewards(player))
 		{
@@ -560,7 +561,7 @@ public class SPlayerUtil
 	{
 		// Define variables
 		int level = getLevel(player);
-		Inventory inventory = SMiscUtil.getInstance().getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.DARK_PURPLE + "(Click to Select)");
+		Inventory inventory = Slayer.plugin.getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.DARK_PURPLE + "(Click to Select)");
 
 		// Loop through tasks and determine which ones to display
 		for(Task task : STaskUtil.getTasksUpToLevel(level))

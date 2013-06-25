@@ -17,7 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Events;
+package net.alexben.Slayer.Core.Events;
+
+import net.alexben.Slayer.Core.Objects.Assignment;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -25,20 +27,19 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a Assignment is assigned to a player.
+ * Called when a player completes a Task.
  */
-public class SlayerLevelUpEvent extends Event implements Cancellable
+public class AssignmentCompleteEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
 	private Player player;
-	private int prevLevel, currLevel;
+	private Assignment assignment;
 	private boolean cancelled = false;
 
-	public SlayerLevelUpEvent(Player player, int prevLevel, int currLevel)
+	public AssignmentCompleteEvent(Player player, Assignment assignment)
 	{
 		this.player = player;
-		this.prevLevel = prevLevel;
-		this.currLevel = currLevel;
+		this.assignment = assignment;
 	}
 
 	/**
@@ -52,23 +53,13 @@ public class SlayerLevelUpEvent extends Event implements Cancellable
 	}
 
 	/**
-	 * Returns the previous level for the player.
+	 * Returns the Assignment associated with the event.
 	 * 
-	 * @return Integer
+	 * @return Assignment
 	 */
-	public int getPreviousLevel()
+	public Assignment getAssignment()
 	{
-		return this.prevLevel;
-	}
-
-	/**
-	 * Returns the current level for the player.
-	 * 
-	 * @return Integer
-	 */
-	public int getCurrentLevel()
-	{
-		return this.currLevel;
+		return this.assignment;
 	}
 
 	@Override

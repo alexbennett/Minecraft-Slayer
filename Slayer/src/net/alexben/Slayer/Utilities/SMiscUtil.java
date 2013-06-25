@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import net.alexben.Slayer.Slayer;
 
+import net.alexben.Slayer.SlayerPlugin;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -39,17 +40,9 @@ import org.bukkit.inventory.meta.FireworkMeta;
 public class SMiscUtil
 {
 	// Define variables
-	private static Slayer plugin = null;
-	private static String pluginName = null;
-	private static ChatColor pluginColor = null;
+	private static String pluginName = Slayer.plugin.getDescription().getName();
+	private static ChatColor pluginColor = ChatColor.RED;
 	private static final Logger log = Logger.getLogger("Minecraft");
-
-	public static void initialize(Slayer instance)
-	{
-		plugin = instance;
-		pluginName = plugin.getDescription().getName();
-		pluginColor = ChatColor.RED;
-	}
 
 	/**
 	 * Returns the logger for the current plugin instance.
@@ -59,16 +52,6 @@ public class SMiscUtil
 	public static Logger getLog()
 	{
 		return log;
-	}
-
-	/**
-	 * Returns the instance of the plugin.
-	 * 
-	 * @return Slayer
-	 */
-	public static Slayer getInstance()
-	{
-		return plugin;
 	}
 
 	/**

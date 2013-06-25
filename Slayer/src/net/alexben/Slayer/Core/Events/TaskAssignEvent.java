@@ -17,9 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Events;
+package net.alexben.Slayer.Core.Events;
 
-import net.alexben.Slayer.Libraries.Objects.Task;
+import net.alexben.Slayer.Core.Objects.Task;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

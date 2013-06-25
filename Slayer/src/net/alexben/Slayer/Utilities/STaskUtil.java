@@ -22,10 +22,11 @@ package net.alexben.Slayer.Utilities;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.alexben.Slayer.Events.*;
-import net.alexben.Slayer.Libraries.Objects.Assignment;
-import net.alexben.Slayer.Libraries.Objects.Task;
+import net.alexben.Slayer.Core.Events.*;
+import net.alexben.Slayer.Core.Objects.Assignment;
+import net.alexben.Slayer.Core.Objects.Task;
 
+import net.alexben.Slayer.Slayer;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
@@ -382,7 +383,7 @@ public class STaskUtil
 
 			// Call the event
 			AssignmentRemoveEvent assignmentRemoveEvent = new AssignmentRemoveEvent(assignment.getOfflinePlayer(), assignment, reason);
-			SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentRemoveEvent);
+			Slayer.plugin.getServer().getPluginManager().callEvent(assignmentRemoveEvent);
 			if(assignmentRemoveEvent.isCancelled()) return false;
 
 			getAssignments(player).remove(assignment);
@@ -406,7 +407,7 @@ public class STaskUtil
 
 			// Call the event
 			AssignmentForfeitEvent assignmentForfeitEvent = new AssignmentForfeitEvent(assignment.getOfflinePlayer(), assignment);
-			SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentForfeitEvent);
+            Slayer.plugin.getServer().getPluginManager().callEvent(assignmentForfeitEvent);
 			if(assignmentForfeitEvent.isCancelled()) return false;
 
 			assignment.setForfeited(true);
@@ -483,7 +484,7 @@ public class STaskUtil
 	public static Assignment assignTask(Player player, Task task)
 	{
 		TaskAssignEvent taskAssignEvent = new TaskAssignEvent(player, task);
-		SMiscUtil.getInstance().getServer().getPluginManager().callEvent(taskAssignEvent);
+		Slayer.plugin.getServer().getPluginManager().callEvent(taskAssignEvent);
 
 		if(!taskAssignEvent.isCancelled())
 		{
@@ -560,7 +561,7 @@ public class STaskUtil
 			{
 				// Call the event
 				AssignmentExpireEvent assignmentExpireEvent = new AssignmentExpireEvent(assignment.getOfflinePlayer(), assignment);
-				SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentExpireEvent);
+				Slayer.plugin.getServer().getPluginManager().callEvent(assignmentExpireEvent);
 				if(assignmentExpireEvent.isCancelled()) return;
 
 				// Log the expiration
@@ -611,7 +612,7 @@ public class STaskUtil
 				{
 					// The assignment is complete, call the event
 					AssignmentCompleteEvent assignmentCompleteEvent = new AssignmentCompleteEvent(player, assignment);
-					SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentCompleteEvent);
+					Slayer.plugin.getServer().getPluginManager().callEvent(assignmentCompleteEvent);
 					if(assignmentCompleteEvent.isCancelled()) return;
 
 					// Set the assignment to inactive
@@ -666,7 +667,7 @@ public class STaskUtil
 				{
 					// The assignment is complete, call the event
 					AssignmentCompleteEvent assignmentCompleteEvent = new AssignmentCompleteEvent(player, assignment);
-					SMiscUtil.getInstance().getServer().getPluginManager().callEvent(assignmentCompleteEvent);
+					Slayer.plugin.getServer().getPluginManager().callEvent(assignmentCompleteEvent);
 					if(assignmentCompleteEvent.isCancelled()) return;
 
 					// Set the assignment to inactive

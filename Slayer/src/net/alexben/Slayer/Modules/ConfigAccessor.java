@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Libraries;
+package net.alexben.Slayer.Modules;
 
 import java.io.File;
 import java.io.IOException;

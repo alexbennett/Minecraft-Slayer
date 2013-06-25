@@ -26,7 +26,7 @@
  * either expressed or implied, of anybody else.
  */
 
-package net.alexben.Slayer.Libraries;
+package net.alexben.Slayer.Modules;
 
 import java.io.*;
 import java.net.Proxy;
@@ -56,7 +56,7 @@ import org.bukkit.scheduler.BukkitTask;
  * void start(); <br/>
  * </code>
  */
-public class Metrics
+public class MetricsModule
 {
 
 	/**
@@ -117,7 +117,7 @@ public class Metrics
 	 */
 	private volatile BukkitTask task = null;
 
-	public Metrics(final Plugin plugin) throws IOException
+	public MetricsModule(final Plugin plugin) throws IOException
 	{
 		if(plugin == null)
 		{
@@ -267,7 +267,7 @@ public class Metrics
 					{
 						if(debug)
 						{
-							Bukkit.getLogger().log(Level.INFO, "[Metrics] " + e.getMessage());
+							Bukkit.getLogger().log(Level.INFO, "[MetricsModule] " + e.getMessage());
 						}
 					}
 				}
@@ -295,7 +295,7 @@ public class Metrics
 			{
 				if(debug)
 				{
-					Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+					Bukkit.getLogger().log(Level.INFO, "[MetricsModule] " + ex.getMessage());
 				}
 				return true;
 			}
@@ -303,7 +303,7 @@ public class Metrics
 			{
 				if(debug)
 				{
-					Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+					Bukkit.getLogger().log(Level.INFO, "[MetricsModule] " + ex.getMessage());
 				}
 				return true;
 			}

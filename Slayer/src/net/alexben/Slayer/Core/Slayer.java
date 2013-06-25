@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer;
+package net.alexben.Slayer.Core;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,6 @@ import java.util.Map;
 
 import net.alexben.Slayer.Core.Events.AssignmentRemoveEvent;
 import net.alexben.Slayer.Core.Handlers.SFlatFile;
-import net.alexben.Slayer.Core.Handlers.SScheduler;
 import net.alexben.Slayer.Modules.BukkitUpdate;
 import net.alexben.Slayer.Modules.ConfigAccessor;
 import net.alexben.Slayer.Modules.MetricsModule;
@@ -36,6 +35,7 @@ import net.alexben.Slayer.Core.Objects.Task;
 import net.alexben.Slayer.Listeners.SAssignmentListener;
 import net.alexben.Slayer.Listeners.SEntityListener;
 import net.alexben.Slayer.Listeners.SPlayerListener;
+import net.alexben.Slayer.SlayerPlugin;
 import net.alexben.Slayer.Utilities.*;
 
 import org.bukkit.Bukkit;

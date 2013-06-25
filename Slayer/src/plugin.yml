@@ -1,5 +1,5 @@
 name: Slayer
-main: net.alexben.Slayer.Slayer
+main: net.alexben.Slayer.Core.Slayer
 version: 1.2.2
 author: _Alex
 commands:

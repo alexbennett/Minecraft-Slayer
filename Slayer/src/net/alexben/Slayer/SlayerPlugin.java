@@ -2,6 +2,7 @@ package net.alexben.Slayer;
 
 import net.alexben.Slayer.Core.Handlers.SFlatFile;
 import net.alexben.Slayer.Core.Handlers.SScheduler;
+import net.alexben.Slayer.Core.Slayer;
 import net.alexben.Slayer.Utilities.SMiscUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -1,5 +1,5 @@
 name: Slayer
-main: net.alexben.Slayer.Core.Slayer
+main: net.alexben.Slayer.SlayerPlugin
 version: 1.2.2
 author: _Alex
 softdepend: [BOSEconomy, Vault]

@@ -8,6 +8,7 @@ import java.util.Map;
 import net.alexben.Slayer.Core.Events.AssignmentRemoveEvent;
 import net.alexben.Slayer.Core.Handlers.SFlatFile;
 import net.alexben.Slayer.Core.Objects.Assignment;
+import net.alexben.Slayer.Core.Objects.ObjectFactory;
 import net.alexben.Slayer.Core.Objects.SerialItemStack;
 import net.alexben.Slayer.Core.Objects.Task;
 import net.alexben.Slayer.Listeners.SAssignmentListener;
@@ -64,9 +65,6 @@ public class Slayer
 		loadMetrics();
 		loadEconomy();
 
-		// Load data
-		SFlatFile.load();
-
 		// Update players
 		updatePlayers();
 
@@ -105,13 +103,13 @@ public class Slayer
 	private void loadConfigs()
 	{
 		// LEGACY: Move the old tasks.yml config if it still exists.
-		File taskFile = new File(plugin.getDataFolder() + File.separator + "tasks.yml");
+		File taskFile = new File(plugin.getDataFolder() + File.separator + "tasks/tasks.yml");
 
 		if(taskFile.exists())
 		{
 			// Create the folder and move the file
 			new File(plugin.getDataFolder() + File.separator + "tasks").mkdir();
-			taskFile.renameTo(new File(plugin.getDataFolder() + File.separator + "tasks" + File.separator + "tasks.yml"));
+			taskFile.renameTo(new File(plugin.getDataFolder() + File.separator + "tasks" + File.separator + "tasks/tasks.yml"));
 
 			// Log the update
 			SMiscUtil.log("info", "\"task.yml\" file moved for new save system.");
@@ -163,10 +161,9 @@ public class Slayer
 			if(!SObjUtil.toBoolean(task.get("enabled"))) continue;
 
 			// Define variables
-			ArrayList<SerialItemStack> rewards = new ArrayList<SerialItemStack>();
 			int timeLimit = 0;
 			int level = 1;
-			int value = SObjUtil.toInteger(task.get("value"));
+			int points = SObjUtil.toInteger(task.get("value"));
 
 			// Validate variables
 			if(task.get("timelimit") != null && !task.get("timelimit").equals("none"))
@@ -179,68 +176,77 @@ public class Slayer
 				level = SObjUtil.toInteger(task.get("level"));
 			}
 
-			// All of this to simply handle rewards...
+			// Create the actual task
+			if(task.get("mob") != null)
+			{
+				newTask = ObjectFactory.createMobTask(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("amount")), points, level, EntityType.fromName(task.get("mob").toString()));
+			}
+			else if(task.get("item") != null)
+			{
+				newTask = ObjectFactory.createItemTask(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("amount")), points, level, SObjUtil.toInteger(task.get("item")));
+			}
+
+			// Handle rewards...
 			if(task.get("reward") != null)
 			{
 				for(Object object : (ArrayList<?>) task.get("reward"))
 				{
-					// Define variables
-					int itemID, amount = 1;
-					byte itemByte = (byte) 0;
-
 					// Cast the object to a map
 					Map<String, Object> reward = (Map<String, Object>) object;
 
-					// Update variables
-					itemID = SObjUtil.toInteger(reward.get("itemid"));
-					if(reward.get("itembyte") != null) itemByte = (byte) SObjUtil.toInteger(reward.get("itembyte"));
-					if(reward.get("amount") != null) amount = SObjUtil.toInteger(reward.get("amount"));
-
-					// Create the item
-					ItemStack item = new ItemStack(itemID, amount, itemByte);
-
-					// Add the enchantments if they are wanted
-					if(reward.get("enchantments") != null)
+					// Handle item reward
+					if(reward.get("itemid") != null)
 					{
-						for(Object enchObj : (ArrayList<?>) reward.get("enchantments"))
+						// Define variables
+						ArrayList<SerialItemStack> itemRewards = new ArrayList<SerialItemStack>();
+						int itemID, amount = 1;
+						byte itemByte = (byte) 0;
+
+						// Update variables
+						itemID = SObjUtil.toInteger(reward.get("itemid"));
+						if(reward.get("itembyte") != null) itemByte = (byte) SObjUtil.toInteger(reward.get("itembyte"));
+						if(reward.get("amount") != null) amount = SObjUtil.toInteger(reward.get("amount"));
+
+						// Create the item
+						ItemStack item = new ItemStack(itemID, amount, itemByte);
+
+						// Add the enchantments if they are wanted
+						if(reward.get("enchantments") != null)
 						{
-							Map<String, Object> enchantments = (Map<String, Object>) enchObj;
-
-							for(Map.Entry<String, Object> enchantment : enchantments.entrySet())
+							for(Object enchObj : (ArrayList<?>) reward.get("enchantments"))
 							{
-								int enchLevel = 0;
-								Enchantment enchant = Enchantment.getByName(enchantment.getKey().toUpperCase());
+								Map<String, Object> enchantments = (Map<String, Object>) enchObj;
 
-								// Determine the appropriate level
-								if(enchantment.getValue().equals("max"))
+								for(Map.Entry<String, Object> enchantment : enchantments.entrySet())
 								{
-									// Use max level
-									enchLevel = enchant.getMaxLevel();
-								}
-								else
-								{
-									// Use the level given
-									enchLevel = SObjUtil.toInteger(enchantment.getValue());
-								}
+									int enchLevel = 0;
+									Enchantment enchant = Enchantment.getByName(enchantment.getKey().toUpperCase());
 
-								item.addUnsafeEnchantment(enchant, enchLevel);
+									// Determine the appropriate level
+									if(enchantment.getValue().equals("max"))
+									{
+										// Use max level
+										enchLevel = enchant.getMaxLevel();
+									}
+									else
+									{
+										// Use the level given
+										enchLevel = SObjUtil.toInteger(enchantment.getValue());
+									}
+
+									item.addUnsafeEnchantment(enchant, enchLevel);
+								}
 							}
 						}
+
+						// Add it to the reward array
+						itemRewards.add(new SerialItemStack(item));
+
+						// Apply the reward
+						newTask.setItemReward(itemRewards);
 					}
 
-					// Add it to the reward array
-					rewards.add(new SerialItemStack(item));
 				}
-			}
-
-			// Create the actual task
-			if(task.get("mob") != null)
-			{
-				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, value, level, rewards, SObjUtil.toInteger(task.get("amount")), EntityType.fromName((String) task.get("mob")));
-			}
-			else if(task.get("item") != null)
-			{
-				newTask = new Task(task.get("name").toString(), task.get("desc").toString(), timeLimit, value, level, rewards, SObjUtil.toInteger(task.get("amount")), new ItemStack(SObjUtil.toInteger(task.get("item"))));
 			}
 
 			// Increase the count for logging and load the task into the instance
@@ -769,7 +775,7 @@ class Commands implements CommandExecutor
 				}
 				else if(assignment.getTask().getType().equals(Task.TaskType.ITEM))
 				{
-					player.sendMessage(ChatColor.GRAY + "     - Item: " + ChatColor.YELLOW + SObjUtil.capitalize(assignment.getTask().getItem().getType().name().toLowerCase().replace("_", " ")));
+					player.sendMessage(ChatColor.GRAY + "     - Item: " + ChatColor.YELLOW + SObjUtil.capitalize(assignment.getTask().getItemType().name().toLowerCase().replace("_", " ")));
 					player.sendMessage(ChatColor.GRAY + "     - Obtained: " + ChatColor.YELLOW + assignment.getAmountObtained() + ChatColor.GRAY + "/" + ChatColor.YELLOW + assignment.getAmountNeeded());
 				}
 				player.sendMessage(ChatColor.GRAY + "     - Assignment #: " + ChatColor.YELLOW + assignment.getID());

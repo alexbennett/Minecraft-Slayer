@@ -6,7 +6,7 @@ misc:
 
 # Updating
 update:
-    auto: true
+    auto: false
     notify: true
 
 # Tasks

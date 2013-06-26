@@ -6,8 +6,8 @@ import java.util.Random;
 import net.alexben.Slayer.Core.Events.*;
 import net.alexben.Slayer.Core.Objects.Assignment;
 import net.alexben.Slayer.Core.Objects.Task;
-
 import net.alexben.Slayer.Core.Slayer;
+
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
@@ -388,7 +388,7 @@ public class STaskUtil
 
 			// Call the event
 			AssignmentForfeitEvent assignmentForfeitEvent = new AssignmentForfeitEvent(assignment.getOfflinePlayer(), assignment);
-            Slayer.plugin.getServer().getPluginManager().callEvent(assignmentForfeitEvent);
+			Slayer.plugin.getServer().getPluginManager().callEvent(assignmentForfeitEvent);
 			if(assignmentForfeitEvent.isCancelled()) return false;
 
 			assignment.setForfeited(true);
@@ -627,7 +627,7 @@ public class STaskUtil
 			// Continue to next assignment if it doesn't match the correct TaskType
 			if(!assignment.getTask().getType().equals(Task.TaskType.ITEM)) continue;
 
-			if(assignment.getTask().getItem().isSimilar(item))
+			if(assignment.getTask().getItemStack().isSimilar(item))
 			{
 				int amount = item.getAmount();
 
@@ -679,7 +679,7 @@ public class STaskUtil
 			// Continue to next assignment if it doesn't match the correct TaskType
 			if(!assignment.getTask().getType().equals(Task.TaskType.ITEM)) continue;
 
-			if(assignment.getTask().getItem().isSimilar(item))
+			if(assignment.getTask().getItemStack().isSimilar(item))
 			{
 				if(item.getAmount() <= assignment.getAmountObtained())
 				{

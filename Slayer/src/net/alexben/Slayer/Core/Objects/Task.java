@@ -13,54 +13,75 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
+import com.google.common.collect.Lists;
+
 public class Task implements Serializable
 {
+	// Main variables
 	private static final long serialVersionUID = 1869297353395176134L;
-	private String name = null, desc = null, commandReward = null;
-	private int level, value, amountNeeded, timeLimit, economyReward;
-	private SerialItemStack item;
+	private String name = null, desc = null;
+	private int itemId, level, points, amountNeeded, timeLimit;
 	private TaskType type;
 	private EntityType entity;
+
+	// Rewards
+	private String commandReward = null;
+	private int economyReward;
 	private ArrayList<SerialItemStack> itemReward = new ArrayList<SerialItemStack>();
 
-	public Task(String task, String desc, int timeLimit, int value, int level, ArrayList<SerialItemStack> rewards, int amount, EntityType entity)
+	void setName(String name)
 	{
-		this.name = task;
-		this.desc = desc;
-		this.timeLimit = timeLimit;
-		this.amountNeeded = amount;
-		this.value = value;
-		this.level = level;
-		this.entity = entity;
-		this.type = TaskType.MOB;
-
-		if(!rewards.isEmpty())
-		{
-			for(SerialItemStack reward : rewards)
-			{
-				this.itemReward.add(reward);
-			}
-		}
+		this.name = name;
 	}
 
-	public Task(String task, String desc, int timeLimit, int value, int level, ArrayList<SerialItemStack> rewards, int amount, ItemStack item)
+	void setDesc(String desc)
 	{
-		this.name = task;
 		this.desc = desc;
-		this.timeLimit = timeLimit;
-		this.amountNeeded = amount;
-		this.value = value;
-		this.level = level;
-		this.item = new SerialItemStack(item);
-		this.type = TaskType.ITEM;
+	}
 
-		if(!rewards.isEmpty())
-		{
-			for(SerialItemStack reward : rewards)
-			{
-				this.itemReward.add(reward);
-			}
-		}
+	void setTimeLimit(int timeLimit)
+	{
+		this.timeLimit = timeLimit;
+	}
+
+	void setAmountNeeded(int amountNeeded)
+	{
+		this.amountNeeded = amountNeeded;
+	}
+
+	void setPoints(int points)
+	{
+		this.points = points;
+	}
+
+	void setLevel(int level)
+	{
+		this.level = level;
+	}
+
+	void setType(TaskType type)
+	{
+		this.type = type;
+	}
+
+	void setEntityType(EntityType entity)
+	{
+		this.entity = entity;
+	}
+
+	void setItemType(int itemId)
+	{
+		this.itemId = itemId;
+	}
+
+	public void setItemReward(ArrayList<SerialItemStack> itemReward)
+	{
+		this.itemReward = Lists.newArrayList(itemReward);
+	}
+
+	public void setEconomyReward(int economyReward)
+	{
+		this.economyReward = economyReward;
 	}
 
 	/**
@@ -104,13 +125,13 @@ public class Task implements Serializable
 	}
 
 	/**
-	 * Returns the value of the task.
+	 * Returns the point value of the task.
 	 * 
 	 * @return Integer
 	 */
 	public int getValue()
 	{
-		return (int) Math.ceil(value * SConfigUtil.getSettingDouble("tasks.point_multiplier"));
+		return (int) Math.ceil(points * SConfigUtil.getSettingDouble("tasks.point_multiplier"));
 	}
 
 	/**
@@ -137,7 +158,7 @@ public class Task implements Serializable
 
 		if(type.equals(TaskType.ITEM))
 		{
-			goal = "Obtain " + amountNeeded + " " + SObjUtil.capitalize(item.toItemStack().getType().name().toLowerCase().replace("_", " ")) + "(s)";
+			goal = "Obtain " + amountNeeded + " " + SObjUtil.capitalize(Material.getMaterial(itemId).name().toLowerCase().replace("_", " ")) + "(s)";
 		}
 		else if(type.equals(TaskType.MOB))
 		{
@@ -151,7 +172,7 @@ public class Task implements Serializable
 		lore.add("");
 		lore.add(ChatColor.GRAY + "Goal: " + ChatColor.YELLOW + goal);
 		lore.add(ChatColor.GRAY + "Rewards: " + ChatColor.YELLOW + itemReward.size() + " item(s)");
-		lore.add(ChatColor.GRAY + "Points: " + ChatColor.GREEN + value);
+		lore.add(ChatColor.GRAY + "Points: " + ChatColor.GREEN + points);
 		if(isTimed()) lore.add(ChatColor.GRAY + "Time Limit: " + ChatColor.RED + timeLimit + " minutes");
 
 		// Return the book
@@ -186,11 +207,19 @@ public class Task implements Serializable
 	}
 
 	/**
-	 * Returns the ItemStack associated with this task.
+	 * Returns the Material associated with this task.
 	 */
-	public ItemStack getItem()
+	public Material getItemType()
 	{
-		return item.toItemStack();
+		return Material.getMaterial(itemId);
+	}
+
+	/**
+	 * Returns an ItemStack of the material associated with this task.
+	 */
+	public ItemStack getItemStack()
+	{
+		return new ItemStack(Material.getMaterial(itemId));
 	}
 
 	/**

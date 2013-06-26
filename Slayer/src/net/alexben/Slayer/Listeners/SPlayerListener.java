@@ -29,6 +29,7 @@ public class SPlayerListener implements Listener
 
 		// Create a save for the player
 		SPlayerUtil.createSave(player);
+
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -156,7 +157,7 @@ public class SPlayerListener implements Listener
 			for(Assignment assignment : STaskUtil.getActiveAssignments(player))
 			{
 				// Continue if it isn't an item task or if it isn't the correct item
-				if(!assignment.getTask().getType().equals(Task.TaskType.ITEM) || !assignment.getTask().getItem().isSimilar(item)) continue;
+				if(!assignment.getTask().getType().equals(Task.TaskType.ITEM) || !assignment.getTask().getItemStack().isSimilar(item)) continue;
 
 				// Define count
 				int count = item.getAmount();
@@ -165,7 +166,7 @@ public class SPlayerListener implements Listener
 				for(ItemStack stack : player.getInventory().getContents())
 				{
 					// If it's the same item then add to the count
-					if(assignment.getTask().getItem().isSimilar(stack))
+					if(assignment.getTask().getItemStack().isSimilar(stack))
 					{
 						count += stack.getAmount();
 					}

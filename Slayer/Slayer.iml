@@ -8,6 +8,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Craftbukkit" level="project" />
+    <orderEntry type="library" name="BOSEconomy" level="project" />
+    <orderEntry type="library" name="Vault" level="project" />
   </component>
 </module>
 

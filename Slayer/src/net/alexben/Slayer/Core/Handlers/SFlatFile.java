@@ -3,6 +3,7 @@ package net.alexben.Slayer.Core.Handlers;
 import java.io.*;
 import java.util.HashMap;
 
+import net.alexben.Slayer.Core.Slayer;
 import net.alexben.Slayer.Utilities.SDataUtil;
 import net.alexben.Slayer.Utilities.SEntityUtil;
 import net.alexben.Slayer.Utilities.SMiscUtil;
@@ -11,8 +12,8 @@ import org.bukkit.OfflinePlayer;
 
 public class SFlatFile
 {
-	private static final String path = "plugins/Slayer/";
-	private static File SaveDir;
+	private static final File path = Slayer.plugin.getDataFolder();
+	private static File saveDir;
 
 	public static void start()
 	{
@@ -24,10 +25,10 @@ public class SFlatFile
 			SMiscUtil.log("info", "Old player save directory renamed for new save system.");
 		}
 
-		SaveDir = new File(path + "saves");
-		if(!SaveDir.exists())
+		saveDir = new File(path.getPath() + File.separator + "saves");
+		if(!saveDir.exists())
 		{
-			SaveDir.mkdirs();
+			saveDir.mkdirs();
 			SMiscUtil.log("info", "New save directory created.");
 		}
 	}
@@ -44,7 +45,7 @@ public class SFlatFile
 		try
 		{
 			// Clear files first
-			for(File file : SaveDir.listFiles())
+			for(File file : saveDir.listFiles())
 			{
 				file.delete();
 			}
@@ -79,7 +80,7 @@ public class SFlatFile
 
 		try
 		{
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SaveDir.getPath() + File.separator + "entities.slay"));
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveDir.getPath() + File.separator + "entities.slay"));
 			oos.writeObject(SEntityUtil.getEntityMap());
 			oos.flush();
 			oos.close();
@@ -105,7 +106,7 @@ public class SFlatFile
 			{
 				count++;
 
-				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SaveDir.getPath() + File.separator + key + ".slay"));
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveDir.getPath() + File.separator + key + ".slay"));
 				oos.writeObject(SDataUtil.getAllData().get(key));
 				oos.flush();
 				oos.close();
@@ -124,7 +125,7 @@ public class SFlatFile
 	{
 		try
 		{
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SaveDir.getPath() + File.separator + player.getName() + ".slay"));
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveDir.getPath() + File.separator + player.getName() + ".slay"));
 			oos.writeObject(SDataUtil.getAllData().get(player.getName()));
 			oos.flush();
 			oos.close();
@@ -172,7 +173,7 @@ public class SFlatFile
 		start();
 		int count = 0;
 
-		File[] fileList = SaveDir.listFiles();
+		File[] fileList = saveDir.listFiles();
 		if(fileList != null)
 		{
 			for(File element : fileList)

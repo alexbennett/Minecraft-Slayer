@@ -27,6 +27,8 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <path id="Slayer.classpath">
             <pathelement location="lib/Craftbukkit.jar"/>
+            <pathelement location="lib/BOSEconomy.jar"/>
+            <pathelement location="lib/Vault.jar"/>
         </path>
         <javac debug="true" debuglevel="${debuglevel}" destdir="Slayer/bin" source="${source}" target="${target}">
             <src path="Slayer/src"/>

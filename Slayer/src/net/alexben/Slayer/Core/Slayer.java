@@ -14,7 +14,7 @@ import net.alexben.Slayer.Core.Objects.Task;
 import net.alexben.Slayer.Listeners.SAssignmentListener;
 import net.alexben.Slayer.Listeners.SEntityListener;
 import net.alexben.Slayer.Listeners.SPlayerListener;
-import net.alexben.Slayer.Modules.BukkitUpdate;
+import net.alexben.Slayer.Modules.AutoUpdate;
 import net.alexben.Slayer.Modules.ConfigAccessor;
 import net.alexben.Slayer.Modules.MetricsModule;
 import net.alexben.Slayer.SlayerPlugin;
@@ -43,7 +43,7 @@ public class Slayer
 
 	// Modules
 	public static ConfigAccessor taskConfig, stringConfig;
-	public static BukkitUpdate update;
+	public static AutoUpdate update;
 
 	// Economy plugins
 	public static BOSEconomy boseEcon = null;
@@ -69,7 +69,7 @@ public class Slayer
 		updatePlayers();
 
 		// Lastly initialize the auto-updater
-		update = new BukkitUpdate(instance, "http://dev.bukkit.org/server-mods/slayer/files.rss", "/slayer update", "slayer.update");
+		update = new AutoUpdate(instance, "http://dev.bukkit.org/server-mods/slayer/files.rss", "/slayer update", "slayer.update");
 		update.initialize();
 	}
 

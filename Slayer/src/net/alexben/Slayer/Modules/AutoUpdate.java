@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class BukkitUpdate implements Listener
+public class AutoUpdate implements Listener
 {
 	private Plugin plugin;
 	private URL filesFeed;
@@ -33,7 +33,7 @@ public class BukkitUpdate implements Listener
 	private String command, permission, version, link, jarLink;
 	private boolean supported;
 
-	public BukkitUpdate(Plugin plugin, String url, String command, String permission)
+	public AutoUpdate(Plugin plugin, String url, String command, String permission)
 	{
 		try
 		{
@@ -45,7 +45,7 @@ public class BukkitUpdate implements Listener
 		}
 		catch(Exception e)
 		{
-			this.logger.severe("[" + this.plugin.getName() + "] Could not connect to BukkitDev");
+			this.logger.severe("[" + this.plugin.getName() + "] Could not connect to BukkitDev.");
 		}
 	}
 

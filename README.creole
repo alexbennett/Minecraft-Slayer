@@ -1,6 +1,6 @@
 **Slayer** adds new task-based gameplay to Minecraft with inspiration from RuneScape's "Slayer" skill.
 
-{{http://alexben.net/projects/bukkit/Slayer/slayer_logo_v1.1.png|Slayer}}
+{{http://alexben.net/projects/bukkit/Slayer/slayer_logo_v1.2.png|Slayer}}
 
 
 == Installation

@@ -11,7 +11,7 @@ import org.bukkit.OfflinePlayer;
 /**
  * Handles all methods used in stats.
  */
-public class SStatsUtil
+public class StatsUtil
 {
 	/**
 	 * Returns a sorted Map of the top point holders by name.
@@ -23,9 +23,9 @@ public class SStatsUtil
 		// Define variables
 		Map<Integer, OfflinePlayer> leaderboardUnsorted = new HashMap<Integer, OfflinePlayer>();
 
-		for(Map.Entry<String, HashMap<String, Object>> player : SDataUtil.getAllData().entrySet())
+		for(Map.Entry<String, HashMap<String, Object>> player : DataUtil.getAllData().entrySet())
 		{
-			leaderboardUnsorted.put(SObjUtil.toInteger(player.getValue().get("points")), Bukkit.getOfflinePlayer(player.getKey()));
+			leaderboardUnsorted.put(ObjUtil.toInteger(player.getValue().get("points")), Bukkit.getOfflinePlayer(player.getKey()));
 		}
 
 		TreeMap<Integer, OfflinePlayer> leaderboardSorted = new TreeMap<Integer, OfflinePlayer>(Collections.reverseOrder());

@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * Utility for all object-related methods.
  */
-public class SObjUtil
+public class ObjUtil
 {
 	/**
 	 * Capitalizes and returns <code>input</code>.

@@ -46,18 +46,18 @@ public class SEntityListener implements Listener
 		else return;
 
 		// If it's a spawner entity and blocking is enabled then return
-		if(SConfigUtil.getSettingBoolean("block.spawner_kills") && SEntityUtil.isSpawnerEntity(entity))
+		if(ConfigUtil.getSettingBoolean("block.spawner_kills") && EntityUtil.isSpawnerEntity(entity))
 		{
 			// Remove the entity from the tracking
-			SEntityUtil.removeEntity(entity);
+			EntityUtil.removeEntity(entity);
 
-			if(SDataUtil.hasData(player, "spawner_kill_tracking"))
+			if(DataUtil.hasData(player, "spawner_kill_tracking"))
 			{
-				int kills = SObjUtil.toInteger(SDataUtil.getData(player, "spawner_kill_tracking"));
+				int kills = ObjUtil.toInteger(DataUtil.getData(player, "spawner_kill_tracking"));
 
 				if(kills >= 5)
 				{
-					for(Assignment assignment : STaskUtil.getAssignments(player))
+					for(Assignment assignment : TaskUtil.getAssignments(player))
 					{
 						// Continue to next assignment if this one is inactive
 						if(!assignment.isActive()) continue;
@@ -65,21 +65,21 @@ public class SEntityListener implements Listener
 						// Message them if they have a task involving this mob
 						if(assignment.getTask().getType().equals(entity.getType()))
 						{
-							SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("camping_spawners"));
+							MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("camping_spawners"));
 							break;
 						}
 					}
 
-					SDataUtil.removeData(player, "spawner_kill_tracking");
+					DataUtil.removeData(player, "spawner_kill_tracking");
 				}
 
-				SDataUtil.saveData(player, "spawner_kill_tracking", kills + 1);
+				DataUtil.saveData(player, "spawner_kill_tracking", kills + 1);
 
 				return;
 			}
 			else
 			{
-				SDataUtil.saveData(player, "spawner_kill_tracking", 1);
+				DataUtil.saveData(player, "spawner_kill_tracking", 1);
 
 				return;
 			}
@@ -87,7 +87,7 @@ public class SEntityListener implements Listener
 		else
 		{
 			// Process the kill across all of the player's assignments
-			STaskUtil.processKill(player, entity);
+			TaskUtil.processKill(player, entity);
 		}
 	}
 
@@ -95,9 +95,9 @@ public class SEntityListener implements Listener
 	private void onCreatureSpawnEvent(CreatureSpawnEvent event)
 	{
 		// Add the entity to the list
-		if(SConfigUtil.getSettingBoolean("block.spawner_kills") && event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER))
+		if(ConfigUtil.getSettingBoolean("block.spawner_kills") && event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER))
 		{
-			SEntityUtil.addEntity(event.getEntity(), event.getSpawnReason());
+			EntityUtil.addEntity(event.getEntity(), event.getSpawnReason());
 		}
 	}
 }

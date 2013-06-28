@@ -28,7 +28,7 @@ public class SPlayerListener implements Listener
 		Player player = event.getPlayer();
 
 		// Create a save for the player
-		SPlayerUtil.createSave(player);
+		PlayerUtil.createSave(player);
 
 	}
 
@@ -37,18 +37,18 @@ public class SPlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 
-		if(SConfigUtil.getSettingBoolean("misc.join_message"))
+		if(ConfigUtil.getSettingBoolean("misc.join_message"))
 		{
 			player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + Slayer.plugin.getDescription().getVersion() + ChatColor.GRAY + ".");
 		}
 
-		if(SConfigUtil.getSettingBoolean("tasks.join_reminders") && STaskUtil.getActiveAssignments(player) != null)
+		if(ConfigUtil.getSettingBoolean("tasks.join_reminders") && TaskUtil.getActiveAssignments(player) != null)
 		{
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("current_assignments_join").replace("{tasks}", ChatColor.YELLOW + "" + STaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/sl my tasks" + ChatColor.GRAY));
+			MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("current_assignments_join").replace("{tasks}", ChatColor.YELLOW + "" + TaskUtil.getActiveAssignments(player).size() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/sl my tasks" + ChatColor.GRAY));
 		}
 
 		// Update the scoreboard
-		SPlayerUtil.updateScoreboard(player);
+		PlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -63,7 +63,7 @@ public class SPlayerListener implements Listener
 		if(event.getInventory().getName().toLowerCase().contains("processing"))
 		{
 			// If they don't have the data then return
-			if(!SDataUtil.hasData(player, "inv_process")) return;
+			if(!DataUtil.hasData(player, "inv_process")) return;
 
 			// Define variables
 			Map<Integer, Integer> items = new HashMap<Integer, Integer>();
@@ -85,20 +85,20 @@ public class SPlayerListener implements Listener
 
 			for(Map.Entry<Integer, Integer> item : items.entrySet())
 			{
-				STaskUtil.processItem(player, new ItemStack(item.getKey(), item.getValue()));
+				TaskUtil.processItem(player, new ItemStack(item.getKey(), item.getValue()));
 			}
 
 			// Clear the data
 			items.clear();
-			SDataUtil.removeData(player, "inv_process");
+			DataUtil.removeData(player, "inv_process");
 		}
 		else if(event.getInventory().getName().toLowerCase().contains("rewards"))
 		{
-			for(ItemStack reward : SPlayerUtil.getRewards(player))
+			for(ItemStack reward : PlayerUtil.getRewards(player))
 			{
 				if(!event.getInventory().containsAtLeast(reward, 1))
 				{
-					SPlayerUtil.removeReward(player, reward);
+					PlayerUtil.removeReward(player, reward);
 				}
 
 				// Define variables
@@ -131,19 +131,19 @@ public class SPlayerListener implements Listener
 
 							newItem.setAmount(amount);
 
-							SPlayerUtil.removeReward(player, newItem);
+							PlayerUtil.removeReward(player, newItem);
 						}
 					}
 				}
 
 				// Clear the data
 				items.clear();
-				SDataUtil.removeData(player, "inv_rewards");
+				DataUtil.removeData(player, "inv_rewards");
 			}
 		}
 
 		// Update the scoreboard
-		SPlayerUtil.updateScoreboard(player);
+		PlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -152,9 +152,9 @@ public class SPlayerListener implements Listener
 		Player player = event.getPlayer();
 		ItemStack item = event.getItem().getItemStack();
 
-		if(STaskUtil.getActiveAssignments(player) != null)
+		if(TaskUtil.getActiveAssignments(player) != null)
 		{
-			for(Assignment assignment : STaskUtil.getActiveAssignments(player))
+			for(Assignment assignment : TaskUtil.getActiveAssignments(player))
 			{
 				// Continue if it isn't an item task or if it isn't the correct item
 				if(!assignment.getTask().getType().equals(Task.TaskType.ITEM) || !assignment.getTask().getItemStack().isSimilar(item)) continue;
@@ -175,7 +175,7 @@ public class SPlayerListener implements Listener
 				// Check the count against the progress
 				if(count >= assignment.getAmountLeft())
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("enough_items").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/process" + ChatColor.GRAY));
+					MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("enough_items").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/process" + ChatColor.GRAY));
 				}
 			}
 		}
@@ -191,24 +191,24 @@ public class SPlayerListener implements Listener
 			// Return if the item is null
 			if(event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null) return;
 
-			if(STaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName()) != null)
+			if(TaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName()) != null)
 			{
 				// Define variables
-				Task task = STaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName());
+				Task task = TaskUtil.getTaskByName(event.getCurrentItem().getItemMeta().getDisplayName());
 
 				// Ask them if they would like to accept the task
-				player.sendMessage(ChatColor.GRAY + SMiscUtil.getString("task_selected").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
-				player.sendMessage(ChatColor.GRAY + SMiscUtil.getString("task_selected_accept").replace("{command}", ChatColor.GOLD + "/accept" + ChatColor.GRAY));
+				player.sendMessage(ChatColor.GRAY + MiscUtil.getString("task_selected").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
+				player.sendMessage(ChatColor.GRAY + MiscUtil.getString("task_selected_accept").replace("{command}", ChatColor.GOLD + "/accept" + ChatColor.GRAY));
 
-				if(STaskUtil.hasTask(player, task))
+				if(TaskUtil.hasTask(player, task))
 				{
 					// They already have the task. Message them and return.
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("has_task").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
+					MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("has_task").replace("{task}", ChatColor.AQUA + task.getName() + ChatColor.GRAY));
 				}
 				else
 				{
 					// They don't have the task, save it for later use
-					SDataUtil.saveData(player, "clicked_task", task);
+					DataUtil.saveData(player, "clicked_task", task);
 				}
 
 				// Close the inventory

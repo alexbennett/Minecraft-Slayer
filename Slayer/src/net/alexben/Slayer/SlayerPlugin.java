@@ -1,9 +1,9 @@
 package net.alexben.Slayer;
 
-import net.alexben.Slayer.Core.Handlers.SFlatFile;
-import net.alexben.Slayer.Core.Handlers.SScheduler;
+import net.alexben.Slayer.Core.Handlers.FlatFile;
+import net.alexben.Slayer.Core.Handlers.Scheduler;
 import net.alexben.Slayer.Core.Slayer;
-import net.alexben.Slayer.Utilities.SMiscUtil;
+import net.alexben.Slayer.Utilities.MiscUtil;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,19 +13,19 @@ public class SlayerPlugin extends JavaPlugin
 	public void onEnable()
 	{
 		new Slayer(this);
-		SFlatFile.load();
-		SScheduler.startThreads();
+		FlatFile.load();
+		Scheduler.startThreads();
 
 		// Log that Slayer successfully loaded
-		SMiscUtil.log("info", "Slayer has been successfully enabled!");
+		MiscUtil.log("info", "Slayer has been successfully enabled!");
 	}
 
 	@Override
 	public void onDisable()
 	{
-		SScheduler.stopThreads();
-		SFlatFile.save();
+		Scheduler.stopThreads();
+		FlatFile.save();
 
-		SMiscUtil.log("info", "Slayer has been disabled.");
+		MiscUtil.log("info", "Slayer has been disabled.");
 	}
 }

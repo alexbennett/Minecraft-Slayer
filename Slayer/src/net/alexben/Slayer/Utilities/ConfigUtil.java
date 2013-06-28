@@ -9,13 +9,13 @@ import org.bukkit.configuration.Configuration;
 /**
  * Utility for all data-related methods.
  */
-public class SConfigUtil
+public class ConfigUtil
 {
 	public static void initialize()
 	{
 		Configuration mainConfig = Slayer.plugin.getConfig().getRoot();
 		mainConfig.options().copyDefaults(true);
-        Slayer.plugin.saveConfig();
+		Slayer.plugin.saveConfig();
 	}
 
 	public static int getSettingInt(String id)

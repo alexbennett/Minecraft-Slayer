@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 /**
  * Utility that handles miscellaneous methods.
  */
-public class SMiscUtil
+public class MiscUtil
 {
 	// Define variables
 	private static String pluginName = Slayer.plugin.getDescription().getName();
@@ -154,7 +154,7 @@ public class SMiscUtil
 	{
 		ArrayList<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
 
-		for(Map.Entry<String, HashMap<String, Object>> player : SDataUtil.getAllData().entrySet())
+		for(Map.Entry<String, HashMap<String, Object>> player : DataUtil.getAllData().entrySet())
 		{
 			players.add(Bukkit.getPlayer(player.getKey()));
 		}

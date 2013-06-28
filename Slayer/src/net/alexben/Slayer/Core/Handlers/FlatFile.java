@@ -4,13 +4,13 @@ import java.io.*;
 import java.util.HashMap;
 
 import net.alexben.Slayer.Core.Slayer;
-import net.alexben.Slayer.Utilities.SDataUtil;
-import net.alexben.Slayer.Utilities.SEntityUtil;
-import net.alexben.Slayer.Utilities.SMiscUtil;
+import net.alexben.Slayer.Utilities.DataUtil;
+import net.alexben.Slayer.Utilities.EntityUtil;
+import net.alexben.Slayer.Utilities.MiscUtil;
 
 import org.bukkit.OfflinePlayer;
 
-public class SFlatFile
+public class FlatFile
 {
 	private static final File path = Slayer.plugin.getDataFolder();
 	private static File saveDir;
@@ -22,14 +22,14 @@ public class SFlatFile
 		if(oldDir.exists())
 		{
 			oldDir.renameTo(new File(path + "saves"));
-			SMiscUtil.log("info", "Old player save directory renamed for new save system.");
+			MiscUtil.log("info", "Old player save directory renamed for new save system.");
 		}
 
 		saveDir = new File(path.getPath() + File.separator + "saves");
 		if(!saveDir.exists())
 		{
 			saveDir.mkdirs();
-			SMiscUtil.log("info", "New save directory created.");
+			MiscUtil.log("info", "New save directory created.");
 		}
 	}
 
@@ -60,13 +60,13 @@ public class SFlatFile
 			long stopTimer = System.currentTimeMillis();
 			double totalTime = (double) (stopTimer - startTimer);
 
-			SMiscUtil.log("info", entityCount + " entities and " + playerCount + " player(s) saved in " + (totalTime / 1000) + " seconds.");
+			MiscUtil.log("info", entityCount + " entities and " + playerCount + " player(s) saved in " + (totalTime / 1000) + " seconds.");
 
 			return true;
 		}
 		catch(Exception e)
 		{
-			SMiscUtil.log("severe", "Something went wrong while saving.");
+			MiscUtil.log("severe", "Something went wrong while saving.");
 			e.printStackTrace();
 
 			return false;
@@ -81,15 +81,15 @@ public class SFlatFile
 		try
 		{
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveDir.getPath() + File.separator + "entities.slay"));
-			oos.writeObject(SEntityUtil.getEntityMap());
+			oos.writeObject(EntityUtil.getEntityMap());
 			oos.flush();
 			oos.close();
 
-			count += SEntityUtil.getEntityMap().size();
+			count += EntityUtil.getEntityMap().size();
 		}
 		catch(Exception e)
 		{
-			SMiscUtil.log("severe", "Something went wrong while saving entities.");
+			MiscUtil.log("severe", "Something went wrong while saving entities.");
 			e.printStackTrace();
 		}
 
@@ -102,19 +102,19 @@ public class SFlatFile
 
 		try
 		{
-			for(String key : SDataUtil.getAllData().keySet())
+			for(String key : DataUtil.getAllData().keySet())
 			{
 				count++;
 
 				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveDir.getPath() + File.separator + key + ".slay"));
-				oos.writeObject(SDataUtil.getAllData().get(key));
+				oos.writeObject(DataUtil.getAllData().get(key));
 				oos.flush();
 				oos.close();
 			}
 		}
 		catch(Exception e)
 		{
-			SMiscUtil.log("severe", "Something went wrong while saving players.");
+			MiscUtil.log("severe", "Something went wrong while saving players.");
 			e.printStackTrace();
 		}
 
@@ -126,13 +126,13 @@ public class SFlatFile
 		try
 		{
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveDir.getPath() + File.separator + player.getName() + ".slay"));
-			oos.writeObject(SDataUtil.getAllData().get(player.getName()));
+			oos.writeObject(DataUtil.getAllData().get(player.getName()));
 			oos.flush();
 			oos.close();
 		}
 		catch(Exception e)
 		{
-			SMiscUtil.log("severe", "Something went wrong while saving the player: " + player.getName());
+			MiscUtil.log("severe", "Something went wrong while saving the player: " + player.getName());
 			e.printStackTrace();
 		}
 	}
@@ -146,7 +146,7 @@ public class SFlatFile
 
 		try
 		{
-			SMiscUtil.log("info", "Loading all data...");
+			MiscUtil.log("info", "Loading all data...");
 
 			// Start the timer
 			long startTimer = System.currentTimeMillis();
@@ -158,11 +158,11 @@ public class SFlatFile
 			long stopTimer = System.currentTimeMillis();
 			double totalTime = (double) (stopTimer - startTimer);
 
-			SMiscUtil.log("info", saveCount + " player(s) loaded in " + (totalTime / 1000) + " seconds.");
+			MiscUtil.log("info", saveCount + " player(s) loaded in " + (totalTime / 1000) + " seconds.");
 		}
 		catch(Exception e)
 		{
-			SMiscUtil.log("severe", "Something went wrong while loading data.");
+			MiscUtil.log("severe", "Something went wrong while loading data.");
 			e.printStackTrace();
 		}
 	}
@@ -189,12 +189,12 @@ public class SFlatFile
 					{
 						ObjectInputStream ois = new ObjectInputStream(new FileInputStream(element));
 						Object data = ois.readObject();
-						SDataUtil.getAllData().put(name, (HashMap<String, Object>) data);
+						DataUtil.getAllData().put(name, (HashMap<String, Object>) data);
 						ois.close();
 					}
 					catch(Exception e)
 					{
-						SMiscUtil.log("severe", "Could not load player: " + name);
+						MiscUtil.log("severe", "Could not load player: " + name);
 						e.printStackTrace();
 					}
 				}
@@ -204,12 +204,12 @@ public class SFlatFile
 					{
 						ObjectInputStream ois = new ObjectInputStream(new FileInputStream(element));
 						Object data = ois.readObject();
-						SEntityUtil.getEntityMap().putAll((HashMap<Integer, HashMap<String, Object>>) data);
+						EntityUtil.getEntityMap().putAll((HashMap<Integer, HashMap<String, Object>>) data);
 						ois.close();
 					}
 					catch(Exception e)
 					{
-						SMiscUtil.log("severe", "There was an error while loading entities...");
+						MiscUtil.log("severe", "There was an error while loading entities...");
 						e.printStackTrace();
 					}
 				}

@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.alexben.Slayer.Utilities.SConfigUtil;
-import net.alexben.Slayer.Utilities.SItemUtil;
-import net.alexben.Slayer.Utilities.SObjUtil;
+import net.alexben.Slayer.Utilities.ConfigUtil;
+import net.alexben.Slayer.Utilities.ItemUtil;
+import net.alexben.Slayer.Utilities.ObjUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -131,7 +131,7 @@ public class Task implements Serializable
 	 */
 	public int getValue()
 	{
-		return (int) Math.ceil(points * SConfigUtil.getSettingDouble("tasks.point_multiplier"));
+		return (int) Math.ceil(points * ConfigUtil.getSettingDouble("tasks.point_multiplier"));
 	}
 
 	/**
@@ -158,11 +158,11 @@ public class Task implements Serializable
 
 		if(type.equals(TaskType.ITEM))
 		{
-			goal = "Obtain " + amountNeeded + " " + SObjUtil.capitalize(Material.getMaterial(itemId).name().toLowerCase().replace("_", " ")) + "(s)";
+			goal = "Obtain " + amountNeeded + " " + ObjUtil.capitalize(Material.getMaterial(itemId).name().toLowerCase().replace("_", " ")) + "(s)";
 		}
 		else if(type.equals(TaskType.MOB))
 		{
-			goal = "Kill " + amountNeeded + " " + SObjUtil.capitalize(entity.getName().replace("_", " ")) + "(s)";
+			goal = "Kill " + amountNeeded + " " + ObjUtil.capitalize(entity.getName().replace("_", " ")) + "(s)";
 		}
 
 		// Create the content
@@ -176,7 +176,7 @@ public class Task implements Serializable
 		if(isTimed()) lore.add(ChatColor.GRAY + "Time Limit: " + ChatColor.RED + timeLimit + " minutes");
 
 		// Return the book
-		return SItemUtil.createItem(Material.PAPER, ChatColor.AQUA + name, lore, null);
+		return ItemUtil.createItem(Material.PAPER, ChatColor.AQUA + name, lore, null);
 	}
 
 	/**

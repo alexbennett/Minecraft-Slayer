@@ -2,7 +2,7 @@ package net.alexben.Slayer.Core.Objects;
 
 import java.io.Serializable;
 
-import net.alexben.Slayer.Utilities.SObjUtil;
+import net.alexben.Slayer.Utilities.ObjUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -18,7 +18,7 @@ public class Assignment implements Serializable
 
 	public Assignment(OfflinePlayer player, Task task)
 	{
-		this.id = SObjUtil.generateInt(5);
+		this.id = ObjUtil.generateInt(5);
 		this.player = player.getName();
 		this.progress = 0;
 		this.active = true;

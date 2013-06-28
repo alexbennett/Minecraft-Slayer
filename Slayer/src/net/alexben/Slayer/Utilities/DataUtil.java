@@ -7,7 +7,7 @@ import org.bukkit.OfflinePlayer;
 /**
  * Utility that handles all data-related methods.
  */
-public class SDataUtil
+public class DataUtil
 {
 	// Define variables
 	private static final HashMap<String, HashMap<String, Object>> save = new HashMap<String, HashMap<String, Object>>();

@@ -4,9 +4,9 @@ import net.alexben.Slayer.Core.Events.*;
 import net.alexben.Slayer.Core.Objects.Assignment;
 import net.alexben.Slayer.Core.Objects.SerialItemStack;
 import net.alexben.Slayer.Core.Slayer;
-import net.alexben.Slayer.Utilities.SConfigUtil;
-import net.alexben.Slayer.Utilities.SMiscUtil;
-import net.alexben.Slayer.Utilities.SPlayerUtil;
+import net.alexben.Slayer.Utilities.ConfigUtil;
+import net.alexben.Slayer.Utilities.MiscUtil;
+import net.alexben.Slayer.Utilities.PlayerUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -30,8 +30,8 @@ public class SAssignmentListener implements Listener
 
 		if(player.isOnline())
 		{
-			SMiscUtil.sendMsg(player.getPlayer(), ChatColor.GREEN + SMiscUtil.getString("new_assignment"));
-			SMiscUtil.sendMsg(player.getPlayer(), ChatColor.GRAY + SMiscUtil.getString("new_assignment_details").replace("{command}", ChatColor.GOLD + "/sl my tasks" + ChatColor.GRAY));
+			MiscUtil.sendMsg(player.getPlayer(), ChatColor.GREEN + MiscUtil.getString("new_assignment"));
+			MiscUtil.sendMsg(player.getPlayer(), ChatColor.GRAY + MiscUtil.getString("new_assignment_details").replace("{command}", ChatColor.GOLD + "/sl my tasks" + ChatColor.GRAY));
 		}
 	}
 
@@ -45,17 +45,17 @@ public class SAssignmentListener implements Listener
 		// Add the rewards to their reward queue
 		for(ItemStack item : assignment.getTask().getItemReward())
 		{
-			SPlayerUtil.addReward(player, new SerialItemStack(item));
+			PlayerUtil.addReward(player, new SerialItemStack(item));
 		}
 
 		// From this point on, return if the player is offline
 		if(!player.isOnline()) return;
 
-		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("assignment_complete").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
-		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("rewards_awaiting").replace("{rewards}", ChatColor.YELLOW + "" + SPlayerUtil.getRewardAmount(player) + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/rewards" + ChatColor.GRAY));
+		MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("assignment_complete").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
+		MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("rewards_awaiting").replace("{rewards}", ChatColor.YELLOW + "" + PlayerUtil.getRewardAmount(player) + ChatColor.GRAY).replace("{command}", ChatColor.GOLD + "/rewards" + ChatColor.GRAY));
 
 		// Shoot a firework, woohoo!
-		if(SConfigUtil.getSettingBoolean("tasks.completion_firework"))
+		if(ConfigUtil.getSettingBoolean("tasks.completion_firework"))
 		{
 			Firework firework = (Firework) player.getPlayer().getLocation().getWorld().spawnEntity(player.getPlayer().getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkmeta = firework.getFireworkMeta();
@@ -67,42 +67,42 @@ public class SAssignmentListener implements Listener
 		}
 
 		// Tracking
-		SPlayerUtil.addCompletion(player);
+		PlayerUtil.addCompletion(player);
 
 		// Handle points and leveling
-		SPlayerUtil.addPoints(player, assignment.getTask().getValue());
+		PlayerUtil.addPoints(player, assignment.getTask().getValue());
 
-		if(SPlayerUtil.getPoints(player) >= SPlayerUtil.getPointsGoal(player))
+		if(PlayerUtil.getPoints(player) >= PlayerUtil.getPointsGoal(player))
 		{
 			// Loop and make sure they didn't get a crap-ton of points and if so update accordingly
-			while(SPlayerUtil.getPoints(player) >= SPlayerUtil.getPointsGoal(player))
+			while(PlayerUtil.getPoints(player) >= PlayerUtil.getPointsGoal(player))
 			{
-				SlayerLevelUpEvent levelUpEvent = new SlayerLevelUpEvent(player, SPlayerUtil.getLevel(player), SPlayerUtil.getLevel(player) + 1);
+				SlayerLevelUpEvent levelUpEvent = new SlayerLevelUpEvent(player, PlayerUtil.getLevel(player), PlayerUtil.getLevel(player) + 1);
 				Slayer.plugin.getServer().getPluginManager().callEvent(levelUpEvent);
 
 				if(!levelUpEvent.isCancelled())
 				{
 					// Get rid of the points
-					SPlayerUtil.subtractPoints(player, SPlayerUtil.getPointsGoal(player));
+					PlayerUtil.subtractPoints(player, PlayerUtil.getPointsGoal(player));
 
 					// Add the level
-					SPlayerUtil.addLevel(player);
+					PlayerUtil.addLevel(player);
 
 					// Message the player
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg1").replace("{level}", ChatColor.LIGHT_PURPLE + "" + SPlayerUtil.getLevel(player) + ChatColor.GRAY));
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("level_up_msg2").replace("{points}", "" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY));
+					MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("level_up_msg1").replace("{level}", ChatColor.LIGHT_PURPLE + "" + PlayerUtil.getLevel(player) + ChatColor.GRAY));
+					MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("level_up_msg2").replace("{points}", "" + ChatColor.YELLOW + ((int) PlayerUtil.getPointsGoal(player) - PlayerUtil.getPoints(player)) + ChatColor.GRAY));
 
-					if(SConfigUtil.getSettingBoolean("misc.level_up_firework"))
+					if(ConfigUtil.getSettingBoolean("misc.level_up_firework"))
 					{
 						// Shoot a random firework!
-						SMiscUtil.shootRandomFirework(player.getLocation());
+						MiscUtil.shootRandomFirework(player.getLocation());
 					}
 				}
 			}
 		}
 
 		// Update the scoreboard
-		SPlayerUtil.updateScoreboard(player);
+		PlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -114,19 +114,19 @@ public class SAssignmentListener implements Listener
 		Player player = event.getOfflinePlayer().getPlayer();
 		Assignment assignment = event.getAssignment();
 
-		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("assignment_expired").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
+		MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("assignment_expired").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 
 		// Handle expiration punishment if enabled
-		if(SConfigUtil.getSettingBoolean("expiration.punish"))
+		if(ConfigUtil.getSettingBoolean("expiration.punish"))
 		{
 			// TODO: Update punishments.
 		}
 
 		// Tracking
-		SPlayerUtil.addExpiration(player);
+		PlayerUtil.addExpiration(player);
 
 		// Update the scoreboard
-		SPlayerUtil.updateScoreboard(player);
+		PlayerUtil.updateScoreboard(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -136,21 +136,21 @@ public class SAssignmentListener implements Listener
 		OfflinePlayer player = event.getOfflinePlayer();
 		Assignment assignment = event.getAssignment();
 
-		SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("assignment_forfeit").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
+		MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("assignment_forfeit").replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 
 		// Handle punishments if enabled
-		if(SConfigUtil.getSettingBoolean("forfeit.punish"))
+		if(ConfigUtil.getSettingBoolean("forfeit.punish"))
 		{
 			// TODO: Update punishments.
 		}
 
 		// Tracking
-		SPlayerUtil.addForfeit(player);
+		PlayerUtil.addForfeit(player);
 
 		if(player.isOnline())
 		{
 			// Update scoreboard
-			SPlayerUtil.updateScoreboard(player.getPlayer());
+			PlayerUtil.updateScoreboard(player.getPlayer());
 		}
 	}
 }

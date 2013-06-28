@@ -9,7 +9,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 /**
  * Handles entity-specific methods.
  */
-public class SEntityUtil
+public class EntityUtil
 {
 	// Define entity unique id Map
 	private static Map<Integer, Map<String, Object>> entities = new HashMap<Integer, Map<String, Object>>();
@@ -21,7 +21,7 @@ public class SEntityUtil
 	 */
 	public static void addEntity(Entity entity, CreatureSpawnEvent.SpawnReason reason)
 	{
-		long time = System.currentTimeMillis() + (SConfigUtil.getSettingInt("data.entity_tracking_period") * 1000);
+		long time = System.currentTimeMillis() + (ConfigUtil.getSettingInt("data.entity_tracking_period") * 1000);
 
 		entities.put(entity.getEntityId(), new HashMap<String, Object>());
 		entities.get(entity.getEntityId()).put("time", time);
@@ -78,7 +78,7 @@ public class SEntityUtil
 
 		for(Map.Entry<Integer, Map<String, Object>> entity : entities.entrySet())
 		{
-			if(SObjUtil.toLong(entity.getValue().get("time")) <= System.currentTimeMillis())
+			if(ObjUtil.toLong(entity.getValue().get("time")) <= System.currentTimeMillis())
 			{
 				entities.remove(entity.getKey());
 			}

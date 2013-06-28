@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import net.alexben.Slayer.Core.Events.AssignmentRemoveEvent;
-import net.alexben.Slayer.Core.Handlers.SFlatFile;
+import net.alexben.Slayer.Core.Handlers.FlatFile;
 import net.alexben.Slayer.Core.Objects.Assignment;
 import net.alexben.Slayer.Core.Objects.ObjectFactory;
 import net.alexben.Slayer.Core.Objects.SerialItemStack;
@@ -55,7 +55,7 @@ public class Slayer
 		plugin = instance;
 
 		// Initialize the config, scheduler, and utilities
-		SConfigUtil.initialize();
+		ConfigUtil.initialize();
 
 		// Load things
 		loadConfigs();
@@ -77,8 +77,8 @@ public class Slayer
 	{
 		for(Player player : Bukkit.getOnlinePlayers())
 		{
-			SPlayerUtil.createSave(player);
-			SPlayerUtil.updateScoreboard(player);
+			PlayerUtil.createSave(player);
+			PlayerUtil.updateScoreboard(player);
 		}
 	}
 
@@ -91,12 +91,12 @@ public class Slayer
 		if(bose != null)
 		{
 			boseEcon = (BOSEconomy) bose;
-			SMiscUtil.log("info", "[Economy] BOSEconomy detected.");
+			MiscUtil.log("info", "[Economy] BOSEconomy detected.");
 		}
 		if(vault != null)
 		{
 			vaultEcon = (Vault) vault;
-			SMiscUtil.log("info", "[Economy] Vault detected.");
+			MiscUtil.log("info", "[Economy] Vault detected.");
 		}
 	}
 
@@ -112,7 +112,7 @@ public class Slayer
 			taskFile.renameTo(new File(plugin.getDataFolder() + File.separator + "tasks" + File.separator + "tasks/tasks.yml"));
 
 			// Log the update
-			SMiscUtil.log("info", "\"task.yml\" file moved for new save system.");
+			MiscUtil.log("info", "\"task.yml\" file moved for new save system.");
 		}
 
 		// Define the configs
@@ -158,32 +158,32 @@ public class Slayer
 		for(Map<?, ?> task : config.getMapList("tasks"))
 		{
 			// If the task is disabled then ignore it and continue to the next one
-			if(!SObjUtil.toBoolean(task.get("enabled"))) continue;
+			if(!ObjUtil.toBoolean(task.get("enabled"))) continue;
 
 			// Define variables
 			int timeLimit = 0;
 			int level = 1;
-			int points = SObjUtil.toInteger(task.get("value"));
+			int points = ObjUtil.toInteger(task.get("value"));
 
 			// Validate variables
 			if(task.get("timelimit") != null && !task.get("timelimit").equals("none"))
 			{
-				timeLimit = SObjUtil.toInteger(task.get("timelimit"));
+				timeLimit = ObjUtil.toInteger(task.get("timelimit"));
 			}
 
 			if(task.get("level") != null && !task.get("level").equals(0))
 			{
-				level = SObjUtil.toInteger(task.get("level"));
+				level = ObjUtil.toInteger(task.get("level"));
 			}
 
 			// Create the actual task
 			if(task.get("mob") != null)
 			{
-				newTask = ObjectFactory.createMobTask(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("amount")), points, level, EntityType.fromName(task.get("mob").toString()));
+				newTask = ObjectFactory.createMobTask(task.get("name").toString(), task.get("desc").toString(), timeLimit, ObjUtil.toInteger(task.get("amount")), points, level, EntityType.fromName(task.get("mob").toString()));
 			}
 			else if(task.get("item") != null)
 			{
-				newTask = ObjectFactory.createItemTask(task.get("name").toString(), task.get("desc").toString(), timeLimit, SObjUtil.toInteger(task.get("amount")), points, level, SObjUtil.toInteger(task.get("item")));
+				newTask = ObjectFactory.createItemTask(task.get("name").toString(), task.get("desc").toString(), timeLimit, ObjUtil.toInteger(task.get("amount")), points, level, ObjUtil.toInteger(task.get("item")));
 			}
 
 			// Handle rewards...
@@ -203,9 +203,9 @@ public class Slayer
 						byte itemByte = (byte) 0;
 
 						// Update variables
-						itemID = SObjUtil.toInteger(reward.get("itemid"));
-						if(reward.get("itembyte") != null) itemByte = (byte) SObjUtil.toInteger(reward.get("itembyte"));
-						if(reward.get("amount") != null) amount = SObjUtil.toInteger(reward.get("amount"));
+						itemID = ObjUtil.toInteger(reward.get("itemid"));
+						if(reward.get("itembyte") != null) itemByte = (byte) ObjUtil.toInteger(reward.get("itembyte"));
+						if(reward.get("amount") != null) amount = ObjUtil.toInteger(reward.get("amount"));
 
 						// Create the item
 						ItemStack item = new ItemStack(itemID, amount, itemByte);
@@ -231,7 +231,7 @@ public class Slayer
 									else
 									{
 										// Use the level given
-										enchLevel = SObjUtil.toInteger(enchantment.getValue());
+										enchLevel = ObjUtil.toInteger(enchantment.getValue());
 									}
 
 									item.addUnsafeEnchantment(enchant, enchLevel);
@@ -251,11 +251,11 @@ public class Slayer
 
 			// Increase the count for logging and load the task into the instance
 			count++;
-			STaskUtil.loadTask(newTask);
+			TaskUtil.loadTask(newTask);
 		}
 
 		// Log the tasks loaded
-		SMiscUtil.log("info", count + " task(s) loaded into memory.");
+		MiscUtil.log("info", count + " task(s) loaded into memory.");
 	}
 
 	private void loadMetrics()
@@ -278,7 +278,7 @@ public class Slayer
 				{
 					int count = 0;
 
-					for(Assignment assignment : STaskUtil.getAllAssignments())
+					for(Assignment assignment : TaskUtil.getAllAssignments())
 					{
 						if(assignment.getTask().getType().equals(Task.TaskType.ITEM)) count++;
 					}
@@ -294,7 +294,7 @@ public class Slayer
 				{
 					int count = 0;
 
-					for(Assignment assignment : STaskUtil.getAllAssignments())
+					for(Assignment assignment : TaskUtil.getAllAssignments())
 					{
 						if(assignment.getTask().getType().equals(Task.TaskType.MOB)) count++;
 					}
@@ -308,7 +308,7 @@ public class Slayer
 				@Override
 				public int getValue()
 				{
-					return STaskUtil.getAllUntimedAssignments().size();
+					return TaskUtil.getAllUntimedAssignments().size();
 				}
 			});
 
@@ -317,7 +317,7 @@ public class Slayer
 				@Override
 				public int getValue()
 				{
-					return STaskUtil.getAllTimedAssignments().size();
+					return TaskUtil.getAllTimedAssignments().size();
 				}
 			});
 
@@ -326,7 +326,7 @@ public class Slayer
 				@Override
 				public int getValue()
 				{
-					return STaskUtil.getAllCompleteAssignments().size();
+					return TaskUtil.getAllCompleteAssignments().size();
 				}
 			});
 
@@ -335,7 +335,7 @@ public class Slayer
 				@Override
 				public int getValue()
 				{
-					return STaskUtil.getAllExpiredAssignments().size();
+					return TaskUtil.getAllExpiredAssignments().size();
 				}
 			});
 
@@ -344,7 +344,7 @@ public class Slayer
 				@Override
 				public int getValue()
 				{
-					return STaskUtil.getAllForfeitedAssignments().size();
+					return TaskUtil.getAllForfeitedAssignments().size();
 				}
 			});
 
@@ -353,7 +353,7 @@ public class Slayer
 				@Override
 				public int getValue()
 				{
-					return STaskUtil.getAllActiveAssignments().size();
+					return TaskUtil.getAllActiveAssignments().size();
 				}
 			});
 
@@ -362,7 +362,7 @@ public class Slayer
 		catch(IOException e)
 		{
 			// MetricsModule failed to load, log it
-			SMiscUtil.log("warning", "Plugins metrics failed to load.");
+			MiscUtil.log("warning", "Plugins metrics failed to load.");
 		}
 	}
 }
@@ -415,20 +415,20 @@ class Commands implements CommandExecutor
 		else if(args[0].equalsIgnoreCase("update"))
 		{
 			// Check Permissions
-			if(!SMiscUtil.hasPermissionOrOP(player, "slayer.update")) return SMiscUtil.noPermission(player);
+			if(!MiscUtil.hasPermissionOrOP(player, "slayer.update")) return MiscUtil.noPermission(player);
 
 			if(args.length == 1)
 			{
-				SMiscUtil.sendMsg(player, "Latest Slayer version: " + ChatColor.YELLOW + Slayer.update.getLatestVersion());
-				SMiscUtil.sendMsg(player, "Server Slayer version: " + ChatColor.YELLOW + Slayer.plugin.getDescription().getVersion());
+				MiscUtil.sendMsg(player, "Latest Slayer version: " + ChatColor.YELLOW + Slayer.update.getLatestVersion());
+				MiscUtil.sendMsg(player, "Server Slayer version: " + ChatColor.YELLOW + Slayer.plugin.getDescription().getVersion());
 
 				if(Slayer.update.check() || !Slayer.update.supported())
 				{
-					SMiscUtil.sendMsg(player, "Please type " + ChatColor.GOLD + "/slayer update confirm" + ChatColor.WHITE + " to update.");
+					MiscUtil.sendMsg(player, "Please type " + ChatColor.GOLD + "/slayer update confirm" + ChatColor.WHITE + " to update.");
 				}
 				else
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GREEN + "This server is running the latest version!");
+					MiscUtil.sendMsg(player, ChatColor.GREEN + "This server is running the latest version!");
 				}
 
 				return true;
@@ -437,15 +437,15 @@ class Commands implements CommandExecutor
 			{
 				if(!Slayer.update.check()) return true;
 
-				SMiscUtil.sendMsg(player, "Starting download...");
+				MiscUtil.sendMsg(player, "Starting download...");
 
 				if(Slayer.update.download())
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GREEN + "Download complete! " + ChatColor.WHITE + "Reload to apply the changes.");
+					MiscUtil.sendMsg(player, ChatColor.GREEN + "Download complete! " + ChatColor.WHITE + "Reload to apply the changes.");
 				}
 				else
 				{
-					SMiscUtil.sendMsg(player, ChatColor.RED + "Download failed...");
+					MiscUtil.sendMsg(player, ChatColor.RED + "Download failed...");
 				}
 
 				return true;
@@ -461,12 +461,12 @@ class Commands implements CommandExecutor
 	public boolean sl(Player player, String[] args)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// Handle the command
 		if(args.length == 0)
 		{
-			SMiscUtil.sendMsg(player, "Command Directory");
+			MiscUtil.sendMsg(player, "Command Directory");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/tasks");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/process");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/rewards");
@@ -475,7 +475,7 @@ class Commands implements CommandExecutor
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl leaderboard");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sl scoreboard");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/forfeit <assignment #>");
-			if(SMiscUtil.hasPermissionOrOP(player, "slayer.admin")) player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "/sladmin");
+			if(MiscUtil.hasPermissionOrOP(player, "slayer.admin")) player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "/sladmin");
 
 			return true;
 		}
@@ -527,7 +527,7 @@ class Commands implements CommandExecutor
 			}
 		}
 
-		SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sl" + ChatColor.GRAY + ". Please try again.");
+		MiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sl" + ChatColor.GRAY + ". Please try again.");
 		return true;
 	}
 
@@ -540,32 +540,32 @@ class Commands implements CommandExecutor
 	public boolean accept(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// Make sure they actually have a selected task to process
-		if(!SDataUtil.hasData(player, "clicked_task"))
+		if(!DataUtil.hasData(player, "clicked_task"))
 		{
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("no_selected_task").replace("{command}", ChatColor.GOLD + "/tasks" + ChatColor.GRAY));
+			MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("no_selected_task").replace("{command}", ChatColor.GOLD + "/tasks" + ChatColor.GRAY));
 			return true;
 		}
 
 		// Make sure they haven't met the limit
-		if(STaskUtil.getActiveAssignments(player).size() >= SConfigUtil.getSettingInt("tasks.limit"))
+		if(TaskUtil.getActiveAssignments(player).size() >= ConfigUtil.getSettingInt("tasks.limit"))
 		{
 			// Met the limit, deny them!
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("has_met_limit"));
+			MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("has_met_limit"));
 			return true;
 		}
 		else
 		{
 			// They still have room for more tasks, attempt to give them what they chose
-			Task task = (Task) SDataUtil.getData(player, "clicked_task");
+			Task task = (Task) DataUtil.getData(player, "clicked_task");
 
 			// They don't have the task, give it to them
-			STaskUtil.assignTask(player, task);
+			TaskUtil.assignTask(player, task);
 
 			// Clear the temporary data
-			SDataUtil.removeData(player, "clicked_task");
+			DataUtil.removeData(player, "clicked_task");
 
 			return true;
 		}
@@ -580,10 +580,10 @@ class Commands implements CommandExecutor
 	public boolean tasks(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// Open the player's task inventory
-		SPlayerUtil.openTaskInventory(player);
+		PlayerUtil.openTaskInventory(player);
 		return true;
 	}
 
@@ -596,12 +596,12 @@ class Commands implements CommandExecutor
 	public boolean forfeit(Player player, String[] args)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// If this command is disabled then return
-		if(!SConfigUtil.getSettingBoolean("forfeit.enable"))
+		if(!ConfigUtil.getSettingBoolean("forfeit.enable"))
 		{
-			SMiscUtil.sendMsg(player, ChatColor.RED + SMiscUtil.getString("disabled_functionality"));
+			MiscUtil.sendMsg(player, ChatColor.RED + MiscUtil.getString("disabled_functionality"));
 
 			return true;
 		}
@@ -609,18 +609,18 @@ class Commands implements CommandExecutor
 		// If they're using it wrong tell 'em
 		if(args.length != 1)
 		{
-			SMiscUtil.sendMsg(player, "Improper usage. " + ChatColor.GOLD + "/forfeit <assignment #>");
+			MiscUtil.sendMsg(player, "Improper usage. " + ChatColor.GOLD + "/forfeit <assignment #>");
 			return true;
 		}
 
 		// Define variables
-		int assignmentID = SObjUtil.toInteger(args[0]);
+		int assignmentID = ObjUtil.toInteger(args[0]);
 
 		// They want to forfeit, let them have their way!
-		if(STaskUtil.hasAssignment(player, assignmentID))
+		if(TaskUtil.hasAssignment(player, assignmentID))
 		{
 			// They have the assignment matching the given id, remove it
-			STaskUtil.forfeitAssignment(player, assignmentID);
+			TaskUtil.forfeitAssignment(player, assignmentID);
 		}
 
 		return true;
@@ -635,17 +635,17 @@ class Commands implements CommandExecutor
 	public boolean scoreboard(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
-		if(SPlayerUtil.scoreboardEnabled(player))
+		if(PlayerUtil.scoreboardEnabled(player))
 		{
-			SPlayerUtil.toggleScoreboard(player, false);
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("scoreboard_disabled"));
+			PlayerUtil.toggleScoreboard(player, false);
+			MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("scoreboard_disabled"));
 		}
 		else
 		{
-			SPlayerUtil.toggleScoreboard(player, true);
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("scoreboard_enabled"));
+			PlayerUtil.toggleScoreboard(player, true);
+			MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("scoreboard_enabled"));
 		}
 
 		return true;
@@ -660,10 +660,10 @@ class Commands implements CommandExecutor
 	public boolean process(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// Open their item processing inventory
-		SPlayerUtil.openProcessingInventory(player);
+		PlayerUtil.openProcessingInventory(player);
 		return true;
 	}
 
@@ -676,10 +676,10 @@ class Commands implements CommandExecutor
 	public boolean leaderboard(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// TODO: Make this work.
-		SMiscUtil.sendMsg(player, ChatColor.AQUA + "Coming Soon!");
+		MiscUtil.sendMsg(player, ChatColor.AQUA + "Coming Soon!");
 		return true;
 	}
 
@@ -692,26 +692,26 @@ class Commands implements CommandExecutor
 	public boolean myStats(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// TODO: Work on statistics.
 
-		SMiscUtil.sendMsg(player, "My Information");
+		MiscUtil.sendMsg(player, "My Information");
 		player.sendMessage(" ");
 		player.sendMessage("  > Assignments:");
 		player.sendMessage(" ");
-		player.sendMessage("     - Active: " + ChatColor.YELLOW + STaskUtil.getActiveAssignments(player).size());
-		player.sendMessage("     - Completions: " + ChatColor.GREEN + SPlayerUtil.getCompletions(player));
-		player.sendMessage("     - Forfeits: " + ChatColor.RED + SPlayerUtil.getForfeits(player));
-		player.sendMessage("     - Expirations: " + ChatColor.RED + SPlayerUtil.getExpirations(player));
-		player.sendMessage("     - Total Given: " + ChatColor.GREEN + SPlayerUtil.getTotalAssignments(player));
+		player.sendMessage("     - Active: " + ChatColor.YELLOW + TaskUtil.getActiveAssignments(player).size());
+		player.sendMessage("     - Completions: " + ChatColor.GREEN + PlayerUtil.getCompletions(player));
+		player.sendMessage("     - Forfeits: " + ChatColor.RED + PlayerUtil.getForfeits(player));
+		player.sendMessage("     - Expirations: " + ChatColor.RED + PlayerUtil.getExpirations(player));
+		player.sendMessage("     - Total Given: " + ChatColor.GREEN + PlayerUtil.getTotalAssignments(player));
 		player.sendMessage(" ");
-		player.sendMessage("  > Available Rewards: " + ChatColor.GREEN + SPlayerUtil.getRewardAmount(player));
+		player.sendMessage("  > Available Rewards: " + ChatColor.GREEN + PlayerUtil.getRewardAmount(player));
 		player.sendMessage(" ");
 		player.sendMessage("  > Statistics:");
 		player.sendMessage(" ");
-		player.sendMessage("     - Level: " + ChatColor.LIGHT_PURPLE + SPlayerUtil.getLevel(player));
-		player.sendMessage("     - Points: " + ChatColor.YELLOW + SPlayerUtil.getPoints(player) + ChatColor.GRAY + " (" + ChatColor.YELLOW + ((int) SPlayerUtil.getPointsGoal(player) - SPlayerUtil.getPoints(player)) + ChatColor.GRAY + " until level " + ((int) SPlayerUtil.getLevel(player) + 1) + ")");
+		player.sendMessage("     - Level: " + ChatColor.LIGHT_PURPLE + PlayerUtil.getLevel(player));
+		player.sendMessage("     - Points: " + ChatColor.YELLOW + PlayerUtil.getPoints(player) + ChatColor.GRAY + " (" + ChatColor.YELLOW + ((int) PlayerUtil.getPointsGoal(player) - PlayerUtil.getPoints(player)) + ChatColor.GRAY + " until level " + ((int) PlayerUtil.getLevel(player) + 1) + ")");
 		player.sendMessage("     - Rank: " + ChatColor.AQUA + "Coming Soon!");
 		player.sendMessage(" ");
 
@@ -727,21 +727,21 @@ class Commands implements CommandExecutor
 	public boolean myTasks(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
 		// Return a message if they have no assignments.
-		if(STaskUtil.getActiveAssignments(player) == null || STaskUtil.getActiveAssignments(player).isEmpty())
+		if(TaskUtil.getActiveAssignments(player) == null || TaskUtil.getActiveAssignments(player).isEmpty())
 		{
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("no_tasks"));
+			MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("no_tasks"));
 			return true;
 		}
 
 		// Define variables
-		ArrayList<Assignment> assignments = STaskUtil.getDisplayedAssignments(player);
+		ArrayList<Assignment> assignments = TaskUtil.getDisplayedAssignments(player);
 
 		player.sendMessage(" ");
-		if(assignments.size() > 1) SMiscUtil.sendMsg(player, SMiscUtil.getString("current_assignments_are"));
-		else SMiscUtil.sendMsg(player, SMiscUtil.getString("current_assignment_is"));
+		if(assignments.size() > 1) MiscUtil.sendMsg(player, MiscUtil.getString("current_assignments_are"));
+		else MiscUtil.sendMsg(player, MiscUtil.getString("current_assignment_is"));
 		player.sendMessage(" ");
 
 		// List the tasks
@@ -770,12 +770,12 @@ class Commands implements CommandExecutor
 			{
 				if(assignment.getTask().getType().equals(Task.TaskType.MOB))
 				{
-					player.sendMessage(ChatColor.GRAY + "     - Mob: " + ChatColor.YELLOW + SObjUtil.capitalize(assignment.getTask().getMob().getName().toLowerCase()));
+					player.sendMessage(ChatColor.GRAY + "     - Mob: " + ChatColor.YELLOW + ObjUtil.capitalize(assignment.getTask().getMob().getName().toLowerCase()));
 					player.sendMessage(ChatColor.GRAY + "     - Kills: " + ChatColor.YELLOW + assignment.getAmountObtained() + ChatColor.GRAY + "/" + ChatColor.YELLOW + assignment.getAmountNeeded());
 				}
 				else if(assignment.getTask().getType().equals(Task.TaskType.ITEM))
 				{
-					player.sendMessage(ChatColor.GRAY + "     - Item: " + ChatColor.YELLOW + SObjUtil.capitalize(assignment.getTask().getItemType().name().toLowerCase().replace("_", " ")));
+					player.sendMessage(ChatColor.GRAY + "     - Item: " + ChatColor.YELLOW + ObjUtil.capitalize(assignment.getTask().getItemType().name().toLowerCase().replace("_", " ")));
 					player.sendMessage(ChatColor.GRAY + "     - Obtained: " + ChatColor.YELLOW + assignment.getAmountObtained() + ChatColor.GRAY + "/" + ChatColor.YELLOW + assignment.getAmountNeeded());
 				}
 				player.sendMessage(ChatColor.GRAY + "     - Assignment #: " + ChatColor.YELLOW + assignment.getID());
@@ -798,18 +798,18 @@ class Commands implements CommandExecutor
 	public boolean myRewards(Player player)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.basic")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.basic")) return MiscUtil.noPermission(player);
 
-		ArrayList<ItemStack> rewards = SPlayerUtil.getRewards(player);
+		ArrayList<ItemStack> rewards = PlayerUtil.getRewards(player);
 
 		// If they don't have rewards then tell them and return
 		if(rewards.isEmpty())
 		{
-			SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("no_rewards"));
+			MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("no_rewards"));
 			return true;
 		}
 
-		SPlayerUtil.openRewardBackpack(player);
+		PlayerUtil.openRewardBackpack(player);
 
 		return true;
 	}
@@ -820,11 +820,11 @@ class Commands implements CommandExecutor
 	public boolean sl_admin(Player player, String[] args)
 	{
 		// Check permissions
-		if(!SMiscUtil.hasPermissionOrOP(player, "slayer.admin")) return SMiscUtil.noPermission(player);
+		if(!MiscUtil.hasPermissionOrOP(player, "slayer.admin")) return MiscUtil.noPermission(player);
 
 		if(args.length == 0)
 		{
-			SMiscUtil.sendMsg(player, "Admin Directory");
+			MiscUtil.sendMsg(player, "Admin Directory");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin save");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin clear entities");
 			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "/sladmin reset player <player>");
@@ -849,20 +849,20 @@ class Commands implements CommandExecutor
 				{
 					if(option1 == null || option2 == null)
 					{
-						SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin remove task" + ChatColor.GRAY + ". Please try again.");
+						MiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin remove task" + ChatColor.GRAY + ". Please try again.");
 						return true;
 					}
 
 					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
-					int taskID = SObjUtil.toInteger(option2);
+					int taskID = ObjUtil.toInteger(option2);
 
-					if(STaskUtil.removeAssignment(editing, taskID, AssignmentRemoveEvent.RemoveReason.ADMIN))
+					if(TaskUtil.removeAssignment(editing, taskID, AssignmentRemoveEvent.RemoveReason.ADMIN))
 					{
-						SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + SMiscUtil.getString("assignment_removed").replace("{taskid}", "" + taskID));
+						MiscUtil.sendAdminMsg(player, ChatColor.GREEN + MiscUtil.getString("assignment_removed").replace("{taskid}", "" + taskID));
 					}
 					else
 					{
-						SMiscUtil.sendAdminMsg(player, ChatColor.RED + SMiscUtil.getString("assignment_not_removed"));
+						MiscUtil.sendAdminMsg(player, ChatColor.RED + MiscUtil.getString("assignment_not_removed"));
 					}
 					return true;
 				}
@@ -871,43 +871,43 @@ class Commands implements CommandExecutor
 			{
 				if(category == null)
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin set" + ChatColor.GRAY + ". Please try again.");
+					MiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin set" + ChatColor.GRAY + ". Please try again.");
 					return true;
 				}
 
 				if(category.equalsIgnoreCase("points"))
 				{
 					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
-					int points = SObjUtil.toInteger(option2);
+					int points = ObjUtil.toInteger(option2);
 
 					// Set the points and update their scoreboard if they're online
-					SPlayerUtil.setPoints(editing, points);
+					PlayerUtil.setPoints(editing, points);
 
 					if(editing.isOnline())
 					{
-						SPlayerUtil.updateScoreboard(editing.getPlayer());
+						PlayerUtil.updateScoreboard(editing.getPlayer());
 					}
 
 					// Message the admin
-					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + SMiscUtil.getString("points_set_success").replace("{player}", editing.getName()).replace("{points}", "" + points));
+					MiscUtil.sendAdminMsg(player, ChatColor.GREEN + MiscUtil.getString("points_set_success").replace("{player}", editing.getName()).replace("{points}", "" + points));
 
 					return true;
 				}
 				else if(category.equalsIgnoreCase("level"))
 				{
 					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
-					int level = SObjUtil.toInteger(option2);
+					int level = ObjUtil.toInteger(option2);
 
 					// Set the level and update their scoreboard if they're online
-					SPlayerUtil.setLevel(editing, level);
+					PlayerUtil.setLevel(editing, level);
 
 					if(editing.isOnline())
 					{
-						SPlayerUtil.updateScoreboard(editing.getPlayer());
+						PlayerUtil.updateScoreboard(editing.getPlayer());
 					}
 
 					// Message the admin
-					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + SMiscUtil.getString("level_set_success").replace("{player}", editing.getName()).replace("{level}", "" + level));
+					MiscUtil.sendAdminMsg(player, ChatColor.GREEN + MiscUtil.getString("level_set_success").replace("{player}", editing.getName()).replace("{level}", "" + level));
 
 					return true;
 				}
@@ -916,24 +916,24 @@ class Commands implements CommandExecutor
 			{
 				if(category.equalsIgnoreCase("entities"))
 				{
-					SMiscUtil.sendAdminMsg(player, ChatColor.YELLOW + SMiscUtil.getString("clearing_entities"));
-					SEntityUtil.getEntityMap().clear();
-					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + SMiscUtil.getString("entities_cleared"));
+					MiscUtil.sendAdminMsg(player, ChatColor.YELLOW + MiscUtil.getString("clearing_entities"));
+					EntityUtil.getEntityMap().clear();
+					MiscUtil.sendAdminMsg(player, ChatColor.GREEN + MiscUtil.getString("entities_cleared"));
 
 					return true;
 				}
 			}
 			else if(action.equalsIgnoreCase("save"))
 			{
-				SMiscUtil.sendAdminMsg(player, ChatColor.YELLOW + SMiscUtil.getString("forcing_save"));
+				MiscUtil.sendAdminMsg(player, ChatColor.YELLOW + MiscUtil.getString("forcing_save"));
 
-				if(SFlatFile.save())
+				if(FlatFile.save())
 				{
-					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + SMiscUtil.getString("save_success"));
+					MiscUtil.sendAdminMsg(player, ChatColor.GREEN + MiscUtil.getString("save_success"));
 				}
 				else
 				{
-					SMiscUtil.sendAdminMsg(player, ChatColor.RED + SMiscUtil.getString("save_failure"));
+					MiscUtil.sendAdminMsg(player, ChatColor.RED + MiscUtil.getString("save_failure"));
 				}
 
 				return true;
@@ -942,7 +942,7 @@ class Commands implements CommandExecutor
 			{
 				if(category == null)
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin reset" + ChatColor.GRAY + ". Please try again.");
+					MiscUtil.sendMsg(player, ChatColor.GRAY + "Improper use of " + ChatColor.GOLD + "/sladmin reset" + ChatColor.GRAY + ". Please try again.");
 					return true;
 				}
 
@@ -951,17 +951,17 @@ class Commands implements CommandExecutor
 					OfflinePlayer editing = Bukkit.getOfflinePlayer(option1);
 
 					// Remove all of the data
-					SDataUtil.removeAllData(editing);
-					SPlayerUtil.createSave(editing);
+					DataUtil.removeAllData(editing);
+					PlayerUtil.createSave(editing);
 
 					// Update their scoreboard if they're online
 					if(player.isOnline())
 					{
-						SPlayerUtil.updateScoreboard(player.getPlayer());
+						PlayerUtil.updateScoreboard(player.getPlayer());
 					}
 
 					// Message the admin
-					SMiscUtil.sendAdminMsg(player, ChatColor.GREEN + "All Slayer data has been reset for " + editing.getName() + ".");
+					MiscUtil.sendAdminMsg(player, ChatColor.GREEN + "All Slayer data has been reset for " + editing.getName() + ".");
 
 					return true;
 				}

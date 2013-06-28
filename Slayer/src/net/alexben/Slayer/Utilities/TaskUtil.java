@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Handles all Slayer task-related methods.
  */
-public class STaskUtil
+public class TaskUtil
 {
 	// Define variables
 	private static final ArrayList<Task> tasks = new ArrayList<Task>();
@@ -119,7 +119,7 @@ public class STaskUtil
 			if(i >= Math.pow(tasks.size(), 2))
 			{
 				// They have all available tasks, let 'em know
-				SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("has_all_tasks"));
+				MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("has_all_tasks"));
 
 				return;
 			}
@@ -156,7 +156,7 @@ public class STaskUtil
 	{
 		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
 
-		for(OfflinePlayer player : SPlayerUtil.getPlayers())
+		for(OfflinePlayer player : PlayerUtil.getPlayers())
 		{
 			if(getAssignments(player) == null || getAssignments(player).isEmpty()) continue;
 
@@ -178,7 +178,7 @@ public class STaskUtil
 	{
 		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
 
-		for(OfflinePlayer player : SPlayerUtil.getPlayers())
+		for(OfflinePlayer player : PlayerUtil.getPlayers())
 		{
 			if(getAssignments(player) == null || getAssignments(player).isEmpty()) continue;
 
@@ -301,9 +301,9 @@ public class STaskUtil
 	 */
 	public static ArrayList<Assignment> getAssignments(OfflinePlayer player)
 	{
-		if(SDataUtil.getData(player, "assignments") != null)
+		if(DataUtil.getData(player, "assignments") != null)
 		{
-			return (ArrayList<Assignment>) SDataUtil.getData(player, "assignments");
+			return (ArrayList<Assignment>) DataUtil.getData(player, "assignments");
 		}
 		return null;
 	}
@@ -471,29 +471,29 @@ public class STaskUtil
 		{
 			Assignment assignment = new Assignment(player, task);
 
-			if(SDataUtil.getData(player, "assignments") != null)
+			if(DataUtil.getData(player, "assignments") != null)
 			{
-				((ArrayList<Assignment>) SDataUtil.getData(player, "assignments")).add(assignment);
+				((ArrayList<Assignment>) DataUtil.getData(player, "assignments")).add(assignment);
 			}
 			else
 			{
 				ArrayList<Assignment> assignments = new ArrayList<Assignment>();
 				assignments.add(assignment);
 
-				SDataUtil.saveData(player, "assignments", assignments);
+				DataUtil.saveData(player, "assignments", assignments);
 			}
 
 			// Tracking
-			SDataUtil.saveData(player, "task_assignments_total", SPlayerUtil.getTotalAssignments(player) + 1);
+			DataUtil.saveData(player, "task_assignments_total", PlayerUtil.getTotalAssignments(player) + 1);
 
 			// Update scoreboard
-			SPlayerUtil.updateScoreboard(player);
+			PlayerUtil.updateScoreboard(player);
 
 			return assignment;
 		}
 		else
 		{
-			player.sendMessage(ChatColor.RED + SMiscUtil.getString("give_assignment_fail"));
+			player.sendMessage(ChatColor.RED + MiscUtil.getString("give_assignment_fail"));
 			return null;
 		}
 	}
@@ -525,7 +525,7 @@ public class STaskUtil
 			}
 		}
 
-		if(count > 0) SMiscUtil.log("info", count + " inactive assignments have been updated.");
+		if(count > 0) MiscUtil.log("info", count + " inactive assignments have been updated.");
 	}
 
 	/**
@@ -546,7 +546,7 @@ public class STaskUtil
 				if(assignmentExpireEvent.isCancelled()) return;
 
 				// Log the expiration
-				SMiscUtil.log("info", "An assignment (#: " + assignment.getID() + ") for " + assignment.getOfflinePlayer().getName() + " has expired.");
+				MiscUtil.log("info", "An assignment (#: " + assignment.getID() + ") for " + assignment.getOfflinePlayer().getName() + " has expired.");
 
 				// It's expired. Set it to failed and inactive.
 				assignment.setFailed(true);
@@ -585,7 +585,7 @@ public class STaskUtil
 				// Message the player on even kills
 				if(assignment.getAmountObtained() % 2 == 0 && !assignment.isComplete())
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("mob_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained() + ChatColor.GRAY).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded() + ChatColor.GRAY).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
+					MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("mob_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained() + ChatColor.GRAY).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded() + ChatColor.GRAY).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 				}
 
 				// Now handle completed assignments
@@ -603,7 +603,7 @@ public class STaskUtil
 		}
 
 		// Add overall kill for tracking purposes
-		SPlayerUtil.addKill(player, entity);
+		PlayerUtil.addKill(player, entity);
 	}
 
 	/**
@@ -640,7 +640,7 @@ public class STaskUtil
 				// For items, always message the player (makes up for the possibility of picking up multiple items and not receiving the message
 				if(!assignment.isComplete())
 				{
-					SMiscUtil.sendMsg(player, ChatColor.GRAY + SMiscUtil.getString("item_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained() + ChatColor.GRAY).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded() + ChatColor.GRAY).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
+					MiscUtil.sendMsg(player, ChatColor.GRAY + MiscUtil.getString("item_task_update").replace("{obtained}", ChatColor.YELLOW + "" + assignment.getAmountObtained() + ChatColor.GRAY).replace("{needed}", ChatColor.YELLOW + "" + assignment.getAmountNeeded() + ChatColor.GRAY).replace("{task}", ChatColor.AQUA + assignment.getTask().getName() + ChatColor.GRAY));
 				}
 
 				// Now handle completed assignments

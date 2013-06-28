@@ -1,11 +1,16 @@
 package net.alexben.Slayer.Utilities;
 
-import net.alexben.Slayer.Core.Handlers.SFlatFile;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.alexben.Slayer.Core.Handlers.FlatFile;
 import net.alexben.Slayer.Core.Objects.Death;
 import net.alexben.Slayer.Core.Objects.Kill;
 import net.alexben.Slayer.Core.Objects.SerialItemStack;
 import net.alexben.Slayer.Core.Objects.Task;
 import net.alexben.Slayer.Core.Slayer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -18,14 +23,10 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Utility for all player-related methods.
  */
-public class SPlayerUtil
+public class PlayerUtil
 {
 	/**
 	 * Creates a new Slayer save for the <code>player</code>.
@@ -35,22 +36,22 @@ public class SPlayerUtil
 	public static void createSave(OfflinePlayer player)
 	{
 		// Return if the player already exists
-		if(SDataUtil.playerExists(player)) return;
+		if(DataUtil.playerExists(player)) return;
 
 		// This is really simple for the time being and almost unnecessary, but I'm adding it for future expansion.
-		SDataUtil.saveData(player, "points", 0);
-		SDataUtil.saveData(player, "level", 1);
-		SDataUtil.saveData(player, "scoreboard", true);
-		SDataUtil.saveData(player, "task_assignments_total", 0);
-		SDataUtil.saveData(player, "task_completions", 0);
-		SDataUtil.saveData(player, "task_forfeits", 0);
-		SDataUtil.saveData(player, "task_expirations", 0);
-		SDataUtil.saveData(player, "kills", new ArrayList<Kill>());
-		SDataUtil.saveData(player, "deaths", new ArrayList<Death>());
-		SDataUtil.saveData(player, "reward_queue", new ArrayList<SerialItemStack>());
+		DataUtil.saveData(player, "points", 0);
+		DataUtil.saveData(player, "level", 1);
+		DataUtil.saveData(player, "scoreboard", true);
+		DataUtil.saveData(player, "task_assignments_total", 0);
+		DataUtil.saveData(player, "task_completions", 0);
+		DataUtil.saveData(player, "task_forfeits", 0);
+		DataUtil.saveData(player, "task_expirations", 0);
+		DataUtil.saveData(player, "kills", new ArrayList<Kill>());
+		DataUtil.saveData(player, "deaths", new ArrayList<Death>());
+		DataUtil.saveData(player, "reward_queue", new ArrayList<SerialItemStack>());
 
 		// Save the data
-		SFlatFile.savePlayer(player);
+		FlatFile.savePlayer(player);
 	}
 
 	/**
@@ -62,7 +63,7 @@ public class SPlayerUtil
 	{
 		ArrayList<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
 
-		for(Map.Entry<String, HashMap<String, Object>> player : SDataUtil.getAllData().entrySet())
+		for(Map.Entry<String, HashMap<String, Object>> player : DataUtil.getAllData().entrySet())
 		{
 			players.add(Bukkit.getOfflinePlayer(player.getKey()));
 		}
@@ -78,9 +79,9 @@ public class SPlayerUtil
 	 */
 	public static boolean scoreboardEnabled(OfflinePlayer player)
 	{
-		if(SDataUtil.hasData(player, "scoreboard"))
+		if(DataUtil.hasData(player, "scoreboard"))
 		{
-			return SObjUtil.toBoolean(SDataUtil.getData(player, "scoreboard"));
+			return ObjUtil.toBoolean(DataUtil.getData(player, "scoreboard"));
 		}
 		else return true;
 	}
@@ -93,7 +94,7 @@ public class SPlayerUtil
 	 */
 	public static void toggleScoreboard(Player player, boolean option)
 	{
-		SDataUtil.saveData(player, "scoreboard", option);
+		DataUtil.saveData(player, "scoreboard", option);
 		updateScoreboard(player);
 	}
 
@@ -113,22 +114,22 @@ public class SPlayerUtil
 		info.setDisplayName(ChatColor.AQUA + "Your Slayer Statistics");
 
 		// Add the data if the scoreboard is enabled
-		if(SConfigUtil.getSettingBoolean("misc.private_scoreboard") && scoreboardEnabled(player))
+		if(ConfigUtil.getSettingBoolean("misc.private_scoreboard") && scoreboardEnabled(player))
 		{
-			Score level = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_level")));
+			Score level = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + MiscUtil.getString("scoreboard_level")));
 			level.setScore(getLevel(player));
 
-			Score points = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_points")));
+			Score points = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + MiscUtil.getString("scoreboard_points")));
 			points.setScore(getPoints(player));
 
-			Score nextLevelPoints = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_points_needed")));
+			Score nextLevelPoints = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + MiscUtil.getString("scoreboard_points_needed")));
 			nextLevelPoints.setScore(getPointsGoal(player) - getPoints(player));
 
-			Score activeTasks = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_active_tasks")));
-			activeTasks.setScore(STaskUtil.getActiveAssignments(player).size());
+			Score activeTasks = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + MiscUtil.getString("scoreboard_active_tasks")));
+			activeTasks.setScore(TaskUtil.getActiveAssignments(player).size());
 
-			Score rewards = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + SMiscUtil.getString("scoreboard_rewards")));
-			rewards.setScore(SPlayerUtil.getRewardAmount(player));
+			Score rewards = info.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + MiscUtil.getString("scoreboard_rewards")));
+			rewards.setScore(PlayerUtil.getRewardAmount(player));
 
 			player.setScoreboard(slayer);
 		}
@@ -144,8 +145,8 @@ public class SPlayerUtil
 	 */
 	public static int getTotalAssignments(OfflinePlayer player)
 	{
-		if(SDataUtil.getData(player, "task_assignments_total") == null) SDataUtil.saveData(player, "task_assignments_total", 0);
-		return SObjUtil.toInteger(SDataUtil.getData(player, "task_assignments_total"));
+		if(DataUtil.getData(player, "task_assignments_total") == null) DataUtil.saveData(player, "task_assignments_total", 0);
+		return ObjUtil.toInteger(DataUtil.getData(player, "task_assignments_total"));
 	}
 
 	/**
@@ -155,8 +156,8 @@ public class SPlayerUtil
 	 */
 	public static int getCompletions(OfflinePlayer player)
 	{
-		if(SDataUtil.getData(player, "task_completions") == null) SDataUtil.saveData(player, "task_completions", 0);
-		return SObjUtil.toInteger(SDataUtil.getData(player, "task_completions"));
+		if(DataUtil.getData(player, "task_completions") == null) DataUtil.saveData(player, "task_completions", 0);
+		return ObjUtil.toInteger(DataUtil.getData(player, "task_completions"));
 	}
 
 	/**
@@ -166,9 +167,9 @@ public class SPlayerUtil
 	 */
 	public static void addCompletion(OfflinePlayer player)
 	{
-		if(SDataUtil.hasData(player, "task_completions"))
+		if(DataUtil.hasData(player, "task_completions"))
 		{
-			SDataUtil.saveData(player, "task_completions", getCompletions(player) + 1);
+			DataUtil.saveData(player, "task_completions", getCompletions(player) + 1);
 		}
 	}
 
@@ -179,8 +180,8 @@ public class SPlayerUtil
 	 */
 	public static int getExpirations(OfflinePlayer player)
 	{
-		if(SDataUtil.getData(player, "task_expirations") == null) SDataUtil.saveData(player, "task_expirations", 0);
-		return SObjUtil.toInteger(SDataUtil.getData(player, "task_expirations"));
+		if(DataUtil.getData(player, "task_expirations") == null) DataUtil.saveData(player, "task_expirations", 0);
+		return ObjUtil.toInteger(DataUtil.getData(player, "task_expirations"));
 	}
 
 	/**
@@ -190,9 +191,9 @@ public class SPlayerUtil
 	 */
 	public static void addExpiration(OfflinePlayer player)
 	{
-		if(SDataUtil.hasData(player, "task_expirations"))
+		if(DataUtil.hasData(player, "task_expirations"))
 		{
-			SDataUtil.saveData(player, "task_expirations", getExpirations(player) + 1);
+			DataUtil.saveData(player, "task_expirations", getExpirations(player) + 1);
 		}
 	}
 
@@ -203,8 +204,8 @@ public class SPlayerUtil
 	 */
 	public static int getForfeits(OfflinePlayer player)
 	{
-		if(SDataUtil.getData(player, "task_forfeits") == null) SDataUtil.saveData(player, "task_forfeits", 0);
-		return SObjUtil.toInteger(SDataUtil.getData(player, "task_forfeits"));
+		if(DataUtil.getData(player, "task_forfeits") == null) DataUtil.saveData(player, "task_forfeits", 0);
+		return ObjUtil.toInteger(DataUtil.getData(player, "task_forfeits"));
 	}
 
 	/**
@@ -214,9 +215,9 @@ public class SPlayerUtil
 	 */
 	public static void addForfeit(OfflinePlayer player)
 	{
-		if(SDataUtil.hasData(player, "task_forfeits"))
+		if(DataUtil.hasData(player, "task_forfeits"))
 		{
-			SDataUtil.saveData(player, "task_forfeits", getForfeits(player) + 1);
+			DataUtil.saveData(player, "task_forfeits", getForfeits(player) + 1);
 		}
 	}
 
@@ -228,7 +229,7 @@ public class SPlayerUtil
 	 */
 	public static void addReward(OfflinePlayer player, SerialItemStack item)
 	{
-		for(SerialItemStack serialReward : ((ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue")))
+		for(SerialItemStack serialReward : ((ArrayList<SerialItemStack>) DataUtil.getData(player, "reward_queue")))
 		{
 			if(serialReward.toItemStack().isSimilar(item.toItemStack()))
 			{
@@ -237,7 +238,7 @@ public class SPlayerUtil
 			}
 		}
 
-		((ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue")).add(item);
+		((ArrayList<SerialItemStack>) DataUtil.getData(player, "reward_queue")).add(item);
 	}
 
 	/**
@@ -250,7 +251,7 @@ public class SPlayerUtil
 	 */
 	public static boolean removeReward(OfflinePlayer player, ItemStack item)
 	{
-		ArrayList<SerialItemStack> rewards = (ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue");
+		ArrayList<SerialItemStack> rewards = (ArrayList<SerialItemStack>) DataUtil.getData(player, "reward_queue");
 
 		for(SerialItemStack reward : rewards)
 		{
@@ -283,7 +284,7 @@ public class SPlayerUtil
 	{
 		ArrayList<ItemStack> rewards = new ArrayList<ItemStack>();
 
-		for(SerialItemStack reward : (ArrayList<SerialItemStack>) SDataUtil.getData(player, "reward_queue"))
+		for(SerialItemStack reward : (ArrayList<SerialItemStack>) DataUtil.getData(player, "reward_queue"))
 		{
 			rewards.add(reward.toItemStack());
 		}
@@ -318,9 +319,9 @@ public class SPlayerUtil
 	 */
 	public static void setPoints(OfflinePlayer player, int points)
 	{
-		if(SDataUtil.hasData(player, "points"))
+		if(DataUtil.hasData(player, "points"))
 		{
-			SDataUtil.saveData(player, "points", points);
+			DataUtil.saveData(player, "points", points);
 		}
 	}
 
@@ -332,7 +333,7 @@ public class SPlayerUtil
 	 */
 	public static void addPoints(OfflinePlayer player, int points)
 	{
-		if(SDataUtil.hasData(player, "points"))
+		if(DataUtil.hasData(player, "points"))
 		{
 			setPoints(player, getPoints(player) + points);
 		}
@@ -358,7 +359,7 @@ public class SPlayerUtil
 	 */
 	public static int getPoints(OfflinePlayer player)
 	{
-		return SObjUtil.toInteger(SDataUtil.getData(player, "points"));
+		return ObjUtil.toInteger(DataUtil.getData(player, "points"));
 	}
 
 	/**
@@ -391,7 +392,7 @@ public class SPlayerUtil
 	 */
 	public static void setLevel(OfflinePlayer player, int levels)
 	{
-		SDataUtil.saveData(player, "level", levels);
+		DataUtil.saveData(player, "level", levels);
 	}
 
 	/**
@@ -401,13 +402,13 @@ public class SPlayerUtil
 	 */
 	public static void addLevel(OfflinePlayer player)
 	{
-		if(SDataUtil.hasData(player, "level"))
+		if(DataUtil.hasData(player, "level"))
 		{
 			setLevel(player, getLevel(player) + 1);
 		}
 		else
 		{
-			SDataUtil.saveData(player, "level", 2);
+			DataUtil.saveData(player, "level", 2);
 		}
 	}
 
@@ -419,8 +420,8 @@ public class SPlayerUtil
 	 */
 	public static int getLevel(OfflinePlayer player)
 	{
-		if(!SDataUtil.hasData(player, "level")) SDataUtil.saveData(player, "level", 1);
-		return SObjUtil.toInteger(SDataUtil.getData(player, "level"));
+		if(!DataUtil.hasData(player, "level")) DataUtil.saveData(player, "level", 1);
+		return ObjUtil.toInteger(DataUtil.getData(player, "level"));
 	}
 
 	/**
@@ -433,7 +434,7 @@ public class SPlayerUtil
 		Kill kill = new Kill(player, entity);
 		ArrayList<Kill> kills;
 
-		if(SDataUtil.hasData(player, "kills")) kills = (ArrayList<Kill>) SDataUtil.getData(player, "kills");
+		if(DataUtil.hasData(player, "kills")) kills = (ArrayList<Kill>) DataUtil.getData(player, "kills");
 		else kills = new ArrayList<Kill>();
 
 		kills.add(kill);
@@ -450,7 +451,7 @@ public class SPlayerUtil
 		Death death = new Death(player, entity);
 		ArrayList<Death> deaths;
 
-		if(SDataUtil.hasData(player, "deaths")) deaths = (ArrayList<Death>) SDataUtil.getData(player, "deaths");
+		if(DataUtil.hasData(player, "deaths")) deaths = (ArrayList<Death>) DataUtil.getData(player, "deaths");
 		else deaths = new ArrayList<Death>();
 
 		deaths.add(death);
@@ -464,7 +465,7 @@ public class SPlayerUtil
 	 */
 	public static int getKillCount(OfflinePlayer player)
 	{
-		return ((ArrayList<Kill>) SDataUtil.getData(player, "kills")).size();
+		return ((ArrayList<Kill>) DataUtil.getData(player, "kills")).size();
 	}
 
 	/**
@@ -475,7 +476,7 @@ public class SPlayerUtil
 	 */
 	public static int getDeathCount(OfflinePlayer player)
 	{
-		return ((ArrayList<Kill>) SDataUtil.getData(player, "deaths")).size();
+		return ((ArrayList<Kill>) DataUtil.getData(player, "deaths")).size();
 	}
 
 	/**
@@ -486,7 +487,7 @@ public class SPlayerUtil
 	 */
 	public static ArrayList<Kill> getKills(OfflinePlayer player)
 	{
-		return (ArrayList<Kill>) SDataUtil.getData(player, "kills");
+		return (ArrayList<Kill>) DataUtil.getData(player, "kills");
 	}
 
 	/**
@@ -497,7 +498,7 @@ public class SPlayerUtil
 	 */
 	public static ArrayList<Death> getDeaths(OfflinePlayer player)
 	{
-		return (ArrayList<Death>) SDataUtil.getData(player, "deaths");
+		return (ArrayList<Death>) DataUtil.getData(player, "deaths");
 	}
 
 	/**
@@ -508,7 +509,7 @@ public class SPlayerUtil
 	public static void openProcessingInventory(Player player)
 	{
 		Inventory inventory = Slayer.plugin.getServer().createInventory(player, 27, "Item Processing Inventory");
-		SDataUtil.saveData(player, "inv_process", true);
+		DataUtil.saveData(player, "inv_process", true);
 		player.openInventory(inventory);
 	}
 
@@ -527,7 +528,7 @@ public class SPlayerUtil
 			inventory.addItem(item);
 		}
 
-		SDataUtil.saveData(player, "inv_rewards", true);
+		DataUtil.saveData(player, "inv_rewards", true);
 
 		player.openInventory(inventory);
 	}
@@ -545,9 +546,9 @@ public class SPlayerUtil
 		Inventory inventory = Slayer.plugin.getServer().createInventory(player, 27, "Slayer Tasks " + ChatColor.DARK_PURPLE + "(Click to Select)");
 
 		// Loop through tasks and determine which ones to display
-		for(Task task : STaskUtil.getTasksUpToLevel(level))
+		for(Task task : TaskUtil.getTasksUpToLevel(level))
 		{
-			if(!STaskUtil.hasCompleted(player, task) || SConfigUtil.getSettingBoolean("tasks.reusable")) inventory.addItem(task.getTaskSheet());
+			if(!TaskUtil.hasCompleted(player, task) || ConfigUtil.getSettingBoolean("tasks.reusable")) inventory.addItem(task.getTaskSheet());
 		}
 
 		// Open the inventory

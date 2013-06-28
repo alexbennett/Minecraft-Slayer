@@ -16,7 +16,7 @@ import net.alexben.Slayer.Listeners.SEntityListener;
 import net.alexben.Slayer.Listeners.SPlayerListener;
 import net.alexben.Slayer.Modules.AutoUpdate;
 import net.alexben.Slayer.Modules.ConfigAccessor;
-import net.alexben.Slayer.Modules.MetricsModule;
+import net.alexben.Slayer.Modules.Metrics;
 import net.alexben.Slayer.SlayerPlugin;
 import net.alexben.Slayer.Utilities.*;
 import net.milkbowl.vault.Vault;
@@ -262,16 +262,16 @@ public class Slayer
 	{
 		try
 		{
-			// Define the MetricsModule instance
-			MetricsModule metrics = new MetricsModule(Slayer.plugin);
+			// Define the Metrics instance
+			Metrics metrics = new Metrics(Slayer.plugin);
 
 			// Define the Graphs
-			MetricsModule.Graph typeGraph = metrics.createGraph("Item vs. Mob Tasks");
-			MetricsModule.Graph timedGraph = metrics.createGraph("Timed vs. Untimed Tasks");
-			MetricsModule.Graph statusGraph = metrics.createGraph("Assignment Status Comparison");
+			Metrics.Graph typeGraph = metrics.createGraph("Item vs. Mob Tasks");
+			Metrics.Graph timedGraph = metrics.createGraph("Timed vs. Untimed Tasks");
+			Metrics.Graph statusGraph = metrics.createGraph("Assignment Status Comparison");
 
 			// Add Graph Data
-			typeGraph.addPlotter(new MetricsModule.Plotter("Item Based")
+			typeGraph.addPlotter(new Metrics.Plotter("Item Based")
 			{
 				@Override
 				public int getValue()
@@ -287,7 +287,7 @@ public class Slayer
 				}
 			});
 
-			typeGraph.addPlotter(new MetricsModule.Plotter("Mob Based")
+			typeGraph.addPlotter(new Metrics.Plotter("Mob Based")
 			{
 				@Override
 				public int getValue()
@@ -303,7 +303,7 @@ public class Slayer
 				}
 			});
 
-			timedGraph.addPlotter(new MetricsModule.Plotter("Untimed")
+			timedGraph.addPlotter(new Metrics.Plotter("Untimed")
 			{
 				@Override
 				public int getValue()
@@ -312,7 +312,7 @@ public class Slayer
 				}
 			});
 
-			timedGraph.addPlotter(new MetricsModule.Plotter("Timed")
+			timedGraph.addPlotter(new Metrics.Plotter("Timed")
 			{
 				@Override
 				public int getValue()
@@ -321,7 +321,7 @@ public class Slayer
 				}
 			});
 
-			statusGraph.addPlotter(new MetricsModule.Plotter("Completed")
+			statusGraph.addPlotter(new Metrics.Plotter("Completed")
 			{
 				@Override
 				public int getValue()
@@ -330,7 +330,7 @@ public class Slayer
 				}
 			});
 
-			statusGraph.addPlotter(new MetricsModule.Plotter("Expired")
+			statusGraph.addPlotter(new Metrics.Plotter("Expired")
 			{
 				@Override
 				public int getValue()
@@ -339,7 +339,7 @@ public class Slayer
 				}
 			});
 
-			statusGraph.addPlotter(new MetricsModule.Plotter("Forfeited")
+			statusGraph.addPlotter(new Metrics.Plotter("Forfeited")
 			{
 				@Override
 				public int getValue()
@@ -348,7 +348,7 @@ public class Slayer
 				}
 			});
 
-			statusGraph.addPlotter(new MetricsModule.Plotter("Active")
+			statusGraph.addPlotter(new Metrics.Plotter("Active")
 			{
 				@Override
 				public int getValue()
@@ -361,7 +361,7 @@ public class Slayer
 		}
 		catch(IOException e)
 		{
-			// MetricsModule failed to load, log it
+			// Metrics failed to load, log it
 			MiscUtil.log("warning", "Plugins metrics failed to load.");
 		}
 	}

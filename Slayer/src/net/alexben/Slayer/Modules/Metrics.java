@@ -56,7 +56,7 @@ import org.bukkit.scheduler.BukkitTask;
  * void start(); <br/>
  * </code>
  */
-public class MetricsModule
+public class Metrics
 {
 
 	/**
@@ -117,7 +117,7 @@ public class MetricsModule
 	 */
 	private volatile BukkitTask task = null;
 
-	public MetricsModule(final Plugin plugin) throws IOException
+	public Metrics(final Plugin plugin) throws IOException
 	{
 		if(plugin == null)
 		{
@@ -267,7 +267,7 @@ public class MetricsModule
 					{
 						if(debug)
 						{
-							Bukkit.getLogger().log(Level.INFO, "[MetricsModule] " + e.getMessage());
+							Bukkit.getLogger().log(Level.INFO, "[Metrics] " + e.getMessage());
 						}
 					}
 				}
@@ -295,7 +295,7 @@ public class MetricsModule
 			{
 				if(debug)
 				{
-					Bukkit.getLogger().log(Level.INFO, "[MetricsModule] " + ex.getMessage());
+					Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
 				}
 				return true;
 			}
@@ -303,7 +303,7 @@ public class MetricsModule
 			{
 				if(debug)
 				{
-					Bukkit.getLogger().log(Level.INFO, "[MetricsModule] " + ex.getMessage());
+					Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
 				}
 				return true;
 			}

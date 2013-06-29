@@ -12,8 +12,8 @@ public class SlayerPlugin extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		new Slayer(this);
 		FlatFile.load();
+		new Slayer(this);
 		Scheduler.startThreads();
 
 		// Log that net.alexben.Slayer successfully loaded

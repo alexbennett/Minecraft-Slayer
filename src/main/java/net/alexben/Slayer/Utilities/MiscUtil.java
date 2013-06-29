@@ -42,8 +42,8 @@ public class MiscUtil
 	 */
 	public static String getString(String key)
 	{
-		if(Slayer.plugin.getConfig().getString(key) == null) return null;
-		return ChatColor.translateAlternateColorCodes('&', Slayer.plugin.getConfig().getString(key));
+		if(Slayer.stringConfig.getConfig().getString(key) == null) return null;
+		return ChatColor.translateAlternateColorCodes('&', Slayer.stringConfig.getConfig().getString(key));
 	}
 
 	/**

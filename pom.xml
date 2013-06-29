@@ -42,4 +42,12 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>Censored Software Artifacts</id>
+            <name>Censored Software Artifacts-snapshots</name>
+            <url>http://censoredsoftware.com:8081/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

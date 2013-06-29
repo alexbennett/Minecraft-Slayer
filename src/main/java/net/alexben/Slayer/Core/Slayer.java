@@ -107,7 +107,7 @@ public class Slayer
 		}
 
 		// Define the configs
-		taskConfig = new ConfigAccessor(plugin, "tasks.yml");
+		taskConfig = new ConfigAccessor(plugin, "tasks/tasks.yml");
 		stringConfig = new ConfigAccessor(plugin, "strings.yml");
 
 		// Set the option to copy defaults

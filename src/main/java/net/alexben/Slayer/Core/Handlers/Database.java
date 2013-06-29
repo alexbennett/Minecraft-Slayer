@@ -58,7 +58,7 @@ public class Database
 	{
 		// Define table queries
 		String players = "CREATE TABLE players (unique_id INT AUTO_INCREMENT, PRIMARY KEY (unique_id), player VARCHAR(24), points INT, join_date VARCHAR(128));";
-		String assignments = "CREATE TABLE assignments (unique_id INT AUTO_INCREMENT, player_id INT, PRIMARY KEY (player_id), task BLOB, progress INT, expiration BIGINT, display TINYINT, active TINYINT, failed TINYINT, expired TINYINT, forfeited TINYINT);";
+		String assignments = "CREATE TABLE assignments (unique_id INT AUTO_INCREMENT, PRIMARY KEY (unique_id), player_id INT, task BLOB, progress INT, expiration BIGINT, display TINYINT, active TINYINT, failed TINYINT, expired TINYINT, forfeited TINYINT);";
 
 		// Handle SQLite
 		if(sqlite != null && sqlite.checkConnection())
@@ -85,16 +85,16 @@ public class Database
 			// Check if the tables exist and if not create them
 			if(!mysql.checkTable("players"))
 			{
-				MiscUtil.logSqlite("info", "Creating \"players\" table...");
+				MiscUtil.logMysql("info", "Creating \"players\" table...");
 				mysql.createTable(players);
-				MiscUtil.logSqlite("info", "\"players\" table created!");
+				MiscUtil.logMysql("info", "\"players\" table created!");
 			}
 
 			if(!mysql.checkTable("assignments"))
 			{
-				MiscUtil.logSqlite("info", "Creating \"assignments\" table...");
+				MiscUtil.logMysql("info", "Creating \"assignments\" table...");
 				mysql.createTable(assignments);
-				MiscUtil.logSqlite("info", "\"assignments\" table created!");
+				MiscUtil.logMysql("info", "\"assignments\" table created!");
 			}
 		}
 	}

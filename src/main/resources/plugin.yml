@@ -1,6 +1,6 @@
 name: Slayer
 main: net.alexben.Slayer.SlayerPlugin
-version: 1.2.2.@BUILD@
+version: ${project.version}
 author: _Alex
 softdepend: [Vault]
 commands:

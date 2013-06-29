@@ -94,20 +94,20 @@ public class Slayer
 	private void loadConfigs()
 	{
 		// LEGACY: Move the old tasks.yml config if it still exists.
-		File taskFile = new File(plugin.getDataFolder() + File.separator + "tasks/tasks.yml");
+		File taskFile = new File(plugin.getDataFolder() + File.separator + "tasks.yml");
 
 		if(taskFile.exists())
 		{
 			// Create the folder and move the file
 			new File(plugin.getDataFolder() + File.separator + "tasks").mkdir();
-			taskFile.renameTo(new File(plugin.getDataFolder() + File.separator + "tasks" + File.separator + "tasks/tasks.yml"));
+			taskFile.renameTo(new File(plugin.getDataFolder() + File.separator + "tasks" + File.separator + "tasks.yml"));
 
 			// Log the update
 			MiscUtil.log("info", "\"task.yml\" file moved for new save system.");
 		}
 
 		// Define the configs
-		taskConfig = new ConfigAccessor(plugin, "tasks/tasks.yml");
+		taskConfig = new ConfigAccessor(plugin, "tasks.yml");
 		stringConfig = new ConfigAccessor(plugin, "strings.yml");
 
 		// Set the option to copy defaults

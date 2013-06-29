@@ -52,6 +52,7 @@
             <artifactId>metrics</artifactId>
             <version>R6</version>
             <scope>compile</scope>
+            <optional>false</optional>
         </dependency>
     </dependencies>
 
@@ -70,7 +71,7 @@
                 </includes>
             </resource>
             <resource>
-                <targetPath>.</targetPath>
+                <targetPath>tasks/</targetPath>
                 <filtering>true</filtering>
                 <directory>${basedir}/src/main/resources/tasks/</directory>
                 <includes>
@@ -93,12 +94,23 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.mcstats.bukkit:Metrics</include>
+                                    <include>org.mcstats.bukkit:metrics</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <preparationGoals>assembly:assembly</preparationGoals>
+                    <goals>assembly:assembly</goals>
+                    <tagNameFormat>@{project.version}</tagNameFormat>
+                </configuration>
             </plugin>
         </plugins>
     </build>

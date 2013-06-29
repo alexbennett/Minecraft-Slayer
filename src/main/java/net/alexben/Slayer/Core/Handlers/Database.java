@@ -17,23 +17,10 @@ public class Database
 	 */
 	public static void initializeConnection()
 	{
-		if(ConfigUtil.getSettingBoolean("data.mysql.use"))
-		{
-			// Handle MySQL
-			mysql = new MySQL(Slayer.plugin.getLogger(), ConfigUtil.getSettingString("data.mysql.host"), ConfigUtil.getSettingString("data.mysql.port"), ConfigUtil.getSettingString("data.mysql.database"), ConfigUtil.getSettingString("data.mysql.user"), ConfigUtil.getSettingString("data.mysql.pass"));
-
-			// Open the connection and report back
-			mysql.open();
-
-			if(mysql.checkConnection())
-			{
-				MiscUtil.log("info", "MySQL connection established.");
-			}
-		}
-
+		// Handle SQLite
 		if(ConfigUtil.getSettingBoolean("data.sqlite.use"))
 		{
-			// Handle SQLite
+			// Create the object
 			sqlite = new SQLite(Slayer.plugin.getLogger(), ConfigUtil.getSettingString("data.sqlite.database"), Slayer.plugin.getDataFolder().getPath());
 
 			// Open the connection and report back
@@ -44,10 +31,55 @@ public class Database
 				MiscUtil.log("info", "SQLite connection established.");
 			}
 		}
+
+		// Handle MySQL
+		if(ConfigUtil.getSettingBoolean("data.mysql.use"))
+		{
+			// Create the object
+			mysql = new MySQL(Slayer.plugin.getLogger(), ConfigUtil.getSettingString("data.mysql.host"), ConfigUtil.getSettingString("data.mysql.port"), ConfigUtil.getSettingString("data.mysql.database"), ConfigUtil.getSettingString("data.mysql.user"), ConfigUtil.getSettingString("data.mysql.pass"));
+
+			// Open the connection and report back
+			mysql.open();
+
+			if(mysql.checkConnection())
+			{
+				MiscUtil.log("info", "MySQL connection established.");
+			}
+		}
 	}
 
 	/**
 	 * Creates the tables needed for SQL storage.
 	 */
+	public static void createTables()
+	{
+		// Define table queries
+		String players = "CREATE TABLE players (unique_id INT AUTO_INCREMENT, PRIMARY KEY (unique_id), player VARCHAR(24), points INT, join_date VARCHAR(128));";
+		String assignments = "CREATE TABLE assignments (unique_id INT AUTO_INCREMENT, player_id INT, PRIMARY KEY (player_id), task BLOB, progress INT, expiration BIGINT, display TINYINT, active TINYINT, failed TINYINT, expired TINYINT, forfeited TINYINT);";
 
+		// Handle SQLite
+		if(sqlite.checkConnection())
+		{
+			// Check if the tables exist and if not create them
+			if(!sqlite.checkTable("players"))
+			{
+				MiscUtil.logSqlite("info", "Creating \"players\" table...");
+				sqlite.createTable(players);
+				MiscUtil.logSqlite("info", "\"players\" table created!");
+			}
+
+			if(!sqlite.checkTable("assignments"))
+			{
+				MiscUtil.logSqlite("info", "Creating \"assignments\" table...");
+				sqlite.createTable(assignments);
+				MiscUtil.logSqlite("info", "\"assignments\" table created!");
+			}
+		}
+
+		// Handle MySQL
+		if(mysql.checkConnection())
+		{
+			// TODO
+		}
+	}
 }

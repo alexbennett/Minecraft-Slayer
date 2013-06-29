@@ -72,6 +72,32 @@ public class MiscUtil
 	}
 
 	/**
+	 * Sends the SQLite <code>msg</code> to the console with type <code>type</code>.
+	 * 
+	 * @param type the type of message.
+	 * @param msg the message to send.
+	 */
+	public static void logSqlite(String type, String msg)
+	{
+		if(type.equalsIgnoreCase("info")) log.info("[" + pluginName + "] [SQLite] " + msg);
+		else if(type.equalsIgnoreCase("warning")) log.warning("[" + pluginName + "] [SQLite] " + msg);
+		else if(type.equalsIgnoreCase("severe")) log.severe("[" + pluginName + "] [SQLite] " + msg);
+	}
+
+	/**
+	 * Sends the MySQL <code>msg</code> to the console with type <code>type</code>.
+	 * 
+	 * @param type the type of message.
+	 * @param msg the message to send.
+	 */
+	public static void logMysql(String type, String msg)
+	{
+		if(type.equalsIgnoreCase("info")) log.info("[" + pluginName + "] [MySQL] " + msg);
+		else if(type.equalsIgnoreCase("warning")) log.warning("[" + pluginName + "] [MySQL] " + msg);
+		else if(type.equalsIgnoreCase("severe")) log.severe("[" + pluginName + "] [MySQL] " + msg);
+	}
+
+	/**
 	 * Sends a server-wide message prepended with the plugin name if <code>tag</code> is true.
 	 * 
 	 * @param tag if true, the message is prepended with "[net.alexben.Slayer]"

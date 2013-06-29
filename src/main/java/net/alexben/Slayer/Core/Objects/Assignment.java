@@ -1,7 +1,11 @@
 package net.alexben.Slayer.Core.Objects;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
+import net.alexben.Slayer.Core.Handlers.Database;
+import net.alexben.Slayer.Utilities.MiscUtil;
 import net.alexben.Slayer.Utilities.ObjUtil;
 
 import org.bukkit.Bukkit;
@@ -27,6 +31,34 @@ public class Assignment implements Serializable
 		this.display = true;
 		this.task = task;
 		this.expiration = System.currentTimeMillis() + (task.getTimeLimit() * 60000); // Converts to milliseconds
+	}
+
+	/**
+	 * Saves the Assignment via SQL.
+	 */
+	public void saveSql()
+	{
+		PreparedStatement ps = Database.toPreparedStatement("INSERT INTO assignments (player_id, task, progress, expiration, display, active, failed, expired, forfeited) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+		try
+		{
+			ps.setInt(1, 50); // TODO: Database.getPlayerId(Bukkit.getOfflinePlayer(player))
+			ps.setObject(2, task);
+			ps.setInt(3, progress);
+			ps.setLong(4, expiration);
+			ps.setBoolean(5, display);
+			ps.setBoolean(6, active);
+			ps.setBoolean(7, failed);
+			ps.setBoolean(8, expired);
+			ps.setBoolean(9, forfeited);
+
+			ps.execute();
+		}
+		catch(SQLException e)
+		{
+			MiscUtil.log("severe", "There was a problem while saving an assignment to the database.");
+			e.printStackTrace();
+		}
 	}
 
 	/**

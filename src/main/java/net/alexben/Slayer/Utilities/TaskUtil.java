@@ -487,7 +487,7 @@ public class TaskUtil
 			DataUtil.saveData(player, "task_assignments_total", PlayerUtil.getTotalAssignments(player) + 1);
 
 			// Update scoreboard
-			PlayerUtil.updateScoreboard(player);
+			// TODO: PlayerUtil.updateScoreboard(player);
 
 			return assignment;
 		}

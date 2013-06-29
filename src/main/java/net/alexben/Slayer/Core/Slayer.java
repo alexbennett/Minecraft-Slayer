@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import net.alexben.Slayer.Core.Events.AssignmentRemoveEvent;
-import net.alexben.Slayer.Core.Handlers.FlatFile;
 import net.alexben.Slayer.Core.Objects.Assignment;
 import net.alexben.Slayer.Core.Objects.ObjectFactory;
 import net.alexben.Slayer.Core.Objects.SerialItemStack;
@@ -63,7 +62,7 @@ public class Slayer
 		loadEconomy();
 
 		// Update players
-		updatePlayers();
+		// TODO: updatePlayers();
 
 		// Lastly initialize the auto-updater
 		update = new AutoUpdate(instance, "http://dev.bukkit.org/server-mods/slayer/files.rss", "/slayer update", "slayer.update");
@@ -389,11 +388,11 @@ class Commands implements CommandExecutor
 		if(args.length == 0)
 		{
 			player.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
-			player.sendMessage(ChatColor.RED + "net/alexben/Slayer" + ChatColor.GRAY + " is a plugin developed on the Bukkit platform for");
+			player.sendMessage(ChatColor.RED + "Slayer" + ChatColor.GRAY + " is a plugin developed on the Bukkit platform for");
 			player.sendMessage(ChatColor.GRAY + " Minecraft Survival Multiplayer with the intentions of bringing a");
 			player.sendMessage(ChatColor.GRAY + "      full, easily expandable task system to the battlefield.");
 			player.sendMessage(" ");
-			player.sendMessage(ChatColor.GRAY + "    For support or to suggest new features, visit the " + ChatColor.RED + "net/alexben/Slayer");
+			player.sendMessage(ChatColor.GRAY + "    For support or to suggest new features, visit the " + ChatColor.RED + "Slayer");
 			player.sendMessage(ChatColor.GRAY + "     BukkitDev project page located at the link given below.");
 			player.sendMessage(" ");
 			player.sendMessage(ChatColor.GRAY + " Author: " + ChatColor.AQUA + "_Alex " + ChatColor.GRAY + "(" + ChatColor.AQUA + "http://alexben.net/t" + ChatColor.GRAY + ")");
@@ -834,7 +833,26 @@ class Commands implements CommandExecutor
 			if(args.length > 2) option1 = args[2];
 			if(args.length > 3) option2 = args[3];
 
-			if(action.equalsIgnoreCase("remove"))
+			if(action.equalsIgnoreCase("save"))
+			{
+				MiscUtil.sendAdminMsg(player, ChatColor.YELLOW + MiscUtil.getString("forcing_save"));
+
+				TaskUtil.assignTask(player, TaskUtil.getRandomTask()).saveSql();
+
+				/*
+				 * if(FlatFile.save())
+				 * {
+				 * MiscUtil.sendAdminMsg(player, ChatColor.GREEN + MiscUtil.getString("save_success"));
+				 * }
+				 * else
+				 * {
+				 * MiscUtil.sendAdminMsg(player, ChatColor.RED + MiscUtil.getString("save_failure"));
+				 * }
+				 */
+
+				return true;
+			}
+			else if(action.equalsIgnoreCase("remove"))
 			{
 				if(category.equalsIgnoreCase("task"))
 				{
@@ -913,21 +931,6 @@ class Commands implements CommandExecutor
 
 					return true;
 				}
-			}
-			else if(action.equalsIgnoreCase("save"))
-			{
-				MiscUtil.sendAdminMsg(player, ChatColor.YELLOW + MiscUtil.getString("forcing_save"));
-
-				if(FlatFile.save())
-				{
-					MiscUtil.sendAdminMsg(player, ChatColor.GREEN + MiscUtil.getString("save_success"));
-				}
-				else
-				{
-					MiscUtil.sendAdminMsg(player, ChatColor.RED + MiscUtil.getString("save_failure"));
-				}
-
-				return true;
 			}
 			else if(action.equalsIgnoreCase("reset"))
 			{

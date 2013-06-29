@@ -155,15 +155,15 @@ public class AutoUpdate implements Listener
 		}
 		catch(MalformedURLException e)
 		{
-			this.logger.warning("[ " + this.plugin.getName() + "] Error accessing URL: " + e);
+			this.logger.warning("[" + this.plugin.getName() + "] Error accessing URL: " + e);
 		}
 		catch(FileNotFoundException e)
 		{
-			this.logger.warning("[ " + this.plugin.getName() + "] Error accessing URL: " + e);
+			this.logger.warning("[" + this.plugin.getName() + "] Error accessing URL: " + e);
 		}
 		catch(IOException e)
 		{
-			this.logger.warning("[ " + this.plugin.getName() + "] Error downloading file: " + e);
+			this.logger.warning("[" + this.plugin.getName() + "] Error downloading file: " + e);
 		}
 
 		return false;
@@ -186,7 +186,7 @@ public class AutoUpdate implements Listener
 			}
 			catch(Exception e)
 			{
-				this.logger.warning("[ " + this.plugin.getName() + "] Failed to find download page.");
+				this.logger.warning("[" + this.plugin.getName() + "] Failed to find download page.");
 			}
 			input.close();
 
@@ -247,12 +247,12 @@ public class AutoUpdate implements Listener
 			}
 			catch(Exception e)
 			{
-				this.logger.warning("[ " + this.plugin.getName() + "] Could not parse version number.");
+				this.logger.warning("[" + this.plugin.getName() + "] Could not parse version number.");
 			}
 		}
 		catch(Exception e)
 		{
-			this.logger.warning("[ " + this.plugin.getName() + "] Failed to read download page.");
+			this.logger.warning("[" + this.plugin.getName() + "] Failed to read download page.");
 		}
 
 		return false;
@@ -279,7 +279,7 @@ public class AutoUpdate implements Listener
 		}
 		catch(Exception e)
 		{
-			this.logger.warning("[ " + this.plugin.getName() + "] Failed to read download page.");
+			this.logger.warning("[" + this.plugin.getName() + "] Failed to read download page.");
 		}
 
 		return false;

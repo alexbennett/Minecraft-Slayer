@@ -93,7 +93,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.mcstats.Metrics</include>
+                                    <include>org.mcstats.bukkit:Metrics</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

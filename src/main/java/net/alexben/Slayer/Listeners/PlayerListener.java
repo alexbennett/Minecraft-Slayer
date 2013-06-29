@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.alexben.Slayer.Core.Objects.Assignment;
 import net.alexben.Slayer.Core.Objects.Task;
+import net.alexben.Slayer.Core.Slayer;
 import net.alexben.Slayer.Utilities.*;
 
 import org.bukkit.ChatColor;
@@ -37,7 +38,7 @@ public class PlayerListener implements Listener
 
 		if(ConfigUtil.getSettingBoolean("misc.join_message"))
 		{
-			player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + net.alexben.Slayer.Core.Slayer.plugin.getDescription().getVersion() + ChatColor.GRAY + ".");
+			player.sendMessage(ChatColor.GRAY + "This server is running " + ChatColor.RED + "Slayer v" + Slayer.plugin.getDescription().getVersion() + ChatColor.GRAY + ".");
 		}
 
 		if(ConfigUtil.getSettingBoolean("tasks.join_reminders") && TaskUtil.getActiveAssignments(player) != null)

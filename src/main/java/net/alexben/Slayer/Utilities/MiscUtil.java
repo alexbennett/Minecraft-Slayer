@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import net.alexben.Slayer.Core.Slayer;
+
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -18,7 +20,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 public class MiscUtil
 {
 	// Define variables
-	private static String pluginName = net.alexben.Slayer.Core.Slayer.plugin.getDescription().getName();
+	private static String pluginName = Slayer.plugin.getDescription().getName();
 	private static ChatColor pluginColor = ChatColor.RED;
 	private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -40,8 +42,8 @@ public class MiscUtil
 	 */
 	public static String getString(String key)
 	{
-		if(net.alexben.Slayer.Core.Slayer.plugin.getConfig().getString(key) == null) return null;
-		return ChatColor.translateAlternateColorCodes('&', net.alexben.Slayer.Core.Slayer.plugin.getConfig().getString(key));
+		if(Slayer.plugin.getConfig().getString(key) == null) return null;
+		return ChatColor.translateAlternateColorCodes('&', Slayer.plugin.getConfig().getString(key));
 	}
 
 	/**

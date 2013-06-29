@@ -6,6 +6,7 @@ import java.util.Random;
 import net.alexben.Slayer.Core.Events.*;
 import net.alexben.Slayer.Core.Objects.Assignment;
 import net.alexben.Slayer.Core.Objects.Task;
+import net.alexben.Slayer.Core.Slayer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -363,7 +364,7 @@ public class TaskUtil
 
 			// Call the event
 			AssignmentRemoveEvent assignmentRemoveEvent = new AssignmentRemoveEvent(assignment.getOfflinePlayer(), assignment, reason);
-			net.alexben.Slayer.Core.Slayer.plugin.getServer().getPluginManager().callEvent(assignmentRemoveEvent);
+			Slayer.plugin.getServer().getPluginManager().callEvent(assignmentRemoveEvent);
 			if(assignmentRemoveEvent.isCancelled()) return false;
 
 			getAssignments(player).remove(assignment);
@@ -387,7 +388,7 @@ public class TaskUtil
 
 			// Call the event
 			AssignmentForfeitEvent assignmentForfeitEvent = new AssignmentForfeitEvent(assignment.getOfflinePlayer(), assignment);
-			net.alexben.Slayer.Core.Slayer.plugin.getServer().getPluginManager().callEvent(assignmentForfeitEvent);
+			Slayer.plugin.getServer().getPluginManager().callEvent(assignmentForfeitEvent);
 			if(assignmentForfeitEvent.isCancelled()) return false;
 
 			assignment.setForfeited(true);
@@ -464,7 +465,7 @@ public class TaskUtil
 	public static Assignment assignTask(Player player, Task task)
 	{
 		TaskAssignEvent taskAssignEvent = new TaskAssignEvent(player, task);
-		net.alexben.Slayer.Core.Slayer.plugin.getServer().getPluginManager().callEvent(taskAssignEvent);
+		Slayer.plugin.getServer().getPluginManager().callEvent(taskAssignEvent);
 
 		if(!taskAssignEvent.isCancelled())
 		{
@@ -541,7 +542,7 @@ public class TaskUtil
 			{
 				// Call the event
 				AssignmentExpireEvent assignmentExpireEvent = new AssignmentExpireEvent(assignment.getOfflinePlayer(), assignment);
-				net.alexben.Slayer.Core.Slayer.plugin.getServer().getPluginManager().callEvent(assignmentExpireEvent);
+				Slayer.plugin.getServer().getPluginManager().callEvent(assignmentExpireEvent);
 				if(assignmentExpireEvent.isCancelled()) return;
 
 				// Log the expiration
@@ -592,7 +593,7 @@ public class TaskUtil
 				{
 					// The assignment is complete, call the event
 					AssignmentCompleteEvent assignmentCompleteEvent = new AssignmentCompleteEvent(player, assignment);
-					net.alexben.Slayer.Core.Slayer.plugin.getServer().getPluginManager().callEvent(assignmentCompleteEvent);
+					Slayer.plugin.getServer().getPluginManager().callEvent(assignmentCompleteEvent);
 					if(assignmentCompleteEvent.isCancelled()) return;
 
 					// Set the assignment to inactive
@@ -647,7 +648,7 @@ public class TaskUtil
 				{
 					// The assignment is complete, call the event
 					AssignmentCompleteEvent assignmentCompleteEvent = new AssignmentCompleteEvent(player, assignment);
-					net.alexben.Slayer.Core.Slayer.plugin.getServer().getPluginManager().callEvent(assignmentCompleteEvent);
+					Slayer.plugin.getServer().getPluginManager().callEvent(assignmentCompleteEvent);
 					if(assignmentCompleteEvent.isCancelled()) return;
 
 					// Set the assignment to inactive

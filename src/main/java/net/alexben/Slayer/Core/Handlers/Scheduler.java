@@ -1,5 +1,6 @@
 package net.alexben.Slayer.Core.Handlers;
 
+import net.alexben.Slayer.Core.Slayer;
 import net.alexben.Slayer.Utilities.ConfigUtil;
 import net.alexben.Slayer.Utilities.EntityUtil;
 import net.alexben.Slayer.Utilities.TaskUtil;
@@ -16,7 +17,7 @@ public class Scheduler
 		int assignmentRefreshFrequency = ConfigUtil.getSettingInt("data.assignment_refresh_freq") * 20;
 
 		// Save data
-		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(net.alexben.Slayer.Core.Slayer.plugin, new Runnable()
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(Slayer.plugin, new Runnable()
 		{
 			@Override
 			public void run()
@@ -26,7 +27,7 @@ public class Scheduler
 		}, saveFrequency, saveFrequency);
 
 		// Update time-restricted assignments
-		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(net.alexben.Slayer.Core.Slayer.plugin, new Runnable()
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(Slayer.plugin, new Runnable()
 		{
 			@Override
 			public void run()
@@ -36,7 +37,7 @@ public class Scheduler
 		}, 0, 20);
 
 		// Cleanup entity tracking
-		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(net.alexben.Slayer.Core.Slayer.plugin, new Runnable()
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(Slayer.plugin, new Runnable()
 		{
 			@Override
 			public void run()
@@ -46,7 +47,7 @@ public class Scheduler
 		}, 0, 20);
 
 		// Clear completed/failed/inactive assignments
-		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(net.alexben.Slayer.Core.Slayer.plugin, new Runnable()
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(Slayer.plugin, new Runnable()
 		{
 			@Override
 			public void run()
@@ -59,6 +60,6 @@ public class Scheduler
 
 	public static void stopThreads()
 	{
-		Bukkit.getServer().getScheduler().cancelTasks(net.alexben.Slayer.Core.Slayer.plugin);
+		Bukkit.getServer().getScheduler().cancelTasks(Slayer.plugin);
 	}
 }

@@ -3,6 +3,7 @@ package net.alexben.Slayer.Core.Handlers;
 import java.io.*;
 import java.util.HashMap;
 
+import net.alexben.Slayer.Core.Slayer;
 import net.alexben.Slayer.Utilities.DataUtil;
 import net.alexben.Slayer.Utilities.EntityUtil;
 import net.alexben.Slayer.Utilities.MiscUtil;
@@ -11,7 +12,7 @@ import org.bukkit.OfflinePlayer;
 
 public class FlatFile
 {
-	private static final File path = net.alexben.Slayer.Core.Slayer.plugin.getDataFolder();
+	private static final File path = Slayer.plugin.getDataFolder();
 	private static File saveDir;
 
 	public static void start()

@@ -1,5 +1,5 @@
 name: Slayer
-main: net.alexben.Slayer.SlayerPlugin
+main: Slayer.SlayerPlugin
 version: 1.2.2.@BUILD@
 author: _Alex
 softdepend: [Vault]

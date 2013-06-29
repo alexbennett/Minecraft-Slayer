@@ -47,7 +47,7 @@
         <snapshotRepository>
             <id>Censored Software Artifacts</id>
             <name>Censored Software Artifacts-snapshots</name>
-            <url>http://censoredsoftware.com:8081/artifactory/libs-snapshot-local</url>
+            <url>http://censoredsoftware.com:8081/artifactory/plugins-snapshot-local</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

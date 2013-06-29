@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.alexben</groupId>
-    <artifactId>net.alexben.Slayer</artifactId>
+    <artifactId>Slayer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <distributionManagement>

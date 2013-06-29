@@ -8,6 +8,14 @@
     <artifactId>net.alexben.Slayer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>Censored Software Artifacts</id>
+            <name>Censored Software Artifacts-snapshots</name>
+            <url>http://censoredsoftware.com:8081/artifactory/plugins-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>bukkit-repo</id>
@@ -43,11 +51,29 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>Censored Software Artifacts</id>
-            <name>Censored Software Artifacts-snapshots</name>
-            <url>http://censoredsoftware.com:8081/artifactory/plugins-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <sourceDirectory>${basedir}/src/main/java/</sourceDirectory>
+
+        <resources>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources/</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                    <include>config.yml</include>
+                    <include>strings.yml</include>
+                </includes>
+            </resource>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources/tasks/</directory>
+                <includes>
+                    <include>tasks.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>

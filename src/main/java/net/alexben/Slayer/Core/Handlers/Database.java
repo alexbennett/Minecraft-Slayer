@@ -46,6 +46,9 @@ public class Database
 				MiscUtil.log("info", "MySQL connection established.");
 			}
 		}
+
+		// Create the tables if need be
+		createTables();
 	}
 
 	/**

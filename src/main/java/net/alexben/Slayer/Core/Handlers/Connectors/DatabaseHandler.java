@@ -16,7 +16,7 @@
  * IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Core.Handlers.Database;
+package net.alexben.Slayer.Core.Handlers.Connectors;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +24,7 @@ import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 /**
- * Database Handler Abstract superclass for all subclass database files.
+ * Connectors Handler Abstract superclass for all subclass database files.
  * 
  * @author PatPeter, Jon la Cour
  */

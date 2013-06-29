@@ -16,7 +16,7 @@
  * IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Core.Handlers.Database;
+package net.alexben.Slayer.Core.Handlers.Connectors;
 
 import java.sql.*;
 import java.util.logging.Logger;

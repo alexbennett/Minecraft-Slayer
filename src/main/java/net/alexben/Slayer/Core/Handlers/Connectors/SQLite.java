@@ -16,7 +16,7 @@
  * IN THE SOFTWARE.
  */
 
-package net.alexben.Slayer.Core.Handlers.Database;
+package net.alexben.Slayer.Core.Handlers.Connectors;
 
 import java.io.File;
 import java.sql.*;

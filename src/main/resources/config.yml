@@ -35,12 +35,15 @@ block:
 data:
     sqlite:
         use: true
+        database: slayer #This should be untouched 99% of the time.
     mysql:
-        use: true
+        use: false
         host: localhost
         port: 3306
+        database: ''
         user: ''
         pass: ''
+
     save_freq: 300 #seconds
     assignment_refresh_freq: 120 #seconds
     entity_tracking_period: 1200 #seconds

@@ -62,8 +62,6 @@ public class Slayer
 		loadMetrics();
 		loadEconomy();
 
-		FlatFile.load();
-
 		// Update players
 		updatePlayers();
 

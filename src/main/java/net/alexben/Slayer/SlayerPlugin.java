@@ -1,6 +1,5 @@
 package net.alexben.Slayer;
 
-import net.alexben.Slayer.Core.Handlers.FlatFile;
 import net.alexben.Slayer.Core.Handlers.Scheduler;
 import net.alexben.Slayer.Core.Slayer;
 import net.alexben.Slayer.Utilities.MiscUtil;
@@ -12,6 +11,7 @@ public class SlayerPlugin extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		// FlatFile.load();
 		new Slayer(this);
 		Scheduler.startThreads();
 
@@ -23,7 +23,7 @@ public class SlayerPlugin extends JavaPlugin
 	public void onDisable()
 	{
 		Scheduler.stopThreads();
-		FlatFile.save();
+		// FlatFile.save();
 
 		MiscUtil.log("info", "Slayer has been disabled.");
 	}

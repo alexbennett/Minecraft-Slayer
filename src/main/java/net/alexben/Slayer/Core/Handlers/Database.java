@@ -28,7 +28,7 @@ public class Database
 
 			if(sqlite.checkConnection())
 			{
-				MiscUtil.log("info", "SQLite connection established.");
+				MiscUtil.logSqlite("info", "Connection established.");
 			}
 		}
 
@@ -43,7 +43,7 @@ public class Database
 
 			if(mysql.checkConnection())
 			{
-				MiscUtil.log("info", "MySQL connection established.");
+				MiscUtil.logMysql("info", "Connection established.");
 			}
 		}
 
@@ -61,7 +61,7 @@ public class Database
 		String assignments = "CREATE TABLE assignments (unique_id INT AUTO_INCREMENT, player_id INT, PRIMARY KEY (player_id), task BLOB, progress INT, expiration BIGINT, display TINYINT, active TINYINT, failed TINYINT, expired TINYINT, forfeited TINYINT);";
 
 		// Handle SQLite
-		if(sqlite.checkConnection())
+		if(sqlite != null && sqlite.checkConnection())
 		{
 			// Check if the tables exist and if not create them
 			if(!sqlite.checkTable("players"))
@@ -80,9 +80,22 @@ public class Database
 		}
 
 		// Handle MySQL
-		if(mysql.checkConnection())
+		if(mysql != null && mysql.checkConnection())
 		{
-			// TODO
+			// Check if the tables exist and if not create them
+			if(!mysql.checkTable("players"))
+			{
+				MiscUtil.logSqlite("info", "Creating \"players\" table...");
+				mysql.createTable(players);
+				MiscUtil.logSqlite("info", "\"players\" table created!");
+			}
+
+			if(!mysql.checkTable("assignments"))
+			{
+				MiscUtil.logSqlite("info", "Creating \"assignments\" table...");
+				mysql.createTable(assignments);
+				MiscUtil.logSqlite("info", "\"assignments\" table created!");
+			}
 		}
 	}
 }

@@ -9,13 +9,13 @@ import net.alexben.Slayer.Utilities.MiscUtil;
 public class Database
 {
 	// Define the database variables
-	private MySQL mysql;
-	private SQLite sqlite;
+	private static MySQL mysql;
+	private static SQLite sqlite;
 
 	/**
 	 * Initializes the connection with the database.
 	 */
-	public void initializeConnection()
+	public static void initializeConnection()
 	{
 		if(ConfigUtil.getSettingBoolean("data.mysql.use"))
 		{

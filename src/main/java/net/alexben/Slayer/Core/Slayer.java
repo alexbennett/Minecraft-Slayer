@@ -51,7 +51,7 @@ public class Slayer
 		// Define public
 		plugin = instance;
 
-		// Initialize the config, scheduler, and utilities
+		// Initialize the config
 		ConfigUtil.initialize();
 
 		// Load things

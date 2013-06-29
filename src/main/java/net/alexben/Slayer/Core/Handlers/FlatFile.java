@@ -12,20 +12,19 @@ import org.bukkit.OfflinePlayer;
 
 public class FlatFile
 {
-	private static final File path = Slayer.plugin.getDataFolder();
 	private static File saveDir;
 
 	public static void start()
 	{
 		// Rename old folder to new name, if it exists
-		File oldDir = new File(path + "players");
+		File oldDir = new File(Slayer.plugin.getDataFolder() + "players");
 		if(oldDir.exists())
 		{
-			oldDir.renameTo(new File(path + "saves"));
+			oldDir.renameTo(new File(Slayer.plugin.getDataFolder() + "saves"));
 			MiscUtil.log("info", "Old player save directory renamed for new save system.");
 		}
 
-		saveDir = new File(path.getPath() + File.separator + "saves");
+		saveDir = new File(Slayer.plugin.getDataFolder().getPath() + File.separator + "saves");
 		if(!saveDir.exists())
 		{
 			saveDir.mkdirs();

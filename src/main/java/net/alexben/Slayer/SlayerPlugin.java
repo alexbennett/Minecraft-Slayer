@@ -12,7 +12,6 @@ public class SlayerPlugin extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		FlatFile.load();
 		new Slayer(this);
 		Scheduler.startThreads();
 

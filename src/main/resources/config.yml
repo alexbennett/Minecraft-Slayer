@@ -33,6 +33,14 @@ block:
 
 # Data Related
 data:
+    sqlite:
+        use: true
+    mysql:
+        use: true
+        host: localhost
+        port: 3306
+        user: ''
+        pass: ''
     save_freq: 300 #seconds
     assignment_refresh_freq: 120 #seconds
     entity_tracking_period: 1200 #seconds

@@ -65,6 +65,8 @@ public class Slayer
 		// Update players
 		updatePlayers();
 
+		FlatFile.load();
+
 		// Lastly initialize the auto-updater
 		update = new AutoUpdate(instance, "http://dev.bukkit.org/server-mods/slayer/files.rss", "/slayer update", "slayer.update");
 		update.initialize();

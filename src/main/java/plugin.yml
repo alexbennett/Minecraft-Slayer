@@ -1,0 +1,34 @@
+name: Slayer
+main: net.alexben.Slayer.SlayerPlugin
+version: 1.2.2.@BUILD@
+author: _Alex
+softdepend: [Vault]
+commands:
+    sl:
+        usage: /sl
+    slayer:
+        usage: /slayer
+    sladmin:
+        usage: /sladmin
+    tasks:
+        usage: /tasks
+    process:
+        usage: /process
+    accept:
+        usage: /accept
+    mytasks:
+        usage: /mytasks
+    rewards:
+        usage: /rewards
+    forfeit:
+        usage: /forfeit <assignment #>
+permissions:
+    slayer.basic:
+        description: The default permission for players.
+        default: true
+    slayer.admin:
+        description: The administration permission node.
+        default: op
+    slayer.update:
+        description: Allows the player to perform an auto update of the plugin.
+        default: op

@@ -150,8 +150,7 @@ public class Database
 	public static int getPlayerId(OfflinePlayer player) throws SQLException
 	{
 		// Define variables
-		String query = "SELECT * FROM players WHERE player = ?";
-		PreparedStatement ps = toPreparedStatement(query);
+		PreparedStatement ps = toPreparedStatement("SELECT * FROM players WHERE player = ?");
 
 		// Execute and handle the result
 		ResultSet result = ps.executeQuery();
@@ -167,5 +166,43 @@ public class Database
 		// Return -1 and log if a player can't be found (shouldn't happen)
 		MiscUtil.log("severe", "A player wasn't saved into the database. Reload the server.");
 		return -1;
+	}
+
+	/**
+	 * Saves an entire object as a BLOB and returns it's generated id.
+	 * 
+	 * @param object the object to save.
+	 * @return Long
+	 */
+	public static long saveObject(Object object)
+	{
+		// Define variables
+		PreparedStatement ps = toPreparedStatement("INSERT INTO objects (class_name, object) VALUES (?, ?)");
+		int sqlId = -1;
+
+		try
+		{
+			// Set the values
+			ps.setString(1, object.getClass().getName());
+			ps.setObject(2, object);
+
+			// Execute
+			ps.executeUpdate();
+
+			// Find the id and return it
+			ResultSet keys = ps.getGeneratedKeys();
+
+			if(keys.next())
+			{
+				sqlId = keys.getInt(1);
+			}
+		}
+		catch(SQLException e)
+		{
+			MiscUtil.log("severe", "There was a problem while saving an object to the database.");
+			e.printStackTrace(); // TODO
+		}
+
+		return sqlId;
 	}
 }

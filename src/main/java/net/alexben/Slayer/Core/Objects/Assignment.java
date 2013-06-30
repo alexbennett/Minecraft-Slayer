@@ -2,6 +2,7 @@ package net.alexben.Slayer.Core.Objects;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.alexben.Slayer.Core.Handlers.Database;
@@ -34,15 +35,20 @@ public class Assignment implements Serializable
 	}
 
 	/**
-	 * Saves the Assignment via SQL.
+	 * Saves the Assignment via SQL and returns it's id.
+	 * 
+	 * @return Long
 	 */
-	public void saveSql()
+	public long saveSql()
 	{
+		// Define the variables
 		PreparedStatement ps = Database.toPreparedStatement("INSERT INTO assignments (player_id, task, progress, expiration, display, active, failed, expired, forfeited) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		int sqlId = -1;
 
 		try
 		{
-			ps.setInt(1, 50); // TODO: Database.getPlayerId(Bukkit.getOfflinePlayer(player))
+			// Set the values
+			ps.setInt(1, Database.getPlayerId(Bukkit.getOfflinePlayer(player)));
 			ps.setObject(2, task);
 			ps.setInt(3, progress);
 			ps.setLong(4, expiration);
@@ -52,13 +58,24 @@ public class Assignment implements Serializable
 			ps.setBoolean(8, expired);
 			ps.setBoolean(9, forfeited);
 
-			ps.execute();
+			// Execute
+			ps.executeUpdate();
+
+			// Find the id and return it
+			ResultSet keys = ps.getGeneratedKeys();
+
+			if(keys.next())
+			{
+				sqlId = keys.getInt(1);
+			}
 		}
 		catch(SQLException e)
 		{
 			MiscUtil.log("severe", "There was a problem while saving an assignment to the database.");
-			e.printStackTrace();
+			e.printStackTrace(); // TODO
 		}
+
+		return sqlId;
 	}
 
 	/**

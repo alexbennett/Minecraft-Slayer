@@ -28,7 +28,7 @@ public class PlayerListener implements Listener
 		Player player = event.getPlayer();
 
 		// Create a save for the player
-		// TODO: PlayerUtil.createSave(player);
+		TODO: PlayerUtil.createSave(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
